@@ -1,5 +1,7 @@
 # BED Recap - Module Management
 
+- Ezekiel Goh (P2205881)
+
 ## Setup
 
 1. Clone this repository
