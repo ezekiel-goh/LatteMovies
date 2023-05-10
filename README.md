@@ -1,5 +1,7 @@
 # BED Recap - Module Management
 
+- Jeremiah Ang
+
 ## Setup
 
 1. Clone this repository
