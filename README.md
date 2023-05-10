@@ -1,6 +1,6 @@
 # BED Recap - Module Management
 
-- Jeremiah Ang (P1121782)
+- Ezekiel Goh (P2205881)
 
 ## Setup
 
