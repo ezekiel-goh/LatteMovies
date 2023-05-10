@@ -1,6 +1,7 @@
 # BED Recap - Module Management
 
 - Ezekiel Goh (P2205881)
+- Borja Heidelberg (P2228440)
 
 ## Setup
 
