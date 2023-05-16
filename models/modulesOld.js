@@ -44,6 +44,12 @@ module.exports.retrieveByCode = function retrieveByCode(code) {
 
 module.exports.deleteByCode = function deleteByCode(code) {
     // TODO implement delete by code
+    const sql = 'DELETE FROM modules_tab WHERE code = ?';
+    return query(sql, [code]).then(function (response) {
+        if (response.rowsAffected === 0) {
+            throw new EMPTY_RESULT_ERROR(`Module ${code} not found!`);
+        }
+    })
 };
 
 module.exports.updateByCode = function updateByCode(code, credit) {
@@ -52,6 +58,12 @@ module.exports.updateByCode = function updateByCode(code, credit) {
 
 module.exports.retrieveAll = function retrieveAll() {
     // TODO implement retrieve all
+    const sql = 'SELECT * FROM modules_tab'
+    return query(sql).then(function (response) {
+        console.log(response);
+        const rows = response[0];
+        return rows;
+    })
 };
 
 module.exports.retrieveBulk = function retrieveBulk(codes) {
