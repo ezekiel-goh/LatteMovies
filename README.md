@@ -4,6 +4,7 @@
 - Borja Heidelberg (P2228440)
 - Ryan Khoo (P2228057)
 - Lucius Ching (P2110136)
+- Dylan Tan (P1928976)
 
 ## Setup
 
