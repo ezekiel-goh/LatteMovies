@@ -3,6 +3,7 @@
 - Ezekiel Goh (P2205881)
 - Borja Heidelberg (P2228440)
 - Ryan Khoo (P2228057)
+- Lucius Ching (P2110136)
 
 ## Setup
 
