@@ -3,7 +3,7 @@ const { SqlLiteErrorCodes, DuplicateEntryError, NotFoundError } = require('./err
 
 module.exports.getUser = function getUser(UserID) {
     const connection = getConnection();
-    return connection.get('SELECT * FROM User WHERE UserID = ?', [UserID]).then((User) => {
+    return connection.get('SELECT MoviesBought FROM User WHERE UserID = ?', [UserID]).then((User) => {
         if (!User) throw new NotFoundError(`User ${UserID}`);
         return User;
     });
@@ -48,10 +48,32 @@ module.exports.updateUser = function updateUser(UserID, Password) {
     });
 };
 
-module.exports.deleteUser = function deleteUser(UserID) {
+module.exports.deleteUser = function deleteUser(UserID, Role) {
     const connection = getConnection();
-    return connection.run('DELETE FROM User WHERE UserID = ?', [UserID]).then((response) => {
-        if (!response.changes) throw new NotFoundError(`User ${UserID}`);
-        return;
+
+    return connection.run('SELECT Role FROM User WHERE UserID = ?', [UserID]).then((User) => {
+        if (!User) throw new NotFoundError(`User ${UserID}`);
+        if (Role === 'Customer') {
+            connection.run('delete U, C from User U inner join Customer C' +
+            ' on U.UserID = C.UserID' +
+            ' where U.UserID  = ?', [UserID])
+            .then((response) => {
+                if (!response.changes) throw new NotFoundError(`User ${UserID}`);
+                return;
+            });
+        }
+        if  (Role === 'Publisher') {
+            connection.run('delete U, P from User U inner join Publisher P' +
+            ' on U.UserID = P.UserID' +
+            ' where U.UserID  = ?', [UserID])
+            .then((response) => {
+                if (!response.changes) throw new NotFoundError(`User ${UserID}`);
+                return;
+            });
+        }
     });
+    // return connection.run('DELETE FROM User WHERE UserID = ?', [UserID]).then((response) => {
+    //     if (!response.changes) throw new NotFoundError(`User ${UserID}`);
+    //     return;
+    // });
 };
