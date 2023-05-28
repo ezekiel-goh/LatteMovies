@@ -9,21 +9,40 @@ module.exports.getUser = function getUser(UserID) {
     });
 };
 
-module.exports.addUser = function addUser(username, password) {
+module.exports.addUser = function addUser(UserID, Username, Password, Role) {
     const connection = getConnection();
     return connection
-        .run('INSERT INTO User (Username, Password, MoviesBought) VALUES (?, ?, 0)', [username, password])
+        .run('INSERT INTO User (Username, Password, Role) VALUES (?, ?, Role)', [Username, Password, Role])
         .then(() => {
-            return;
+            if (Role === 'Customer') {
+                connection
+                    .run('INSERT INTO Customer (UserID, Username, MoviesBought) VALUES (?, ?, 0)', [UserID, Username])
+                    .then(() => {
+                        return;
+                    })
+                    .catch((error) => {
+                        if (error.errno === SqlLiteErrorCodes.SQLITE_CONSTRAINT) throw new DuplicateEntryError(`User ${Username}`);
+                    });
+            }
+            if (Role === 'Publisher') {
+                connection
+                .run('INSERT INTO Publisher (UserID, Username, MoviesCreated) VALUES (?, ?, 0)', [UserID, Username])
+                .then(() => {
+                    return;
+                })
+                .catch((error) => {
+                    if (error.errno === SqlLiteErrorCodes.SQLITE_CONSTRAINT) throw new DuplicateEntryError(`User ${Username}`);
+                });
+            }
         })
         .catch((error) => {
-            if (error.errno === SqlLiteErrorCodes.SQLITE_CONSTRAINT) throw new DuplicateEntryError(`User ${UserID}`);
+            if (error.errno === SqlLiteErrorCodes.SQLITE_CONSTRAINT) throw new DuplicateEntryError(`User ${Username}`);
         });
 };
 
-module.exports.updateUser = function updateUser(UserID, name) {
+module.exports.updateUser = function updateUser(UserID, Password) {
     const connection = getConnection();
-    return connection.run('UPDATE User SET name = ? WHERE UserID = ?', [name, UserID]).then((response) => {
+    return connection.run('UPDATE User SET Password = ? WHERE UserID = ?', [Password, UserID]).then((response) => {
         if (!response.changes) throw new NotFoundError(`User ${UserID}`);
         return;
     });
