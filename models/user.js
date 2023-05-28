@@ -9,10 +9,10 @@ module.exports.getUser = function getUser(UserID) {
     });
 };
 
-module.exports.addUser = function addUser(UserID, name) {
+module.exports.addUser = function addUser(username, password) {
     const connection = getConnection();
     return connection
-        .run('INSERT INTO User (UserID, name) VALUES (?, ?)', [UserID, name])
+        .run('INSERT INTO User (Username, Password, MoviesBought) VALUES (?, ?, 0)', [username, password])
         .then(() => {
             return;
         })
