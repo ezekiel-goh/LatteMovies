@@ -121,7 +121,7 @@
 <body class="text-light" style="background-color: #000;">
     <div class="cover-container d-f p-3 mx-auto flex-column">
 
-        <nav class="navbar navbar-expand-sm p-3 m-2 fixed-top" id="navBar" style="background-color: #000;"
+        <nav class="navbar navbar-expand-sm p-3 m-2 fixed-top bg-dark" id="navBar" style="background-color: #000;"
             aria-label="Header">
             <div class="container-fluid">
                 <a href="/" class="d-flex align-items-center mt-2 mb-2 mb-lg-0 pe-3 text-white text-decoration-none">
@@ -135,9 +135,8 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
-                        <li><a href="/" class="nav-link px-2 text-white fs-5">&nbspHomepage</a></li>
-                        <li><a href="/searchResults" class="nav-link px-3 text-secondary fs-5" id="movieBtn">Movie
-                                Titles</a>
+                        <li><a href="/" class="nav-link px-2 text-secondary fs-5">&nbspHomepage</a></li>
+                        <li><a href="/importMovies" class="nav-link px-3 text-light fs-5">Import</a>
                         </li>
                         <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
                     </ul>
@@ -148,10 +147,10 @@
                                 <input type="search" class="form-control form-control-dark text-bg-dark" id="searchBar"
                                     placeholder="Search for Movie titles, Categories and More" aria-label="Search">
                             </form> -->
-                    <form class="d-flex" role="search">
+                    <!-- <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
+                    </form> -->
 
                     <div class="text-end">
                         <a href="/login/"><button type="button" class="btn btn-warning me-2">Login</button></a>
@@ -192,6 +191,13 @@
             console.log(id)
             console.log(selectedMovies)
 
+
+            //-- Clear checkbox
+            // function uncheck() {
+            //     let inputs = document.getElementById("433694");
+            //     inputs.checked = false;
+            // }
+
             //--fetch details
             const url = `https://api.themoviedb.org/3/movie/${id}language=en-US`;
             const options = {
@@ -219,7 +225,7 @@
 
 
                     //-- Store the movie details
-                    fetch('/', {
+                    fetch('/importMovies', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -243,15 +249,21 @@
 
                 .catch(err => console.error('error:' + err));
 
-            
 
+            
         }
+
+        //-- uncheck boxes after submit
+        checkboxes.forEach((checkbox) => {
+            checkbox.checked = false
+        }) 
     });
 
 
 
 
 </script>
+
 
 <script type="text/javascript" src="../movies/movies.js"></script>
 
