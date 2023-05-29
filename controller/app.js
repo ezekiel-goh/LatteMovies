@@ -1,15 +1,22 @@
 // App.js
 
-const express = require("express");
-const app = express();
 
+const express = require("express");
+const createHttpError = require('http-errors');
+
+
+const { EMPTY_RESULT_ERROR, DUPLICATE_ENTRY_ERROR, TABLE_ALREADY_EXISTS_ERROR } = require('../errors');
+
+const app = express();
+app.use(express.json()); // to process JSON in request body
+
+app.use(express.static('public'));
 // import models
 const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
-const movies = require("../models/movies");
+const Movies = require("../models/movie");
 const user = require("../models/user");
 const review = require("../models/review");
-
 
 
 //import the body-parser middleware
@@ -23,33 +30,29 @@ const cors = require("cors");
 app.use(cors());
 
 
-// const jwt = require("jsonwebtoken");
-// const JWT_SECRET = process.env.JWT_SECRET;
-// const isLoggedInMiddleware = require("../isLoggedInMiddleware");
-
-
-// -- Search By
-
 
 // -- Movie Details
-app.get("/movieDetails", function (req, res) {
-  var id = req.query.film_id;
-  Film.FilmDetails(film_id, (err, result) => {
-    //-- you either get err or result
-  
-    if (!err) {
-      console.log(result.length);
-      if (result[0] === undefined) {
-        //-- When id = undefined
-        res.status(200).send([]);
-      } else {
-        res.status(200).send(result);
-      }
-    } else {
-      res.status(500).send({ error_msg: "Internal server error" });
-    }
-  });
+app.post('/', function (req, res) {
+  const movieDetails = req.body
+
+  Movies.postMovies(movieDetails)
+    .then(() => {
+      res.sendStatus(201); // Return a success status code
+    })
+    .catch(error => {
+      console.error('Failed to insert movie details:', error);
+      res.sendStatus(500); // Return an error status code
+    });
 });
 
+//   function (err, result) {
+//   if (!err) {
+//     console.log("no errors");
+//     res.type("json");
+//     res.status(201).send({ id: +result });
+//   } else {
+//     res.status(500).send({ error_msg: "Internal server error" });
+//   }
+// }
 
 module.exports = app;
