@@ -20,4 +20,13 @@ pool.query = function (...args) {
     return oldQuery.apply(pool, args);
 };
 
+pool.getConnection()
+    .then(() => {
+        console.log('Database connection established successfully');
+    })
+    .catch((error) => {
+        console.error('Failed to connect to the database:', error);
+    });
+
+
 module.exports = pool;

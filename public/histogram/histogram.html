@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Histogram Example</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Histogram Example</h1>
+    <button id="getHistogramBtn" class="btn btn-primary">Get Histogram</button>
+    <canvas id="viewsHistogram"></canvas>
+  </div>
+
+  <script src="histogram.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.getElementById("getHistogramBtn").addEventListener("click", async function() {
+      console.log("button pressed")
+      var data = generateRandomData();
+      await fetch('/insertData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      fetch('/histogramData')
+        .then(response => response.json())
+        .then(histogramData => {
+          renderHistogram(histogramData);
+        })
+        .catch(error => {
+          console.error('Error retrieving data:', error);
+        });
+    });
+  </script>
+</body>
+</html>
