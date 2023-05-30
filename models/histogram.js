@@ -1,3 +1,11 @@
+const { query } = require('../database');
+const {
+  DUPLICATE_ENTRY_ERROR,
+  EMPTY_RESULT_ERROR,
+  MYSQL_ERROR_CODE,
+  TABLE_ALREADY_EXISTS_ERROR,
+} = require('../errors');
+
 function generateRandomData() {
   var pairs = [];
 
@@ -21,6 +29,7 @@ function generateRandomData() {
       pairs.push(pair);
     }
   }
+  console.log(pairs)
 
   return pairs;
 }
@@ -31,7 +40,7 @@ async function insertData(data) {
 
     const values = data.map(pair => [pair.userId, pair.timestamp]);
 
-    const [result] = await pool.query(query, [values]);
+    const [result] = await query(query, [values]);
 
     console.log('Data inserted successfully!');
   } catch (error) {
@@ -44,9 +53,10 @@ async function generateHistogramData(callback) {
   try {
     const query = 'SELECT Timestamp, COUNT(DISTINCT UserID) AS views FROM Views GROUP BY Timestamp ORDER BY Timestamp';
 
-    const [results] = await pool.query(query);
+    const [results] = await query(query);
 
     console.log('Data retrieved successfully!');
+    console.log(callback);
 
     const histogramData = results.map(row => ({
       timestamp: row.timestamp,
