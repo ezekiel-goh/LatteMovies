@@ -69,17 +69,15 @@
                 </div>
             </div>
             <div class="container text-light pt-5 ms-3">
-                <h4>Thompson Daves</h4>
+                <h4>Thompson Dave</h4>
                 <p class="rating">Rating</p>
                 <p class="review">Review</p>
             </div>
-            <form>
-                <div class="form-group">
-                    <label for="Review">Review</label>
-                    <input type="text" class="form-control" id="Review" aria-describedby="emailHelp"
-                        placeholder="Share your feedback.....">
-                </div>
-                <button type="submit" onclick="postReview()" class="btn btn-primary">Submit</button>
+            <form id="reviewForm">
+                <input type="number" id="rating" name="rating" placeholder="what would you rate this movie out of 5?"
+                    required>
+                <input type="text" id="Review" name="Review" placeholder="Give review..." required>
+                <button type="submit" id="post" class="btn btn-primary">Submit</button>
             </form>
         </section>
     </main>

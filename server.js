@@ -9,7 +9,7 @@ app.get("/", (req, res) => {
 
 // Reviews
 app.get("/reviews", (req, res) => {
-  res.sendFile("/public/Reviews/Reviews.html", { root: _dirname });
+  res.sendFile("/public/Reviews/Reviews.html", { root: __dirname });
 });
 
 // app.get("/exploreMovies", (req, res) => {

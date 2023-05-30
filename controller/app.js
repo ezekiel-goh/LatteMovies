@@ -32,25 +32,28 @@ app.use(cors());
 
 
 // -- Movie Details
-app.post('/', function (req, res) {
-  const movieDetails = req.body
+// app.post('/', function (req, res) {
+//   const movieDetails = req.body
 
-  Movies.postMovies(movieDetails)
-    .then(() => {
-      res.sendStatus(201); // Return a success status code
-    })
-    .catch(error => {
-      console.error('Failed to insert movie details:', error);
-      res.sendStatus(500); // Return an error status code
-    });
-});
+//   Movies.postMovies(movieDetails)
+//     .then(() => {
+//       res.sendStatus(201); // Return a success status code
+//     })
+//     .catch(error => {
+//       console.error('Failed to insert movie details:', error);
+//       res.sendStatus(500); // Return an error status code
+//     });
+// });
 
 // -- Review details
 
 app.post('/reviews', function (req, res) {
-  const Review = req.body
+  const Comments = req.body.Comments
+  const Rating = req.body.Rating
+  console.log(req.body)
 
-  review.postReview(Review)
+  return review
+    .postReview(Comments, Rating)
     .then(() => {
       res.sendStatus(201); // Return a success status code
     })
