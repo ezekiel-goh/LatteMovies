@@ -11,12 +11,10 @@ const app = express();
 app.use(express.json()); // to process JSON in request body
 
 app.use(express.static('public'));
-// import models
-const histogram = require("../models/histogram");
-const moviePublisher = require("../models/moviePublisher");
+// const moviePublisher = require("../models/moviePublisher");
 const Movies = require("../models/movie");
-const user = require("../models/user");
-const review = require("../models/review");
+// const user = require("../models/user");
+// const review = require("../models/review");
 
 
 //import the body-parser middleware
