@@ -12,10 +12,10 @@ app.use(express.json()); // to process JSON in request body
 
 app.use(express.static('public'));
 // import models
-const histogram = require("../models/histogram");
-const moviePublisher = require("../models/moviePublisher");
-const Movies = require("../models/movie");
-const user = require("../models/user");
+// const histogram = require("../models/histogram");
+// const moviePublisher = require("../models/moviePublisher");
+// const Movies = require("../models/movie");
+// const user = require("../models/user");
 const review = require("../models/review");
 
 
@@ -45,6 +45,21 @@ app.post('/', function (req, res) {
     });
 });
 
+// -- Review details
+
+app.post('/reviews', function (req, res) {
+  const Review = req.body
+
+  review.postReview(Review)
+    .then(() => {
+      res.sendStatus(201); // Return a success status code
+    })
+    .catch(error => {
+      console.error('Failed to insert review:', error);
+      res.sendStatus(500); // Return an error status code
+    });
+});
+
 //   function (err, result) {
 //   if (!err) {
 //     console.log("no errors");
@@ -55,4 +70,5 @@ app.post('/', function (req, res) {
 //   }
 // }
 
+// -- Review Details
 module.exports = app;
