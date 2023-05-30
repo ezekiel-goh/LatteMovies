@@ -17,10 +17,9 @@ const Movies = require("../models/movie");
 // const review = require("../models/review");
 
 
+
 //import the body-parser middleware
 const bodyParser = require("body-parser");
-// var urlencodedParser = bodyParser.urlencoded({ extended: false });
-
 //use the middleware
 app.use(bodyParser.json());
 
@@ -44,7 +43,7 @@ app.post('/importMovies', function (req, res) {
 });
 
 
-//-- Get movie titles from DB
+//-- Get Movie Titles from DB
 app.get('/movies', function (req, res) {  
 
   Movies.getMovies()
@@ -56,5 +55,48 @@ app.get('/movies', function (req, res) {
       res.sendStatus(500);
     });
 });
+
+//-- Get Movie by ID
+app.get('/movieDetails/:id', function (req, res) {  
+const id = req.params.id
+
+  Movies.getMovieDetailsById(id)
+    .then((movieDetails) => {
+      res.json(movieDetails); 
+    })
+    .catch(error => {
+      console.error('Failed to retrieve movie(s)', error);
+      res.sendStatus(500);
+    });
+});
+
+//-- Delete Movie by  ID
+app.delete('/movieDetails/:id', function (req, res) {  
+  const id = req.params.id
+  
+    Movies.deleteMovieDetailsById(id)
+      .then(() => {
+        res.sendStatus(200); 
+      })
+      .catch(error => {
+        console.error('Failed to delete movie', error);
+        res.sendStatus(500);
+      });
+  });
+
+  //-- Update Movie Price by ID
+  app.put('/movieDetails/:id', function(req, res) {  
+    const price = req.body.price
+    const id = req.params.id
+    
+      Movies.updateMoviePriceById(price, id)
+        .then(() => {
+          res.sendStatus(200); 
+        })
+        .catch(error => {
+          console.error('Failed to update movie price', error);
+          res.sendStatus(500);
+        });
+    });
 
 module.exports = app;
