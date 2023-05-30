@@ -19,10 +19,9 @@ app.use(express.static('public'));
 const review = require("../models/review");
 
 
+
 //import the body-parser middleware
 const bodyParser = require("body-parser");
-// var urlencodedParser = bodyParser.urlencoded({ extended: false });
-
 //use the middleware
 app.use(bodyParser.json());
 
@@ -30,48 +29,120 @@ const cors = require("cors");
 app.use(cors());
 
 
-
 // -- Movie Details
-// app.post('/', function (req, res) {
-//   const movieDetails = req.body
+app.post('/importMovies', function (req, res) {
+  const movieDetails = req.body
 
-//   Movies.postMovies(movieDetails)
-//     .then(() => {
-//       res.sendStatus(201); // Return a success status code
-//     })
-//     .catch(error => {
-//       console.error('Failed to insert movie details:', error);
-//       res.sendStatus(500); // Return an error status code
-//     });
-// });
+  Movies.postMovies(movieDetails)
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch(error => {
+      console.error('Failed to insert movie details:', error);
+      res.sendStatus(500);
+    });
+});
 
-// -- Review details
+
+//-- Get Movie Titles from DB
+app.get('/movies', function (req, res) {
+
+  Movies.getMovies()
+    .then((movies) => {
+      res.json(movies);
+    })
+    .catch(error => {
+      console.error('Failed to retrieve movie(s)', error);
+      res.sendStatus(500);
+    });
+});
+
+//-- Get Movie by ID
+app.get('/movieDetails/:id', function (req, res) {
+  const id = req.params.id
+
+  Movies.getMovieDetailsById(id)
+    .then((movieDetails) => {
+      res.json(movieDetails);
+    })
+    .catch(error => {
+      console.error('Failed to retrieve movie(s)', error);
+      res.sendStatus(500);
+    });
+});
+
+//-- Delete Movie by  ID
+app.delete('/movieDetails/:id', function (req, res) {
+  const id = req.params.id
+
+  Movies.deleteMovieDetailsById(id)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(error => {
+      console.error('Failed to delete movie', error);
+      res.sendStatus(500);
+    });
+});
+
+//-- Update Movie Price by ID
+app.put('/movieDetails/:id', function (req, res) {
+  const price = req.body.price
+  const id = req.params.id
+
+  Movies.updateMoviePriceById(price, id)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(error => {
+      console.error('Failed to update movie price', error);
+      res.sendStatus(500);
+    });
+});
+
 
 app.post('/reviews', function (req, res) {
   const Comments = req.body.Comments
   const Rating = req.body.Rating
   console.log(req.body)
-
   return review
     .postReview(Comments, Rating)
     .then(() => {
       res.sendStatus(201); // Return a success status code
     })
     .catch(error => {
-      console.error('Failed to insert review:', error);
-      res.sendStatus(500); // Return an error status code
+      console.error('Failed to retrieve movie(s)', error);
+      res.sendStatus(500);
     });
 });
 
-//   function (err, result) {
-//   if (!err) {
-//     console.log("no errors");
-//     res.type("json");
-//     res.status(201).send({ id: +result });
-//   } else {
-//     res.status(500).send({ error_msg: "Internal server error" });
-//   }
-// }
+//-- Delete Movie by  ID
+app.delete('/movieDetails/:id', function (req, res) {
+  const id = req.params.id
 
-// -- Review Details
+  Movies.deleteMovieDetailsById(id)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(error => {
+      console.error('Failed to delete movie', error);
+      res.sendStatus(500);
+    });
+});
+
+//-- Update Movie Price by ID
+app.put('/movieDetails/:id', function (req, res) {
+  const price = req.body.price
+  const id = req.params.id
+
+  Movies.updateMoviePriceById(price, id)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(error => {
+      console.error('Failed to update movie price', error);
+      res.sendStatus(500);
+    });
+});
+
 module.exports = app;
