@@ -2,7 +2,7 @@
 const express = require("express");
 const createHttpError = require('http-errors');
 
-const { EMPTY_RESULT_ERROR, DUPLICATE_ENTRY_ERROR, TABLE_ALREADY_EXISTS_ERROR } = require('../errors');
+const { EMPTY_RESULT_ERROR, DUPLICATE_ENTRY_ERROR, TABLE_ALREADY_EXISTS_ERROR, NOT_FOUND_ERROR } = require('../errors');
 
 const app = express();
 app.use(express.json()); // to process JSON in request body
@@ -11,7 +11,7 @@ app.use(express.static('public'));
 
 // import models
 // const histogram = require("../models/histogram");
-// const moviePublisher = require("../models/moviePublisher");
+const moviePublisher = require("../models/moviePublisher");
 // const Movies = require("../models/movie");
 // const user = require("../models/user");
 // const review = require("../models/review");
@@ -130,5 +130,93 @@ app.delete('/movieDetails/:id', function (req, res) {
           res.sendStatus(500);
         });
     });
+
+
+/*-----------------
+  publisher stuff
+-----------------*/
+
+// implement some login verification later
+
+app.get('/api/moviePublisher', (req, res, next) => {
+  moviePublisher.getAllMovies()
+    .then(function (movies) {
+      return res.json({ data: movies });
+    })
+    .catch(function (error) {
+      next(error);
+    });
+});
+
+app.get('/api/moviePublisher/:id', (req, res, next) => {
+  const movieId = req.params.movieId;
+  moviePublisher.getMovie(movieId)
+    .then(function (movie) {
+      return res.json({ data: movie });
+    })
+    .catch(function (error) {
+      if (error instanceof NOT_FOUND_ERROR) {
+        next(createHttpError(404, error.message));
+      } else {
+        next(error);
+      }
+    });
+});
+
+app.post('/api/moviePublisher', function (req, res, next) {
+  const movieId = req.body.movieId;
+  const title = req.body.title;
+  const posterPath = req.body.posterPath;
+  const overview = req.body.overview;
+  const releaseDate = req.body.releaseDate;
+  const runtime = req.body.runtime;
+  moviePublisher.addMovie(movieId, title, posterPath, overview, releaseDate, runtime)
+    .then(function () {
+      return res.sendStatus(201);
+    })
+    .catch(function (error) {
+      if (error instanceof DUPLICATE_ENTRY_ERROR) {
+        next(createHttpError(400, error.message));
+      } else {
+        next(error);
+      }
+    });
+});
+
+app.put('/api/moviePublisher/:movieId', function (req, res, next) {
+  const movieId = req.params.movieId;
+  const updatedMovieId = req.body.movieId;
+  const title = req.body.title;
+  const posterPath = req.body.posterPath;
+  const overview = req.body.overview;
+  const releaseDate = req.body.releaseDate;
+  const runtime = req.body.runtime;
+  moviePublisher.updateMovie(movieId, updatedMovieId, title, posterPath, overview, releaseDate, runtime)
+    .then(function () {
+      return res.sendStatus(200);
+    })
+    .catch(function (error) {
+      if (error instanceof NOT_FOUND_ERROR) {
+        next(createHttpError(404, error.message));
+      } else {
+        next(error);
+      }
+    });
+});
+
+app.delete('/api/moviePublisher/:movieId', function (req, res, next) {
+  const movieId = req.params.movieId;
+  moviePublisher.deleteMovie(movieId)
+    .then(function () {
+      return res.sendStatus(200);
+    })
+    .catch(function (error) {
+      if (error instanceof NOT_FOUND_ERROR) {
+        next(createHttpError(404, error.message));
+      } else {
+        next(error);
+      }
+    });
+});
 
 module.exports = app;
