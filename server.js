@@ -28,7 +28,7 @@ app.get("/movieDetails", (req, res) => {
   res.sendFile("/public/movieDetails.html", { root: __dirname });
 });
 
-app.get("/login/", (req, res) => {
+app.get("/login", (req, res) => {
   res.sendFile("/public/login.html", { root: __dirname });
 });
 
@@ -51,8 +51,12 @@ app.get("/addActor/", (req, res) => {
 });
 
 
-app.get("/moviePublisher", (req, res) => {
-  res.sendFile("/public/moviePublisher/moviePublisher.html", { root: __dirname })
+app.get('/moviePublisher', (req, res) => {
+  if (req.session.role == 'Publisher') {
+    res.sendFile('/public/moviePublisher/moviePublisher.html', { root: __dirname });
+  } else {
+    res.redirect('/');
+  }
 });
 
 app.get('/userpage', (req, res) => {
