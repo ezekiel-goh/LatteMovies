@@ -13,7 +13,8 @@ app.use(express.static('public'));
 // const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 // const Movies = require("../models/movie");
-// const user = require("../models/user");
+const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
+  deleteUserCustomer, deleteUserPublisher } = require('../models/user.js');
 // const review = require("../models/review");
 
 
@@ -129,6 +130,67 @@ app.delete('/movieDetails/:id', function (req, res) {
           console.error('Failed to update movie price', error);
           res.sendStatus(500);
         });
+    });
+
+    /**
+     * User C.R.U.D.
+     */
+    app.get('/user/:userid', async (req, res) => {
+      const userID = req.params.userid;
+      const userInfo = await getUserInfo(userID);
+      if (userInfo[0] === null || userInfo[0] === undefined || userID === undefined || userID === null || !userID) {
+        console.error('Error retrieving data');
+        res.status(500).send();
+      }
+      res.status(200).json(userInfo[0]);
+      console.log(userInfo[0]);
+    });
+    
+    app.post('/user', async (req, res) => {
+      try {
+        const Username = req.body.Username;
+        const Password = req.body.Password;
+        const Role = req.body.Role;
+        await addUser(Username, Password, Role);
+    
+        if (Role === 'Customer') {
+          await addCustomer(Username);
+          res.status(201).send('User Customer created');
+        }
+    
+        if (Role === 'Publisher') {
+          await addPublisher(Username);
+          res.status(201).send('User Publisher created');
+        }
+      } catch (error) {
+        console.error('Error inserting record:', error);
+        res.status(500).send('Error inserting record');
+      }
+    });
+    
+    app.put('/user/:userid', async (req, res) => {
+      try {
+        const UserID = parseInt(req.params.userid);
+        const Password = req.body.Password;
+        await updateUserInfo(UserID, Password);
+        res.status(200).send('User updated');
+      } catch (error) {
+        console.error('Error updating record:', error);
+        res.status(500).send('Error updating record!');
+      }
+    });
+    
+    app.delete('/user/:userid', async (req, res) => {
+      try {
+        const UserID = req.params.userid;
+    
+        Promise.all([deleteUserCustomer(UserID), deleteUserPublisher(UserID)]).then(() => {
+          res.status(200).send('User deleted');
+        });
+      } catch (error) {
+        console.error('Error deleting record:', error);
+        res.status(500).send('Error deleting record');
+      }
     });
 
 
