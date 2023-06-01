@@ -19,7 +19,7 @@ app.get("/movieDetails", (req, res) => {
 });
 
 app.get("/login/", (req, res) => {
-  res.sendFile("/public/login.html", { root: __dirname });
+  res.sendFile("/public/auth/login.html", { root: __dirname });
 });
 
 app.get("/Views/", (req, res) => {

@@ -1,13 +1,20 @@
 // App.js
 const express = require("express");
+const session = require('express-session');
 const createHttpError = require('http-errors');
 
 const { EMPTY_RESULT_ERROR, DUPLICATE_ENTRY_ERROR, TABLE_ALREADY_EXISTS_ERROR, NOT_FOUND_ERROR } = require('../errors');
 
 const app = express();
 app.use(express.json()); // to process JSON in request body
-
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
 
 // import models
 
@@ -19,7 +26,7 @@ const Movies = require("../models/movie");
 const moviePublisher = require("../models/moviePublisher");
 // const Movies = require("../models/movie");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-  deleteUserCustomer, deleteUserPublisher } = require('../models/user.js');
+  deleteUserCustomer, deleteUserPublisher, login } = require('../models/user.js');
 // const review = require("../models/review");
 
 
@@ -205,7 +212,23 @@ app.delete('/movieDetails/:id', function (req, res) {
   publisher stuff
 -----------------*/
 
-// implement some login verification later
+// general login function
+app.post('/auth', function(req, res) {
+	let username = req.body.username;
+	let password = req.body.password;
+
+  login(username, password)
+    .then((user) => {
+      if (!user[0][0]) {
+        res.redirect('/login')
+      } else {
+        req.session.isLoggedIn = true;
+        req.session.username = user[0][0].Username;
+        req.session.role = user[0][0].Role;
+        res.redirect('/');
+      }
+    });
+});
 
 app.get('/api/moviePublisher', (req, res, next) => {
   moviePublisher.getAllMovies()
