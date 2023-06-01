@@ -1,12 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Publisher</title>
-</head>
-<body>
-    suffering
-</body>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>CRUD Operations for Publishers</title>
+        <script src="moviePublisher.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <h1>Movie CRUD Operations for Publishers</h1>
+
+        <form id="movie-form">
+            <fieldset>
+                <input type="number" id="movie-id" placeholder="Movie Id" />
+                <input type="text" id="title" placeholder="Movie Title" />
+                <input type="text" id="poster-path" placeholder="Poster Path" />
+                <input type="text" id="overview" placeholder="Overview" />
+                <input type="text" id="release-date" placeholder="Release Date" />
+                <input type="text" id="runtime" placeholder="Runtime" />
+                <button type="submit">Add Movie</button>
+            </fieldset>
+        </form>
+        <br />
+        <table id="movies-table">
+            <thead>
+                <tr>
+                    <th>Movie Id</th>
+                    <th>Title</th>
+                    <th>Poster Path</th>
+                    <th>Overview</th>
+                    <th>Release Date</th>
+                    <th>Runtime</th>
+                    <th>Update</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody id="movies-body"></tbody>
+        </table>
+        <template id="template">
+            <tr>
+                <!-- <td class="movie-id"></td> -->
+                <td><input type="text" class="movie-id" /></td>
+                <td><input type="text" class="title" /></td>
+                <td><input type="text" class="poster-path" /></td>
+                <td><input type="text" class="overview" /></td>
+                <td><input type="text" class="release-date" /></td>
+                <td><input type="text" class="runtime" /></td>
+                <td>
+                    <button class="update">Update</button>
+                </td>
+                <td>
+                    <button class="delete">Delete</button>
+                </td>
+            </tr>
+        </template>
+    </body>
 </html>

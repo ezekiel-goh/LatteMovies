@@ -41,6 +41,15 @@ app.get("/addActor/", (req, res) => {
 });
 
 
+app.get("/moviePublisher", (req, res) => {
+  res.sendFile("/public/moviePublisher/moviePublisher.html", { root: __dirname })
+});
+
+app.get('/userpage', (req, res) => {
+  res.sendFile('/public/user/user.html', { root: __dirname })
+});
+
+
 const port = process.env.PORT || 3001;
 app.listen(port, function () {
   // eslint-disable-next-line no-console
