@@ -13,12 +13,12 @@ const {
 //   var reviewValue = document.getElementById("Review").value;
 // })
 
-function postReview(Comments,Rating) {
+function postReview(Comments, Rating) {
   const sql = `INSERT INTO Reviews (MovieID, UserID, Comments, Rating) VALUES (6, 9, ?, ?)`;
   return query(sql, [Comments, Rating]).catch(function (error) {
     if (error.errno === MYSQL_ERROR_CODE.DUPLICATE_ENTRY) {
       throw new DUPLICATE_ENTRY_ERROR(
-        `Movie with id: ${id} already exists in the database`
+        `review already exists in the database`
       );
     } else {
       throw error;
@@ -26,23 +26,50 @@ function postReview(Comments,Rating) {
   });
 }
 
+function editReview(ReviewID, Rating, Comments) {
+  const sql = `UPDATE Reviews SET Rating = ?, Comments = ? WHERE ReviewID = ?;`
+  return query(sql, [ReviewID, Rating, Comments]).catch(function (error) {
+    if (error.errno === MYSQL_ERROR_CODE.DUPLICATE_ENTRY) {
+      throw new DUPLICATE_ENTRY_ERROR(
+        `review already exists in the database`
+      );
+    } else {
+      throw error;
+    }
+  });
+}
 
-
-// function postReview(Review) {
-//   const sql = "INSERT INTO Reviews(Comments) VALUES (?)";
-//   return query(sql, [Review]).catch(function (error) {
-//     if (error.errno === MYSQL_ERROR_CODE.DUPLICATE_ENTRY) {
-//       throw new DUPLICATE_ENTRY_ERROR(
-//         `Movie with id: ${id} already exists in the database`
-//       );
-//     } else {
-//       throw error;
-//     }
-//   });
+function deleteReview(ReviewID) {
+  const sql = `DELETE FROM Reviews WHERE ReviewID = ?;`
+  return query(sql, [ReviewID]).catch(function (error) {
+    if (error.errno === MYSQL_ERROR_CODE.DUPLICATE_ENTRY) {
+      throw new DUPLICATE_ENTRY_ERROR(
+        `review already exists in the database`
+      );
+    } else {
+      throw error;
+    }
+  });
+}
+// function retrieveReview() {
+//   const sql = `SELECT UserID, Rating, Comments FROM Reviews`
+//   return query(sql)
+//   .then( (response) => {
+//     console.log(response[0]);
+//     const rows = response[0];
+//     return rows
+// })
+// .catch(function (error){
+//   console.log(error)
+// })
 // }
+
 
 
 
 module.exports = {
   postReview,
+  editReview,
+  deleteReview
+  // retrieveReview
 };

@@ -14,7 +14,7 @@ app.use(express.static('public'));
 // import models
 // const histogram = require("../models/histogram");
 // const moviePublisher = require("../models/moviePublisher");
-// const Movies = require("../models/movie");
+const Movies = require("../models/movie");
 // const user = require("../models/user");
 const review = require("../models/review");
 
@@ -100,21 +100,64 @@ app.put('/movieDetails/:id', function (req, res) {
     });
 });
 
-
+//-- Submit Review
 app.post('/reviews', function (req, res) {
   const Comments = req.body.Comments
   const Rating = req.body.Rating
   console.log(req.body)
-  return review
-    .postReview(Comments, Rating)
+
+  review.postReview(Comments, Rating)
     .then(() => {
       res.sendStatus(201); // Return a success status code
     })
     .catch(error => {
-      console.error('Failed to retrieve movie(s)', error);
+      console.error('Failed to retrieve review(s)', error);
       res.sendStatus(500);
     });
 });
+
+// -- Update Review
+app.put('/reviews', function (req, res) {
+  const ReviewID = req.body.ReviewID
+  const Rating = req.body.Rating
+  const Comments = req.body.Comments
+
+  review.editReview(Rating, Comments, ReviewID)
+    .then(() => {
+      res.sendStatus(201); // Return a success status code
+    })
+    .catch(error => {
+      console.error('Failed to update review(s)', error);
+      res.sendStatus(500);
+    });
+})
+
+app.delete('/reviews/:id', function (req, res) {
+  const ReviewID = req.params.id
+  console.log(req.body.ReviewID)
+  review.deleteReview(ReviewID)
+    .then(() => {
+      res.sendStatus(201); // Return a success status code
+    })
+    .catch(error => {
+      console.error('Failed to delete review(s)', error);
+      res.sendStatus(500);
+    });
+})
+
+// -- Get Review
+// app.get('/reviews/data', function (req, res) {
+
+//   review.retrieveReview()
+//     .then((review) => {
+//       res.json(review);
+//     })
+//     .catch(error => {
+//       console.error('Failed to retrieve review(s)', error);
+//       res.sendStatus(500);
+//     });
+// })
+
 
 //-- Delete Movie by  ID
 app.delete('/movieDetails/:id', function (req, res) {

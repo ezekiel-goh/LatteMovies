@@ -76,13 +76,149 @@
             <form id="reviewForm">
                 <input type="number" id="rating" name="rating" placeholder="what would you rate this movie out of 5?"
                     required>
-                <input type="text" id="Review" name="Review" placeholder="Give review..." required>
+                <input type="text" id="review" name="Review" placeholder="Give review..." required>
                 <button type="submit" id="post" class="btn btn-primary">Submit</button>
             </form>
+            <form id="alterForm">
+                <input type="number" id="reviewID" name="reviewID" placeholder="which review would you want to delete?"required>
+                <input type="number" id="alterRating" name="newRating" placeholder="what would you rate this movie out of 5?" required>
+                <input type="text" id="alterReview" name="Review" placeholder="Give review..." required>
+                <button type="submit" id="update" class="btn btn-primary">Submit3</button>
+            </form>
+            <form id="deleteForm">
+                <input type="number" id="deleteID" name="deleteID" placeholder="which review would you want to delete?" required>
+                <button type="submit" id="delete" class="btn btn-primary">Delete</button>
+            </form>
+            <!-- <form id="retrieveForm">
+                <div id="results">
+                </div>
+                <button type="submit" id="retrieve" class="btn btn-primary">Retrieve</button>
+            </form> -->
+            <p id="results">
+            </p>
         </section>
     </main>
     </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="Reviews.js"></script>
     <script src="../../models/review.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
+    <script>
+        // window.addEventListener('DOMContentLoaded', function () {
+        // Post review
+        const submit = document.getElementById("post")
+        submit.addEventListener("click", (event) => {
+            event.preventDefault();
+            const postComment = document.getElementById("review").value
+            const postRating = document.getElementById("rating").value
+            console.log(postComment, postRating)
+            const post = {
+
+                Comments: postComment,
+                Rating: postRating
+            }
+
+            const baseUrl = "http://localhost:3000"
+            axios.post(`${baseUrl}/reviews`, post)
+                .then((response) => {
+                    if (response.status == 200) {
+                        console.log("Review submitted!")
+                    } else {
+                        console.log("An error occurred")
+                    }
+                })
+        })
+
+        //update review
+        const submit3 = document.getElementById("update")
+        submit3.addEventListener("click", (event) => {
+            event.preventDefault();
+            const reviewID = document.getElementById("reviewID").value
+            const newRating = document.getElementById("alterRating").value
+            const newReview = document.getElementById("alterReview").value
+            console.log(reviewID, newReview)
+            const update = {
+                ReviewID:reviewID,
+                Rating: newRating,
+                Comments: newReview
+            }
+
+            const baseUrl = "http://localhost:3000"
+            axios.put(`${baseUrl}/reviews`, update)
+                .then((response) => {
+                    if (response.status == 200) {
+                        console.log("Review submitted!")
+                    } else {
+                        console.log("An error occurred")
+                    }
+                })
+        })
+
+        //delete review
+        const deleteBtn = document.getElementById("delete")
+        deleteBtn.addEventListener("click", (event) => {
+            const id = document.getElementById("deleteID").value
+            const baseUrl = "http://localhost:3000";
+            axios.delete(`${baseUrl}/reviews/${id}`)
+            .then((response) => {
+            if (response.status == 200) {
+                console.log("Review deleted!");
+            } else {
+                console.log("An error occurred");
+            }
+        });
+            // const deleted = {
+            //     ReviewID : deleteReview
+            // }
+
+            // const baseUrl = "http://localhost:3000"
+            // axios.delete(`${baseUrl}/reviews`, deleted)
+            //     .then((response) => {
+            //         if (response.status == 200) {
+            //             console.log("Review submitted!")
+            //         } else {
+            //             console.log("An error occurred")
+            //         }
+            //     })
+        })
+
+        //Get review
+        // const submit2 = document.getElementById("retrieve");
+        // submit2.addEventListener("click", (event) => {
+        // event.preventDefault(); // Prevent default form submission behavior
+        // const resultsContainer = document.getElementById("results");
+        // console.log("fish")
+        // const baseUrl = "http://localhost:3000";
+        
+        // axios.get(`${baseUrl}/reviews/data`)
+        //     .then((response) => {
+
+        //         const retrieved = response.data;
+        //         console.log(retrieved)
+        //         for (let i = 0; i < retrieved.length; i++) {
+        //             // resultsContainer.innerHtml = '';
+
+        //             // retrieved.forEach((review) => {
+        //             // const reviewElement = document.createElement("div");
+        //             const reviewData = `
+        //   <h4>${retrieved[i].UserID}</h4>
+        //   <p class="rating">${retrieved[i].Rating}</p>
+        //   <p class="review">${retrieved[i].Comments}</p>
+        // `;
+        //             $("#results").append(reviewData);
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.log("An error occurred:", error);
+        //     });
+        // })
+
+        // });
+
+        // });
+
+
+    </script>
