@@ -1,64 +1,122 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Movies Views</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
   <div class="container">
     <h1>Views Chart</h1>
     <button id="getHistogramBtn" class="btn btn-primary">Get Chart</button>
     <canvas id="viewsHistogram"></canvas>
   </div>
-</body>
-<script type="module" src="histogram.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type='text/javascript' src="/histogram.js"></script>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-      document.getElementById("getHistogramBtn").addEventListener("click", async function () {
-          console.log('button pressed');
-          var data = generateRandomData();
-          axios.post('http://localhost:3001/insertData', data, {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          })
-            .then(function (response) {
-              console.log('Data inserted successfully');
-              return axios.get('http://localhost:3001/histogramData');
-            })
-            .then(function (response) {
-              var histogramData = response.data;
-              renderHistogram(histogramData);
-            })
-            .catch(function (error) {
-              console.error('Error:', error);
-            });
+    let chart = null;
+
+    // Function to generate random data
+    function generateRandomData() {
+      var pairs = [];
+
+      while (pairs.length < 100) {
+        var timestampInSeconds = Math.floor(Math.random() * 41) * 3;
+        var randomId = Math.floor(Math.random() * 6) + 1;
+        var minutes = Math.floor(timestampInSeconds / 60);
+        var seconds = timestampInSeconds % 60;
+        var formattedTimestamp = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+        var pair = {
+          userId: randomId,
+          timestamp: formattedTimestamp
+        };
+
+        var pairExists = pairs.some(function (existingPair) {
+          return existingPair.userId === pair.userId && existingPair.timestamp === pair.timestamp;
         });
-      // try {
-      //   var data = generateRandomData();
-      //   await fetch('http://localhost:3001/insertData', {  // Update the URL
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json'
-      //     },
-      //     body: JSON.stringify(data)
-      //   });
-  
-      //   fetch('http://localhost:3001/histogramData')  // Update the URL
-      //     .then(response => response.json())
-      //     .then(histogramData => {
-      //       renderHistogram(histogramData);
-      //     })
-      //     .catch(error => {
-      //       console.error('Error retrieving data:', error);
-      //     });
-    //   } catch (error) {
-    //     console.error('Error:', error);
-    //   }
-    // });
+
+        if (!pairExists) {
+          pairs.push(pair);
+        }
+      }
+      console.log(pairs);
+
+      return pairs;
+    }
+
+    // Function to render the histogram chart
+    function renderHistogram(histogramData) {
+      var canvas = document.getElementById('viewsHistogram');
+
+      // Destroy the existing chart instance if it exists
+      if (chart) {
+        chart.destroy();
+      }
+
+      var labels = histogramData.map(function (data) {
+        return data.timestamp;
+      });
+
+      var views = histogramData.map(function (data) {
+        return data.views;
+      });
+
+      // Store the chart instance in the 'chart' variable
+      chart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Views',
+              data: views,
+              backgroundColor: 'rgba(54, 162, 235, 0.8)', // Blue color
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0,
+                stepSize: 1
+              },
+              stepSize: 1
+
+            }
+          },
+          indexAxis: 'x', // Display bars horizontally
+          barPercentage: 1.0, // Bars touch each other
+          categoryPercentage: 1.0 // Bars touch each other
+        }
+      });
+    }
+
+    // Event listener for the "Get Chart" button
+    document.getElementById("getHistogramBtn").addEventListener("click", async function () {
+      console.log('button pressed');
+      var data = { viewsData: generateRandomData() };
+      axios.post('http://localhost:3000/insertData', data)
+        .then(function (response) {
+          console.log('Data inserted successfully');
+          return axios.get('http://localhost:3000/generateHistogramData');
+        })
+        .then(function (response) {
+          var histogramData = response.data;
+          renderHistogram(histogramData);
+        })
+        .catch(function (error) {
+          console.error('Error:', error);
+        });
+    });
   </script>
+</body>
 
 </html>
