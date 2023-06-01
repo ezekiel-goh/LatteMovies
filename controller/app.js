@@ -24,10 +24,9 @@ const Movies = require("../models/movie");
 // const user = require("../models/user");
 // const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
-// const Movies = require("../models/movie");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
   deleteUserCustomer, deleteUserPublisher, login } = require('../models/user.js');
-// const review = require("../models/review");
+const review = require("../models/review");
 
 
 
