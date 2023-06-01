@@ -182,76 +182,75 @@
 
     //--  Checkboxes to select movies
     const button = document.getElementById("submitBtn");
-    button.addEventListener('click', (event) => {
+    button.addEventListener('click', async (event) => {
         let checkboxes = document.querySelectorAll('.movie-checkbox:checked');
         let selectedMovies = Array.from(checkboxes).map((checkbox) => checkbox.id);
         console.log("You have selected:", selectedMovies);
+
         for (let i = 0; i < selectedMovies.length; i++) {
             const id = (selectedMovies[i]);
             console.log(id)
             console.log(selectedMovies)
 
 
+            try {
+                //--fetch details
+                const url = `https://api.themoviedb.org/3/movie/${id}language=en-US`;
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjYTdlN2ZjNWIyNmIwODUyYTRlM2FjZGE0ZDBjN2JjNSIsInN1YiI6IjY0NjRjMTc3NDRhNDI0MDBlNGI4Mzk2ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.j_GkPP7yEj7dgXP0q8kxxddyiV7ZXPistlsISSDNADY'
+                    }
+                };
 
-            //--fetch details
-            const url = `https://api.themoviedb.org/3/movie/${id}language=en-US`;
-            const options = {
-                method: 'GET',
-                headers: {
-                    accept: 'application/json',
-                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjYTdlN2ZjNWIyNmIwODUyYTRlM2FjZGE0ZDBjN2JjNSIsInN1YiI6IjY0NjRjMTc3NDRhNDI0MDBlNGI4Mzk2ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.j_GkPP7yEj7dgXP0q8kxxddyiV7ZXPistlsISSDNADY'
+                const res = await fetch(url, options)
+                const movieData = await res.json();
+                console.log(movieData)
+
+                // fetch(url, options)
+                //     .then(res => res.json())
+                //     .then(movieData => {
+                //         console.log(movieData)}
+
+                const movieDetails = {
+                    id: movieData.id,
+                    title: movieData.title,
+                    poster_path: movieData.poster_path,
+                    overview: movieData.overview,
+                    release_date: movieData.release_date,
+                    runtime: movieData.runtime
+                };
+
+
+
+                //-- Store the movie details
+                const response = await fetch('/importMovies', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(movieDetails)
+                });
+
+                if (response.ok) {
+                    console.log('Movie details submitted successfully');
+                    // Handle success case if needed
+                } else {
+                    console.error('Failed to submit movie details');
+                    // Handle failure case if needed
                 }
-            };
 
-            fetch(url, options)
-                .then(res => res.json())
-                .then(movieData => {
-                    console.log(movieData)
-
-                    const movieDetails = {
-                        id: movieData.id,
-                        title: movieData.title,
-                        poster_path: movieData.poster_path,
-                        overview: movieData.overview,
-                        release_date: movieData.release_date,
-                        runtime: movieData.runtime
-                    };
-
-
-
-                    //-- Store the movie details
-                    fetch('/importMovies', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(movieDetails)
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                console.log('Movie details submitted successfully');
-                                // Handle success case if needed
-                            } else {
-                                console.error('Failed to submit movie details');
-                                // Handle failure case if needed
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error submitting movie details:', error);
-                            // Handle error case if needed
-                        });
-                })
-
-                .catch(err => console.error('error:' + err));
-
-
-            
+            } catch (error) {
+                console.error('Error submitting movie details:', error);
+                // Handle error case if needed
+            }
         }
 
         //-- uncheck boxes after submit
         checkboxes.forEach((checkbox) => {
             checkbox.checked = false
-        }) 
+        })
     });
 
 

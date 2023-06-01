@@ -1,6 +1,6 @@
 // App.js
 const express = require("express");
-const session = require('express-session');
+// const session = require('express-session');
 const createHttpError = require('http-errors');
 
 const { EMPTY_RESULT_ERROR, DUPLICATE_ENTRY_ERROR, TABLE_ALREADY_EXISTS_ERROR, NOT_FOUND_ERROR } = require('../errors');
@@ -10,11 +10,11 @@ app.use(express.json()); // to process JSON in request body
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.use(session({
-	secret: 'secret',
-	resave: true,
-	saveUninitialized: true
-}));
+// app.use(session({
+// 	secret: 'secret',
+// 	resave: true,
+// 	saveUninitialized: true
+// }));
 
 // import models
 
@@ -24,7 +24,6 @@ const Movies = require("../models/movie");
 // const user = require("../models/user");
 // const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
-// const Movies = require("../models/movie");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
   deleteUserCustomer, deleteUserPublisher, login, buyMovie } = require('../models/user.js');
 const review = require("../models/review");

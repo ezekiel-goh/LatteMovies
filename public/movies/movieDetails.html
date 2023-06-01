@@ -133,55 +133,75 @@ DIT/FT/1B/08 -->
     document.addEventListener('DOMContentLoaded', function () {
 
         //-- Delete Movie 
+
         const deleteButton = document.getElementById("deleteBtn");
-        deleteButton.addEventListener('click', (event) => {
-            axios.delete(`${baseUrl}/movieDetails/${id}`)
-                .then((response) => {
-                    if (response.status == 200) {
-                        console.log("Movie Deleted")
+        deleteButton.addEventListener('click',  (event) => {
+            const deleteRequest = axios.delete(`${baseUrl}/movieDetails/${id}`);
+            const getRequest = axios.get(`${baseUrl}/movieDetails/${id}`);
+
+            Promise.all([deleteRequest, getRequest])
+                .then(([deleteResponse, getResponse]) => {
+                    if (deleteResponse.status === 200) {
+                        console.log("Movie deleted!");
                     } else {
-                        console.log("Error deleting movie")
+                        alert("Failed to delete movie");
                     }
                 })
-            alert("Movie Deleted!")
-                .catch(error => {
-                    console.log("Request Failed: ", error)
-                })
+                .catch((error) => {
+                    console.log(error);
+                    alert("Failed to delete movie");
+                });
+        });
 
-        })
+    // const deleteButton = document.getElementById("deleteBtn");
+    // deleteButton.addEventListener('click', (event) => {
+    //     axios.delete(`${baseUrl}/movieDetails/${id}`)
+    //         .then((response) => {
+    //             if (response.status == 200) {
+    //                 console.log("Movie Deleted")
+    //             } else {
+    //                 console.log("Error deleting movie")
+    //             }
+    //         })
+    //     alert("Movie Deleted!")
+    //         .catch(error => {
+    //             console.log("Request Failed: ", error)
+    //         })
 
-        //-- Edit Movie Price
-        const editButton = document.getElementById("editBtn");
-        editButton.addEventListener('click', (event) => {
-            const priceInput = document.getElementById("inputPrice").value
-            console.log(priceInput)
-            const updatedMovie = {
-                price: priceInput
-            };
+    // })
+
+    //-- Edit Movie Price
+    const editButton = document.getElementById("editBtn");
+    editButton.addEventListener('click', (event) => {
+        const priceInput = document.getElementById("inputPrice").value
+        console.log(priceInput)
+        const updatedMovie = {
+            price: priceInput
+        };
 
 
-            axios.put(`${baseUrl}/movieDetails/${id}`, updatedMovie)
-                .then((response) => {
-                    if (response.status == 200) {
-                        console.log("Movie Price Edited")
-                    } else {
-                        console.log("Error editing movie Price")
-                    }
-                })
-        })
-
-
-        const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
-        const baseUrl = "http://localhost:3000";
-    const params = new URLSearchParams(window.location.search);
-        //-- URL Parameters
-        const id = params.get('id')
-
-        axios.get(`${baseUrl}/movieDetails/${id}`)
+        axios.put(`${baseUrl}/movieDetails/${id}`, updatedMovie)
             .then((response) => {
-                const movies = Object.values(response.data);
-                console.log(movies)
-                const details = `
+                if (response.status == 200) {
+                    console.log("Movie Price Edited")
+                } else {
+                    console.log("Error editing movie Price")
+                }
+            })
+    })
+
+
+    const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
+    const baseUrl = "http://localhost:3000";
+    const params = new URLSearchParams(window.location.search);
+    //-- URL Parameters
+    const id = params.get('id')
+
+    axios.get(`${baseUrl}/movieDetails/${id}`)
+        .then((response) => {
+            const movies = Object.values(response.data);
+            console.log(movies)
+            const details = `
                 
                 <div class="card-body ">
                     <h1 class="text-light">${movies[0].title}</h1>
@@ -201,17 +221,17 @@ DIT/FT/1B/08 -->
                 </div>
                         `;
 
-                $("#Details").append(details);
+            $("#Details").append(details);
 
-                // for (var i = 0; i <= detail.length; i++) {
-                //     const Actors = `<ul>${detail[i].first_name} ${detail[i].last_name}</ul>`
-                //     $("#actorName").append(Actors);
-                // }
-            })
+            // for (var i = 0; i <= detail.length; i++) {
+            //     const Actors = `<ul>${detail[i].first_name} ${detail[i].last_name}</ul>`
+            //     $("#actorName").append(Actors);
+            // }
+        })
 
-            .catch((error) => {
-                console.log(error);
-            });
+        .catch((error) => {
+            console.log(error);
+        });
 
     })
 
