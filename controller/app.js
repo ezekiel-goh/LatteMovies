@@ -213,18 +213,18 @@ app.delete('/movieDetails/:id', function (req, res) {
 -----------------*/
 
 // general login function
-app.post('/auth', function(req, res) {
+app.post('/auth', (req, res) => {
 	let username = req.body.username;
 	let password = req.body.password;
 
   login(username, password)
     .then((user) => {
-      if (!user[0][0]) {
-        res.redirect('/login')
+      if (!user) {
+        res.redirect('/login');
       } else {
         req.session.isLoggedIn = true;
-        req.session.username = user[0][0].Username;
-        req.session.role = user[0][0].Role;
+        req.session.username = user.Username;
+        req.session.role = user.Role;
         res.redirect('/');
       }
     });
@@ -240,6 +240,7 @@ app.get('/api/moviePublisher', (req, res, next) => {
     });
 });
 
+// currently unused
 app.get('/api/moviePublisher/:id', (req, res, next) => {
   const movieId = req.params.movieId;
   moviePublisher.getMovie(movieId)
@@ -255,7 +256,7 @@ app.get('/api/moviePublisher/:id', (req, res, next) => {
     });
 });
 
-app.post('/api/moviePublisher', function (req, res, next) {
+app.post('/api/moviePublisher', (req, res, next) => {
   const movieId = req.body.movieId;
   const title = req.body.title;
   const posterPath = req.body.posterPath;
@@ -263,10 +264,10 @@ app.post('/api/moviePublisher', function (req, res, next) {
   const releaseDate = req.body.releaseDate;
   const runtime = req.body.runtime;
   moviePublisher.addMovie(movieId, title, posterPath, overview, releaseDate, runtime)
-    .then(function () {
+    .then(() => {
       return res.sendStatus(201);
     })
-    .catch(function (error) {
+    .catch((error) => {
       if (error instanceof DUPLICATE_ENTRY_ERROR) {
         next(createHttpError(400, error.message));
       } else {
@@ -275,7 +276,7 @@ app.post('/api/moviePublisher', function (req, res, next) {
     });
 });
 
-app.put('/api/moviePublisher/:movieId', function (req, res, next) {
+app.put('/api/moviePublisher/:movieId', (req, res, next) => {
   const movieId = req.params.movieId;
   const updatedMovieId = req.body.movieId;
   const title = req.body.title;
@@ -284,10 +285,10 @@ app.put('/api/moviePublisher/:movieId', function (req, res, next) {
   const releaseDate = req.body.releaseDate;
   const runtime = req.body.runtime;
   moviePublisher.updateMovie(movieId, updatedMovieId, title, posterPath, overview, releaseDate, runtime)
-    .then(function () {
+    .then(() => {
       return res.sendStatus(200);
     })
-    .catch(function (error) {
+    .catch((error) => {
       if (error instanceof NOT_FOUND_ERROR) {
         next(createHttpError(404, error.message));
       } else {
@@ -296,7 +297,7 @@ app.put('/api/moviePublisher/:movieId', function (req, res, next) {
     });
 });
 
-app.delete('/api/moviePublisher/:movieId', function (req, res, next) {
+app.delete('/api/moviePublisher/:movieId', (req, res, next) => {
   const movieId = req.params.movieId;
   moviePublisher.deleteMovie(movieId)
     .then(function () {

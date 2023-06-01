@@ -100,5 +100,5 @@ module.exports.login = function login(username, password) {
     return query(
         'SELECT Username, Role FROM User WHERE Username = ? and Password = ?', 
         [username, password],
-    ).then((user) => { return user; });
+    ).then((user) => { return user[0][0]; });
 }

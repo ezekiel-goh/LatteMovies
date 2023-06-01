@@ -12,7 +12,7 @@ function populateMoviesBody(moviesBody, movies) {
         node.querySelector('.runtime').value = movie.runtime;
 
         const updateButton = node.querySelector('.update');
-        updateButton.onclick = function () {
+        updateButton.onclick = () => {
             const originalValue = updateButton.textContent;
             updateButton.textContent = 'loading...';
             updateButton.disabled = true;
@@ -45,7 +45,7 @@ function populateMoviesBody(moviesBody, movies) {
         };
 
         const deleteButton = node.querySelector('.delete');
-        deleteButton.onclick = function () {
+        deleteButton.onclick = () => {
             const originalValue = deleteButton.textContent;
             deleteButton.textContent = 'loading...';
             deleteButton.disabled = true;
@@ -84,11 +84,10 @@ function refreshMoviesBody(moviesBody) {
         });
 }
 
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', () => {
     const moviesBody = document.getElementById('movies-body');
     refreshMoviesBody(moviesBody);
 
-    // Add event listener to the form to submit a new module
     const movieForm = document.getElementById('movie-form');
     const movieFormFieldset = movieForm.querySelector('fieldset');
     movieForm.addEventListener('submit', (event) => {
