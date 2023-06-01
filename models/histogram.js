@@ -1,3 +1,13 @@
+
+const { query } = require('../database');
+
+const {
+  DUPLICATE_ENTRY_ERROR,
+  EMPTY_RESULT_ERROR,
+  MYSQL_ERROR_CODE,
+  TABLE_ALREADY_EXISTS_ERROR,
+} = require('../errors');
+
 function generateRandomData() {
   var pairs = [];
 
@@ -21,32 +31,46 @@ function generateRandomData() {
       pairs.push(pair);
     }
   }
+  console.log(pairs)
+  const viewsData = {
+    UserID: pairs.userId,
+    Timestamp: pairs.timestamp
+  }
 
   return pairs;
 }
 
-async function insertData(data) {
-  try {
-    const query = 'INSERT INTO Views (UserID, Timestamp) VALUES ?';
-
-    const values = data.map(pair => [pair.userId, pair.timestamp]);
-
-    const [result] = await pool.query(query, [values]);
-
-    console.log('Data inserted successfully!');
-  } catch (error) {
-    console.error('Error inserting data:', error);
+const insertData = function (viewsData) {
+  try{
+    const { UserID, Timestamp } = viewsData
+    const sql = "INSERT INTO Movies(UserID, Timestamp) VALUES (?, ?)";
+    return query(sql, [UserID, Timestamp])
+  } catch (error){
+    console.log('Error inserting data:', error);
   }
+
 }
+
+// async function insertData(data) {
+//   try {
+//     const query = 'INSERT INTO Views (UserID, Timestamp) VALUES ?';
+//     const values = data.map(pair => [pair.userId, pair.timestamp]);
+//     const [result] = await query(query, [values]);
+//     console.log('Data inserted successfully!');
+//   } catch (error) {
+//     console.error('Error inserting data:', error);
+//   }
+// }
 
 // Function to retrieve data from the database and generate histogram data
 async function generateHistogramData(callback) {
   try {
     const query = 'SELECT Timestamp, COUNT(DISTINCT UserID) AS views FROM Views GROUP BY Timestamp ORDER BY Timestamp';
 
-    const [results] = await pool.query(query);
+    const [results] = await query(query);
 
     console.log('Data retrieved successfully!');
+    console.log(callback);
 
     const histogramData = results.map(row => ({
       timestamp: row.timestamp,

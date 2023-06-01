@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+
+    <style>
+        nav {
+            background-color: black;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            width: 100%;
+        }
+
+        li {
+            display: inline;
+            margin-left: 1em;
+            margin-right: 1em;
+        }
+
+        a {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a href="javascript:void(0)">Customer</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="javascript:void(0)">Publisher</a></li>
+            <li><a href="javascript:void(0)">User</a></li>
+        </ul>
+    </nav>
+
+    <h1>index test</h1>
+
+
+    <h3>Retrieve User</h3>
+    <p id="getUserData"></p>
+
+    <h3>Create User</h3>
+    <form id="addUser" style="margin-top: 2rem;">
+        <label for="Username">Username</label><br>
+        <input type="text" id="Username" name="Username" value=""><br>
+        <label for="Password">Password</label><br>
+        <input type="password" id="Password" name="Password" value=""><br><br>
+
+        <p>What is your role?</p>
+
+        <select name="Role" id="Role">
+            <option value="Customer">Customer</option>
+            <option value="Publisher">Publisher</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">Create User</button>
+    </form>
+
+    <h3>Update User</h3>
+    <form id="updateUser" style="margin-top: 2rem;">
+        <label for="PasswordUpdate">New Password</label><br>
+        <input type="password" id="PasswordUpdate" name="PasswordUpdate" value=""><br><br>
+
+        <button type="submit" class="btn btn-primary">Update User</button>
+    </form>
+
+    <h3>Delete User</h3>
+    <form id="deleteUser" style="margin-top: 2rem;">
+        <label for="Number">UserID</label><br>
+        <input type="Number" id="Number" name="Number" value=""><br><br>
+
+        <button type="submit" class="btn btn-primary">Delete User</button>
+    </form>
+
+
+    <!-- JQuery, Axios -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+
+        const baseUrl = 'http://localhost:3000';
+        const loggedInUserID = 12;
+
+        axios.get(`${baseUrl}/user/${loggedInUserID}`)
+            .then((response) => {
+                const data = response.data[0];
+                const dataHtml = `
+            <p> UserID: ${data.UserID} </p>
+            <p> Username: ${data.Username}</p>
+            <p> Password: ${data.Password}</p>
+            <p> Role: ${data.Role} </p>`;
+
+                $('#getUserData').append(dataHtml);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+        $("#addUser").submit((event) => {
+            // prevents the page from refreshing
+            event.preventDefault();
+
+            const requestBody = {
+                Username: $('#Username').val(),
+                Password: $("#Password").val(),
+                Role: $('#Role').val()
+            };
+
+            // create the user
+            axios.post(`${baseUrl}/user`, requestBody)
+                .then((response) => {
+                    // reset form value.
+                    $('#addUser').val('');
+                    return;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        });
+
+        $("#updateUser").submit((event) => {
+            // prevents the page from refreshing
+            event.preventDefault();
+
+            const requestBody = {
+                Password: $("#PasswordUpdate").val()
+            };
+
+            // update the user
+            axios.put(`${baseUrl}/user/${loggedInUserID}`, requestBody)
+                .then((response) => {
+                    // reset form value.
+                    $('#PasswordUpdate').val('');
+                    return;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        });
+
+        $("#deleteUser").submit((event) => {
+            // prevents the page from refreshing
+            event.preventDefault();
+
+            // delete the user
+            axios.delete(`${baseUrl}/user/${loggedInUserID}`)
+                .then((response) => {
+                    // reset form value.
+                    $('#deleteUser').val('');
+                    return;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        });
+
+    </script>
+</body>
+
+</html>
+</body>
+</html>

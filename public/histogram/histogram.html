@@ -1,39 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Histogram Example</title>
+  <title>Movies Views</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>Histogram Example</h1>
-    <button id="getHistogramBtn" class="btn btn-primary">Get Histogram</button>
+    <h1>Views Chart</h1>
+    <button id="getHistogramBtn" class="btn btn-primary">Get Chart</button>
     <canvas id="viewsHistogram"></canvas>
   </div>
-
-  <script src="histogram.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    document.getElementById("getHistogramBtn").addEventListener("click", async function() {
-      console.log("button pressed")
-      var data = generateRandomData();
-      await fetch('/insertData', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
-
-      fetch('/histogramData')
-        .then(response => response.json())
-        .then(histogramData => {
-          renderHistogram(histogramData);
-        })
-        .catch(error => {
-          console.error('Error retrieving data:', error);
-        });
-    });
-  </script>
 </body>
+<script type="module" src="histogram.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type='text/javascript' src="/histogram.js"></script>
+  <script>
+      document.getElementById("getHistogramBtn").addEventListener("click", async function () {
+          console.log('button pressed');
+          var data = generateRandomData();
+          axios.post('http://localhost:3001/insertData', data, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+            .then(function (response) {
+              console.log('Data inserted successfully');
+              return axios.get('http://localhost:3001/histogramData');
+            })
+            .then(function (response) {
+              var histogramData = response.data;
+              renderHistogram(histogramData);
+            })
+            .catch(function (error) {
+              console.error('Error:', error);
+            });
+        });
+      // try {
+      //   var data = generateRandomData();
+      //   await fetch('http://localhost:3001/insertData', {  // Update the URL
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json'
+      //     },
+      //     body: JSON.stringify(data)
+      //   });
+  
+      //   fetch('http://localhost:3001/histogramData')  // Update the URL
+      //     .then(response => response.json())
+      //     .then(histogramData => {
+      //       renderHistogram(histogramData);
+      //     })
+      //     .catch(error => {
+      //       console.error('Error retrieving data:', error);
+      //     });
+    //   } catch (error) {
+    //     console.error('Error:', error);
+    //   }
+    // });
+  </script>
+
 </html>
