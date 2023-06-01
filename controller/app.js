@@ -1,13 +1,20 @@
 // App.js
 const express = require("express");
+const session = require('express-session');
 const createHttpError = require('http-errors');
 
 const { EMPTY_RESULT_ERROR, DUPLICATE_ENTRY_ERROR, TABLE_ALREADY_EXISTS_ERROR, NOT_FOUND_ERROR } = require('../errors');
 
 const app = express();
 app.use(express.json()); // to process JSON in request body
-
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
 
 // import models
 
@@ -19,7 +26,7 @@ const Movies = require("../models/movie");
 const moviePublisher = require("../models/moviePublisher");
 // const Movies = require("../models/movie");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-  deleteUserCustomer, deleteUserPublisher } = require('../models/user.js');
+  deleteUserCustomer, deleteUserPublisher, login } = require('../models/user.js');
 // const review = require("../models/review");
 
 
@@ -45,8 +52,6 @@ app.post('/importMovies', function (req, res) {
       res.sendStatus(500);
     });
 });
-
-
 //-- Get Movie Titles from DB
 app.get('/movies', function (req, res) {  
 
@@ -62,27 +67,13 @@ app.get('/movies', function (req, res) {
 
 //inserting views data
 app.post('/insertData', function (req, res) {
-  const histogramData = req.body
-
- histogram.insertData(histogramData) // Call the insertData function with the request body
- .then (() => {
-    res.sendStatus(200);
- })
-. catch (error => { 
-    console.error('Error:', error);
-    res.sendStatus(500);
-  });
+  const { viewsData } = req.body;
+  histogram.insertData(req, res); // Pass the req and res objects to the insertData function
 });
+
 //views getting data for histogram
-app.get('/histogramData', async (req, res, next) => {
-  try {
-    histogram.generateHistogramData(pool, (histogramData) => { // Call the generateHistogramData function from histogram.js
-      res.json(histogramData);
-    });
-  } catch (error) {
-    console.error('Error retrieving data:', error);
-    next(error);
-  }
+app.get('/generateHistogramData', function(req, res) {
+  histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
 });
 //   function (err, result) {
 //   if (!err) {
@@ -205,7 +196,23 @@ app.delete('/movieDetails/:id', function (req, res) {
   publisher stuff
 -----------------*/
 
-// implement some login verification later
+// general login function
+app.post('/auth', (req, res) => {
+	let username = req.body.username;
+	let password = req.body.password;
+
+  login(username, password)
+    .then((user) => {
+      if (!user) {
+        res.redirect('/login');
+      } else {
+        req.session.isLoggedIn = true;
+        req.session.username = user.Username;
+        req.session.role = user.Role;
+        res.redirect('/');
+      }
+    });
+});
 
 app.get('/api/moviePublisher', (req, res, next) => {
   moviePublisher.getAllMovies()
@@ -217,6 +224,7 @@ app.get('/api/moviePublisher', (req, res, next) => {
     });
 });
 
+// currently unused
 app.get('/api/moviePublisher/:id', (req, res, next) => {
   const movieId = req.params.movieId;
   moviePublisher.getMovie(movieId)
@@ -232,7 +240,7 @@ app.get('/api/moviePublisher/:id', (req, res, next) => {
     });
 });
 
-app.post('/api/moviePublisher', function (req, res, next) {
+app.post('/api/moviePublisher', (req, res, next) => {
   const movieId = req.body.movieId;
   const title = req.body.title;
   const posterPath = req.body.posterPath;
@@ -240,10 +248,10 @@ app.post('/api/moviePublisher', function (req, res, next) {
   const releaseDate = req.body.releaseDate;
   const runtime = req.body.runtime;
   moviePublisher.addMovie(movieId, title, posterPath, overview, releaseDate, runtime)
-    .then(function () {
+    .then(() => {
       return res.sendStatus(201);
     })
-    .catch(function (error) {
+    .catch((error) => {
       if (error instanceof DUPLICATE_ENTRY_ERROR) {
         next(createHttpError(400, error.message));
       } else {
@@ -252,7 +260,7 @@ app.post('/api/moviePublisher', function (req, res, next) {
     });
 });
 
-app.put('/api/moviePublisher/:movieId', function (req, res, next) {
+app.put('/api/moviePublisher/:movieId', (req, res, next) => {
   const movieId = req.params.movieId;
   const updatedMovieId = req.body.movieId;
   const title = req.body.title;
@@ -261,10 +269,10 @@ app.put('/api/moviePublisher/:movieId', function (req, res, next) {
   const releaseDate = req.body.releaseDate;
   const runtime = req.body.runtime;
   moviePublisher.updateMovie(movieId, updatedMovieId, title, posterPath, overview, releaseDate, runtime)
-    .then(function () {
+    .then(() => {
       return res.sendStatus(200);
     })
-    .catch(function (error) {
+    .catch((error) => {
       if (error instanceof NOT_FOUND_ERROR) {
         next(createHttpError(404, error.message));
       } else {
@@ -273,7 +281,7 @@ app.put('/api/moviePublisher/:movieId', function (req, res, next) {
     });
 });
 
-app.delete('/api/moviePublisher/:movieId', function (req, res, next) {
+app.delete('/api/moviePublisher/:movieId', (req, res, next) => {
   const movieId = req.params.movieId;
   moviePublisher.deleteMovie(movieId)
     .then(function () {
