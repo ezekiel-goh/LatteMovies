@@ -100,5 +100,18 @@ module.exports.login = function login(username, password) {
     return query(
         'SELECT Username, Role FROM User WHERE Username = ? and Password = ?', 
         [username, password],
-    ).then((user) => { return user; });
+    ).then((user) => { return user[0][0]; });
+}
+
+// Customer Purchases a Movie
+module.exports.buyMovie = async function buyMovie(MovieID, CustomerID) {
+    await query('UPDATE Customer SET TotalSpent = TotalSpent + ' +
+        '(SELECT IFNULL(Price, 0) FROM Movies WHERE id = ?) ' +
+        'where CustomerID = ?', [MovieID, CustomerID])
+        .then(() => {
+            return;
+        })
+        .catch(() => {
+            throw new EMPTY_RESULT_ERROR(`Movie ${MovieID}, Customer ${CustomerID}`);
+        });
 }
