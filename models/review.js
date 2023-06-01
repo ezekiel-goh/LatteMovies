@@ -51,18 +51,18 @@ function deleteReview(ReviewID) {
     }
   });
 }
-// function retrieveReview() {
-//   const sql = `SELECT UserID, Rating, Comments FROM Reviews`
-//   return query(sql)
-//   .then( (response) => {
-//     console.log(response[0]);
-//     const rows = response[0];
-//     return rows
-// })
-// .catch(function (error){
-//   console.log(error)
-// })
-// }
+function retrieveReview() {
+  const sql = `SELECT UserID, Rating, Comments FROM Reviews`
+  return query(sql)
+    .then((response) => {
+      console.log(response[0]);
+      const rows = response[0];
+      return rows
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+}
 
 
 
@@ -70,6 +70,6 @@ function deleteReview(ReviewID) {
 module.exports = {
   postReview,
   editReview,
-  deleteReview
-  // retrieveReview
+  deleteReview,
+  retrieveReview
 };

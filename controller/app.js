@@ -65,14 +65,14 @@ app.get('/movies', function (req, res) {
 app.post('/insertData', function (req, res) {
   const histogramData = req.body
 
- histogram.insertData(histogramData) // Call the insertData function with the request body
- .then (() => {
-    res.sendStatus(200);
- })
-. catch (error => { 
-    console.error('Error:', error);
-    res.sendStatus(500);
-  });
+  histogram.insertData(histogramData) // Call the insertData function with the request body
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      res.sendStatus(500);
+    });
 });
 //views getting data for histogram
 app.get('/histogramData', async (req, res, next) => {
@@ -186,17 +186,17 @@ app.delete('/reviews/:id', function (req, res) {
 })
 
 // -- Get Review
-// app.get('/reviews/data', function (req, res) {
+app.get('/reviews/data', function (req, res) {
 
-//   review.retrieveReview()
-//     .then((review) => {
-//       res.json(review);
-//     })
-//     .catch(error => {
-//       console.error('Failed to retrieve review(s)', error);
-//       res.sendStatus(500);
-//     });
-// })
+  review.retrieveReview()
+    .then((review) => {
+      res.json(review);
+    })
+    .catch(error => {
+      console.error('Failed to retrieve review(s)', error);
+      res.sendStatus(500);
+    });
+})
 
 
 //-- Delete Movie by  ID
@@ -228,66 +228,66 @@ app.put('/movieDetails/:id', function (req, res) {
     });
 });
 
-    /**
-     * User C.R.U.D.
-     */
-    app.get('/user/:userid', async (req, res) => {
-      const userID = req.params.userid;
-      const userInfo = await getUserInfo(userID);
-      if (userInfo[0] === null || userInfo[0] === undefined || userID === undefined || userID === null || !userID) {
-        console.error('Error retrieving data');
-        res.status(500).send();
-      }
-      res.status(200).json(userInfo[0]);
-      console.log(userInfo[0]);
+/**
+ * User C.R.U.D.
+ */
+app.get('/user/:userid', async (req, res) => {
+  const userID = req.params.userid;
+  const userInfo = await getUserInfo(userID);
+  if (userInfo[0] === null || userInfo[0] === undefined || userID === undefined || userID === null || !userID) {
+    console.error('Error retrieving data');
+    res.status(500).send();
+  }
+  res.status(200).json(userInfo[0]);
+  console.log(userInfo[0]);
+});
+
+app.post('/user', async (req, res) => {
+  try {
+    const Username = req.body.Username;
+    const Password = req.body.Password;
+    const Role = req.body.Role;
+    await addUser(Username, Password, Role);
+
+    if (Role === 'Customer') {
+      await addCustomer(Username);
+      res.status(201).send('User Customer created');
+    }
+
+    if (Role === 'Publisher') {
+      await addPublisher(Username);
+      res.status(201).send('User Publisher created');
+    }
+  } catch (error) {
+    console.error('Error inserting record:', error);
+    res.status(500).send('Error inserting record');
+  }
+});
+
+app.put('/user/:userid', async (req, res) => {
+  try {
+    const UserID = parseInt(req.params.userid);
+    const Password = req.body.Password;
+    await updateUserInfo(UserID, Password);
+    res.status(200).send('User updated');
+  } catch (error) {
+    console.error('Error updating record:', error);
+    res.status(500).send('Error updating record!');
+  }
+});
+
+app.delete('/user/:userid', async (req, res) => {
+  try {
+    const UserID = req.params.userid;
+
+    Promise.all([deleteUserCustomer(UserID), deleteUserPublisher(UserID)]).then(() => {
+      res.status(200).send('User deleted');
     });
-    
-    app.post('/user', async (req, res) => {
-      try {
-        const Username = req.body.Username;
-        const Password = req.body.Password;
-        const Role = req.body.Role;
-        await addUser(Username, Password, Role);
-    
-        if (Role === 'Customer') {
-          await addCustomer(Username);
-          res.status(201).send('User Customer created');
-        }
-    
-        if (Role === 'Publisher') {
-          await addPublisher(Username);
-          res.status(201).send('User Publisher created');
-        }
-      } catch (error) {
-        console.error('Error inserting record:', error);
-        res.status(500).send('Error inserting record');
-      }
-    });
-    
-    app.put('/user/:userid', async (req, res) => {
-      try {
-        const UserID = parseInt(req.params.userid);
-        const Password = req.body.Password;
-        await updateUserInfo(UserID, Password);
-        res.status(200).send('User updated');
-      } catch (error) {
-        console.error('Error updating record:', error);
-        res.status(500).send('Error updating record!');
-      }
-    });
-    
-    app.delete('/user/:userid', async (req, res) => {
-      try {
-        const UserID = req.params.userid;
-    
-        Promise.all([deleteUserCustomer(UserID), deleteUserPublisher(UserID)]).then(() => {
-          res.status(200).send('User deleted');
-        });
-      } catch (error) {
-        console.error('Error deleting record:', error);
-        res.status(500).send('Error deleting record');
-      }
-    });
+  } catch (error) {
+    console.error('Error deleting record:', error);
+    res.status(500).send('Error deleting record');
+  }
+});
 
 
 /*-----------------
