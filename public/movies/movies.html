@@ -203,7 +203,7 @@
                 }
             };
 
-            const showAll = fetch(url, options)
+            fetch(url, options)
                 .then(res => res.json())
                 .then(movieData => {
                     console.log(movieData)

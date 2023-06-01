@@ -93,7 +93,7 @@ DIT/FT/1B/08 -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
                         <li><a href="/" class="nav-link px-2 text-light fs-5">&nbspHomepage</a></li>
-                        <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import</a>
+                        <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import Movies</a>
                         </li>
                         <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
                     </ul>
@@ -137,19 +137,20 @@ DIT/FT/1B/08 -->
         const baseUrl = "http://localhost:3000";
 
         axios.get(`${baseUrl}/movies`)
+        //-- /movies is connected to app.js
             .then((response) => {
                 const movies = Object.values(response.data);
                 console.log(movies)
                 for (var i = 0; i <= movies.length; i++) {
-                    console.log(movies[2])
                     const movieEl = `
                 
         <div class="col-12 col-sm-4 my-3">
           <div class="card" style="width: 18rem">
           <img class="bd-placeholder-img" src="${IMG_URL + movies[i].poster_path}"/>
-          <text x="50%" y="50%" fill="#eceeef" dy=".3em">'&nbsp'</text>        
+          <text x="50%" y="50%" fill="#eceeef" dy=".3em">&nbsp</text>        
               <div class="d-flex justify-content-between align-items-center"> 
-                <text class="text-dark">${movies[i].title}</text>
+                <h4 class="text-dark">${movies[i].title}</h4>
+                <a href="/movieDetails?id=${movies[i].id}" class="btn btn-dark rounded-5">View</a>
               </div>
              </div>
           </div>
