@@ -15,6 +15,14 @@ app.get("/importMovies", (req, res) => {
   res.sendFile("/public/movies/movies.html", { root: __dirname });
 });
 
+// Reviews
+app.get("/reviews", (req, res) => {
+  res.sendFile("/public/Reviews/Reviews.html", { root: __dirname });
+});
+
+// app.get("/exploreMovies", (req, res) => {
+//   res.sendFile("/public/movies.html", { root: __dirname });
+// });
 app.get("/movieDetails", (req, res) => {
   res.sendFile("/public/movies/movieDetails.html", { root: __dirname });
 });
