@@ -1,4 +1,6 @@
+
 const { query } = require('../database');
+
 const {
   DUPLICATE_ENTRY_ERROR,
   EMPTY_RESULT_ERROR,
@@ -30,23 +32,35 @@ function generateRandomData() {
     }
   }
   console.log(pairs)
+  const viewsData = {
+    UserID: pairs.userId,
+    Timestamp: pairs.timestamp
+  }
 
   return pairs;
 }
 
-async function insertData(data) {
-  try {
-    const query = 'INSERT INTO Views (UserID, Timestamp) VALUES ?';
-
-    const values = data.map(pair => [pair.userId, pair.timestamp]);
-
-    const [result] = await query(query, [values]);
-
-    console.log('Data inserted successfully!');
-  } catch (error) {
-    console.error('Error inserting data:', error);
+const insertData = function (viewsData) {
+  try{
+    const { UserID, Timestamp } = viewsData
+    const sql = "INSERT INTO Movies(UserID, Timestamp) VALUES (?, ?)";
+    return query(sql, [UserID, Timestamp])
+  } catch (error){
+    console.log('Error inserting data:', error);
   }
+
 }
+
+// async function insertData(data) {
+//   try {
+//     const query = 'INSERT INTO Views (UserID, Timestamp) VALUES ?';
+//     const values = data.map(pair => [pair.userId, pair.timestamp]);
+//     const [result] = await query(query, [values]);
+//     console.log('Data inserted successfully!');
+//   } catch (error) {
+//     console.error('Error inserting data:', error);
+//   }
+// }
 
 // Function to retrieve data from the database and generate histogram data
 async function generateHistogramData(callback) {

@@ -17,6 +17,11 @@ app.use(session({
 }));
 
 // import models
+
+const histogram = require("../models/histogram");
+// const moviePublisher = require("../models/moviePublisher");
+const Movies = require("../models/movie");
+// const user = require("../models/user");
 // const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 // const Movies = require("../models/movie");
@@ -63,15 +68,17 @@ app.get('/movies', function (req, res) {
 });
 
 //inserting views data
-app.post('/insertData', async (req, res, next) => {
-  try {
-    const data = req.body;
-    await histogram.insertData(pool, data); // Call the insertData function from histogram.js
+app.post('/insertData', function (req, res) {
+  const histogramData = req.body
+
+ histogram.insertData(histogramData) // Call the insertData function with the request body
+ .then (() => {
     res.sendStatus(200);
-  } catch (error) {
-    console.error('Error inserting data:', error);
-    next(error);
-  }
+ })
+. catch (error => { 
+    console.error('Error:', error);
+    res.sendStatus(500);
+  });
 });
 //views getting data for histogram
 app.get('/histogramData', async (req, res, next) => {

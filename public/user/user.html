@@ -40,13 +40,13 @@
     <nav>
         <ul>
             <li><a href="javascript:void(0)">Customer</a></li>
-            <li><a href="index.html">Home</a></li>
+            <li><a href="javascript:void(0)">Home</a></li>
             <li><a href="javascript:void(0)">Publisher</a></li>
             <li><a href="javascript:void(0)">User</a></li>
         </ul>
     </nav>
 
-    <h1>index test</h1>
+    <h1>User Page</h1>
 
 
     <h3>Retrieve User</h3>
@@ -99,10 +99,10 @@
             .then((response) => {
                 const data = response.data[0];
                 const dataHtml = `
-            <p> UserID: ${data.UserID} </p>
-            <p> Username: ${data.Username}</p>
-            <p> Password: ${data.Password}</p>
-            <p> Role: ${data.Role} </p>`;
+            <p> <em>UserID:</em> ${data.UserID} </p>
+            <p> <em>Username:</em> ${data.Username}</p>
+            <p> <em>Password:</em> ${data.Password}</p>
+            <p> <em>Role:</em> ${data.Role} </p>`;
 
                 $('#getUserData').append(dataHtml);
             })
