@@ -52,8 +52,6 @@ app.post('/importMovies', function (req, res) {
       res.sendStatus(500);
     });
 });
-
-
 //-- Get Movie Titles from DB
 app.get('/movies', function (req, res) {  
 
@@ -69,27 +67,13 @@ app.get('/movies', function (req, res) {
 
 //inserting views data
 app.post('/insertData', function (req, res) {
-  const histogramData = req.body
-
- histogram.insertData(histogramData) // Call the insertData function with the request body
- .then (() => {
-    res.sendStatus(200);
- })
-. catch (error => { 
-    console.error('Error:', error);
-    res.sendStatus(500);
-  });
+  const { viewsData } = req.body;
+  histogram.insertData(req, res); // Pass the req and res objects to the insertData function
 });
+
 //views getting data for histogram
-app.get('/histogramData', async (req, res, next) => {
-  try {
-    histogram.generateHistogramData(pool, (histogramData) => { // Call the generateHistogramData function from histogram.js
-      res.json(histogramData);
-    });
-  } catch (error) {
-    console.error('Error retrieving data:', error);
-    next(error);
-  }
+app.get('/generateHistogramData', function(req, res) {
+  histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
 });
 //   function (err, result) {
 //   if (!err) {
