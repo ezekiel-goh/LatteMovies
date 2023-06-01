@@ -54,7 +54,6 @@ app.post('/importMovies', function (req, res) {
 });
 //-- Get Movie Titles from DB
 app.get('/movies', function (req, res) {
-
   Movies.getMovies()
     .then((movies) => {
       res.json(movies);
@@ -64,13 +63,11 @@ app.get('/movies', function (req, res) {
       res.sendStatus(500);
     });
 });
-
 //inserting views data
 app.post('/insertData', function (req, res) {
   const { viewsData } = req.body;
   histogram.insertData(req, res); // Pass the req and res objects to the insertData function
 });
-
 //views getting data for histogram
 app.get('/generateHistogramData', function(req, res) {
   histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
