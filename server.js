@@ -68,7 +68,11 @@ app.get('/moviePublisher', (req, res) => {
 });
 
 app.get('/userpage', (req, res) => {
-  res.sendFile('/public/user/user.html', { root: __dirname })
+  if (req.session.role == 'Customer') {
+    res.sendFile('/public/user/user.html', { root: __dirname });
+  } else {
+    res.redirect('/');
+  }
 });
 
 
