@@ -1,18 +1,28 @@
-require('dotenv').config();
-const app = require('./controller/app.js');
+require("dotenv").config();
+const app = require("./controller/app.js");
 const express = require("express");
 const path = require('path');
+app.use(express.static("public"));
 
-app.use(express.static('public'));
 
+//-- Homepage (Retrieving from API)
 app.get("/", (req, res) => {
   res.sendFile("/public/movies/homepage.html", { root: __dirname });
 });
 
+//-- Import from API page
 app.get("/importMovies", (req, res) => {
   res.sendFile("/public/movies/movies.html", { root: __dirname });
 });
 
+app.get("/movieDetails", (req, res) => {
+  res.sendFile("/public/movies/movieDetails.html", { root: __dirname });
+});
+
+// Reviews
+app.get("/reviews", (req, res) => {
+  res.sendFile("/public/reviews/reviews.html", { root: __dirname });
+});
 
 app.get("/movieDetails", (req, res) => {
   res.sendFile("/public/movieDetails.html", { root: __dirname });

@@ -9,6 +9,7 @@ const pool = mysql2.createPool({
     ssl: {
         rejectUnauthorized: false,
     },
+    dateStrings: true
 });
 
 // Monkey patch .query(...) method to console log all queries before executing it
