@@ -95,15 +95,10 @@ module.exports.deleteUserPublisher = async function deleteUserPublisher(UserID) 
     return;
 };
 
-module.exports.userLogin = async function userLogin(Username, Password) {
-    const User = await query('SELECT Username, Password FROM User WHERE Username = ? and Password = ?',
-        [Username, Password])
-        .then(() => {
-            return User;
-        })
-        .catch((error) => {
-            if (error) {
-                throw new NOT_FOUND_ERROR(`Incorrect Username or Password.`);
-            }
-        });
+// general login function
+module.exports.login = function login(username, password) {
+    return query(
+        'SELECT Username, Role FROM User WHERE Username = ? and Password = ?', 
+        [username, password],
+    ).then((user) => { return user[0][0]; });
 }
