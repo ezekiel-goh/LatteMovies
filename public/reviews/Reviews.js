@@ -1,51 +1,45 @@
-window.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('review'); // Only have 1 form in this HTML
-    form.onsubmit = function (e) {
-        e.preventDefault(); // prevent using the default submit behavior
+// window.addEventListener('DOMContentLoaded', function () {
+//     const form = document.querySelector('#reviewForm'); 
+//     form.onsubmit = function (e) {
+//         e.preventDefault(); // prevent using the default submit behavior
+//         const ratingValue = document.getElementById("rating").value;
+//         const reviewValue = document.getElementById("review").value;
 
-        const code = form.querySelector('fieldset input[name=code]').value;
-        const name = form.querySelector('fieldset input[name=name]').value;
-        const credit = form.querySelector('fieldset input[name=credit]').value;
+//         return fetch('/reviews', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({
+//                 Comments: reviewValue,
+//                 Rating: ratingValue
+//             }),
+//         })
+//             .then(function (response) {
+//                 // If not successful (i.e. there's error)
+//                 if (response.status !== 201) return response.json(); // parse body as JSON string
 
-        const allInput = form.querySelectorAll('input, button[type=submit]');
-        // Disable inputs
-        allInput.forEach((input) => {
-            input.disabled = true;
-        });
-        return fetch('/modules', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                code: code,
-                name: name,
-                credit: credit,
-            }),
-        })
-            .then(function (response) {
-                // If not successful (i.e. there's error)
-                if (response.status !== 201) return response.json(); // parse body as JSON string
+//                 alert(`Module "${Comments}" created!`);
+//                 // Success response has no body, hence next .then() will be null
+//                 console.log(response)
 
-                // Clear inputs
-                allInput.forEach((input) => {
-                    if (input.type !== 'submit') input.value = '';
-                });
+//                 return null;
+//             })
+//             .then(function (body) {
+//                 if (!body) return; // If successfully created, body will be empty
+//                 alert(body.error); // else there's an error
+//             })
+//             .finally(function () {
+//                 // Enable inputs
+//                 allInput.forEach((input) => {
+//                     input.disabled = false;
+//                 });
+//             });
+//     };
+// });
 
-                alert(`Module "${code}" created!`);
-                // Success response has no body, hence next .then() will be null
-
-                return null;
-            })
-            .then(function (body) {
-                if (!body) return; // If successfully created, body will be empty
-                alert(body.error); // else there's an error
-            })
-            .finally(function () {
-                // Enable inputs
-                allInput.forEach((input) => {
-                    input.disabled = false;
-                });
-            });
-    };
-});
+// This works as well
+// deleteBtn.addEventListener("click", (event) => {
+//     var fish = document.getElementById("deleteID").value
+//     console.log(fish)
+// })
