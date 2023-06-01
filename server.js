@@ -1,6 +1,8 @@
 require('dotenv').config();
 const app = require('./controller/app.js');
 const express = require("express");
+const path = require('path');
+
 app.use(express.static('public'));
 
 app.get("/", (req, res) => {
@@ -28,9 +30,33 @@ app.get("/login/", (req, res) => {
   res.sendFile("/public/login.html", { root: __dirname });
 });
 
+app.get("/Views/", (req, res) => {
+  res.sendFile("/public/histogram/histogram.html", { root: __dirname });
+});
+
+app.get('/histogram.js', (req, res) => {
+  try {
+    const filePath = path.join(__dirname, 'models/histogram.js');
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error('Error serving histogram.js:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 app.get("/addActor/", (req, res) => {
   res.sendFile("/public/addActor.html", { root: __dirname });
 });
+
+
+app.get("/moviePublisher", (req, res) => {
+  res.sendFile("/public/moviePublisher/moviePublisher.html", { root: __dirname })
+});
+
+app.get('/userpage', (req, res) => {
+  res.sendFile('/public/user/user.html', { root: __dirname })
+});
+
 
 const port = process.env.PORT || 3001;
 app.listen(port, function () {
