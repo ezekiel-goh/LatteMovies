@@ -26,7 +26,7 @@ const Movies = require("../models/movie");
 const moviePublisher = require("../models/moviePublisher");
 // const Movies = require("../models/movie");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-  deleteUserCustomer, deleteUserPublisher, login } = require('../models/user.js');
+  deleteUserCustomer, deleteUserPublisher, login, buyMovie } = require('../models/user.js');
 const review = require("../models/review");
 
 
@@ -280,6 +280,16 @@ app.delete('/user/:userid', async (req, res) => {
   }
 });
 
+app.post('/user/buymovie', async (req, res) => {
+  try {
+    const CustomerID = req.body.CustomerID;
+    const MovieID = req.body.MovieID;
+    await buyMovie(MovieID, CustomerID);
+    res.status(200).send();
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 /*-----------------
   publisher stuff
