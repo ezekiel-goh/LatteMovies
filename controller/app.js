@@ -1,6 +1,6 @@
 // App.js
 const express = require("express");
-const session = require('express-session');
+// const session = require('express-session');
 const createHttpError = require('http-errors');
 
 const { EMPTY_RESULT_ERROR, DUPLICATE_ENTRY_ERROR, TABLE_ALREADY_EXISTS_ERROR, NOT_FOUND_ERROR } = require('../errors');
@@ -10,11 +10,11 @@ app.use(express.json()); // to process JSON in request body
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.use(session({
-	secret: 'secret',
-	resave: true,
-	saveUninitialized: true
-}));
+// app.use(session({
+// 	secret: 'secret',
+// 	resave: true,
+// 	saveUninitialized: true
+// }));
 
 // import models
 
@@ -24,10 +24,9 @@ const Movies = require("../models/movie");
 // const user = require("../models/user");
 // const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
-// const Movies = require("../models/movie");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-  deleteUserCustomer, deleteUserPublisher, login } = require('../models/user.js');
-// const review = require("../models/review");
+  deleteUserCustomer, deleteUserPublisher, login, buyMovie } = require('../models/user.js');
+const review = require("../models/review");
 
 
 
@@ -39,57 +38,39 @@ app.use(bodyParser.json());
 const cors = require("cors");
 app.use(cors());
 
+
 // -- Movie Details
 app.post('/importMovies', function (req, res) {
   const movieDetails = req.body
 
   Movies.postMovies(movieDetails)
     .then(() => {
-      res.sendStatus(204); 
+      res.sendStatus(204);
     })
     .catch(error => {
       console.error('Failed to insert movie details:', error);
       res.sendStatus(500);
     });
 });
-
-
 //-- Get Movie Titles from DB
-app.get('/movies', function (req, res) {  
-
+app.get('/movies', function (req, res) {
   Movies.getMovies()
     .then((movies) => {
-      res.json(movies); 
+      res.json(movies);
     })
     .catch(error => {
       console.error('Failed to retrieve movie(s)', error);
       res.sendStatus(500);
     });
 });
-
 //inserting views data
 app.post('/insertData', function (req, res) {
-  const histogramData = req.body
-
- histogram.insertData(histogramData) // Call the insertData function with the request body
- .then (() => {
-    res.sendStatus(200);
- })
-. catch (error => { 
-    console.error('Error:', error);
-    res.sendStatus(500);
-  });
+  const { viewsData } = req.body;
+  histogram.insertData(req, res); // Pass the req and res objects to the insertData function
 });
 //views getting data for histogram
-app.get('/histogramData', async (req, res, next) => {
-  try {
-    histogram.generateHistogramData(pool, (histogramData) => { // Call the generateHistogramData function from histogram.js
-      res.json(histogramData);
-    });
-  } catch (error) {
-    console.error('Error retrieving data:', error);
-    next(error);
-  }
+app.get('/generateHistogramData', function(req, res) {
+  histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
 });
 //   function (err, result) {
 //   if (!err) {
@@ -104,12 +85,12 @@ app.get('/histogramData', async (req, res, next) => {
 // -- Review Details
 
 //-- Get Movie by ID
-app.get('/movieDetails/:id', function (req, res) {  
-const id = req.params.id
+app.get('/movieDetails/:id', function (req, res) {
+  const id = req.params.id
 
   Movies.getMovieDetailsById(id)
     .then((movieDetails) => {
-      res.json(movieDetails); 
+      res.json(movieDetails);
     })
     .catch(error => {
       console.error('Failed to retrieve movie(s)', error);
@@ -118,95 +99,193 @@ const id = req.params.id
 });
 
 //-- Delete Movie by  ID
-app.delete('/movieDetails/:id', function (req, res) {  
+app.delete('/movieDetails/:id', function (req, res) {
   const id = req.params.id
-  
-    Movies.deleteMovieDetailsById(id)
-      .then(() => {
-        res.sendStatus(200); 
-      })
-      .catch(error => {
-        console.error('Failed to delete movie', error);
-        res.sendStatus(500);
-      });
-  });
 
-  //-- Update Movie Price by ID
-  app.put('/movieDetails/:id', function(req, res) {  
-    const price = req.body.price
-    const id = req.params.id
-    
-      Movies.updateMoviePriceById(price, id)
-        .then(() => {
-          res.sendStatus(200); 
-        })
-        .catch(error => {
-          console.error('Failed to update movie price', error);
-          res.sendStatus(500);
-        });
+  Movies.deleteMovieDetailsById(id)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(error => {
+      console.error('Failed to delete movie', error);
+      res.sendStatus(500);
     });
+});
 
-    /**
-     * User C.R.U.D.
-     */
-    app.get('/user/:userid', async (req, res) => {
-      const userID = req.params.userid;
-      const userInfo = await getUserInfo(userID);
-      if (userInfo[0] === null || userInfo[0] === undefined || userID === undefined || userID === null || !userID) {
-        console.error('Error retrieving data');
-        res.status(500).send();
-      }
-      res.status(200).json(userInfo[0]);
-      console.log(userInfo[0]);
-    });
-    
-    app.post('/user', async (req, res) => {
-      try {
-        const Username = req.body.Username;
-        const Password = req.body.Password;
-        const Role = req.body.Role;
-        await addUser(Username, Password, Role);
-    
-        if (Role === 'Customer') {
-          await addCustomer(Username);
-          res.status(201).send('User Customer created');
-        }
-    
-        if (Role === 'Publisher') {
-          await addPublisher(Username);
-          res.status(201).send('User Publisher created');
-        }
-      } catch (error) {
-        console.error('Error inserting record:', error);
-        res.status(500).send('Error inserting record');
-      }
-    });
-    
-    app.put('/user/:userid', async (req, res) => {
-      try {
-        const UserID = parseInt(req.params.userid);
-        const Password = req.body.Password;
-        await updateUserInfo(UserID, Password);
-        res.status(200).send('User updated');
-      } catch (error) {
-        console.error('Error updating record:', error);
-        res.status(500).send('Error updating record!');
-      }
-    });
-    
-    app.delete('/user/:userid', async (req, res) => {
-      try {
-        const UserID = req.params.userid;
-    
-        Promise.all([deleteUserCustomer(UserID), deleteUserPublisher(UserID)]).then(() => {
-          res.status(200).send('User deleted');
-        });
-      } catch (error) {
-        console.error('Error deleting record:', error);
-        res.status(500).send('Error deleting record');
-      }
-    });
+//-- Update Movie Price by ID
+app.put('/movieDetails/:id', function (req, res) {
+  const price = req.body.price
+  const id = req.params.id
 
+  Movies.updateMoviePriceById(price, id)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(error => {
+      console.error('Failed to update movie price', error);
+      res.sendStatus(500);
+    });
+});
+
+//-- Submit Review
+app.post('/reviews', function (req, res) {
+  const Comments = req.body.Comments
+  const Rating = req.body.Rating
+  console.log(req.body)
+
+  review.postReview(Comments, Rating)
+    .then(() => {
+      res.sendStatus(201); // Return a success status code
+    })
+    .catch(error => {
+      console.error('Failed to retrieve review(s)', error);
+      res.sendStatus(500);
+    });
+});
+
+// -- Update Review
+app.put('/reviews', function (req, res) {
+  const ReviewID = req.body.ReviewID
+  const Rating = req.body.Rating
+  const Comments = req.body.Comments
+
+  review.editReview(Rating, Comments, ReviewID)
+    .then(() => {
+      res.sendStatus(201); // Return a success status code
+    })
+    .catch(error => {
+      console.error('Failed to update review(s)', error);
+      res.sendStatus(500);
+    });
+})
+
+app.delete('/reviews/:id', function (req, res) {
+  const ReviewID = req.params.id
+  console.log(req.body.ReviewID)
+  review.deleteReview(ReviewID)
+    .then(() => {
+      res.sendStatus(201); // Return a success status code
+    })
+    .catch(error => {
+      console.error('Failed to delete review(s)', error);
+      res.sendStatus(500);
+    });
+})
+
+// -- Get Review
+app.get('/reviews/data', function (req, res) {
+
+  review.retrieveReview()
+    .then((review) => {
+      res.json(review);
+    })
+    .catch(error => {
+      console.error('Failed to retrieve review(s)', error);
+      res.sendStatus(500);
+    });
+})
+
+
+//-- Delete Movie by  ID
+app.delete('/movieDetails/:id', function (req, res) {
+  const id = req.params.id
+
+  Movies.deleteMovieDetailsById(id)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(error => {
+      console.error('Failed to delete movie', error);
+      res.sendStatus(500);
+    });
+});
+
+//-- Update Movie Price by ID
+app.put('/movieDetails/:id', function (req, res) {
+  const price = req.body.price
+  const id = req.params.id
+
+  Movies.updateMoviePriceById(price, id)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(error => {
+      console.error('Failed to update movie price', error);
+      res.sendStatus(500);
+    });
+});
+
+/**
+ * User C.R.U.D.
+ */
+app.get('/user/:userid', async (req, res) => {
+  const userID = req.params.userid;
+  const userInfo = await getUserInfo(userID);
+  if (userInfo[0] === null || userInfo[0] === undefined || userID === undefined || userID === null || !userID) {
+    console.error('Error retrieving data');
+    res.status(500).send();
+  }
+  res.status(200).json(userInfo[0]);
+  console.log(userInfo[0]);
+});
+
+app.post('/user', async (req, res) => {
+  try {
+    const Username = req.body.Username;
+    const Password = req.body.Password;
+    const Role = req.body.Role;
+    await addUser(Username, Password, Role);
+
+    if (Role === 'Customer') {
+      await addCustomer(Username);
+      res.status(201).send('User Customer created');
+    }
+
+    if (Role === 'Publisher') {
+      await addPublisher(Username);
+      res.status(201).send('User Publisher created');
+    }
+  } catch (error) {
+    console.error('Error inserting record:', error);
+    res.status(500).send('Error inserting record');
+  }
+});
+
+app.put('/user/:userid', async (req, res) => {
+  try {
+    const UserID = parseInt(req.params.userid);
+    const Password = req.body.Password;
+    await updateUserInfo(UserID, Password);
+    res.status(200).send('User updated');
+  } catch (error) {
+    console.error('Error updating record:', error);
+    res.status(500).send('Error updating record!');
+  }
+});
+
+app.delete('/user/:userid', async (req, res) => {
+  try {
+    const UserID = req.params.userid;
+
+    Promise.all([deleteUserCustomer(UserID), deleteUserPublisher(UserID)]).then(() => {
+      res.status(200).send('User deleted');
+    });
+  } catch (error) {
+    console.error('Error deleting record:', error);
+    res.status(500).send('Error deleting record');
+  }
+});
+
+app.post('/user/buymovie', async (req, res) => {
+  try {
+    const CustomerID = req.body.CustomerID;
+    const MovieID = req.body.MovieID;
+    await buyMovie(MovieID, CustomerID);
+    res.status(200).send();
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 /*-----------------
   publisher stuff

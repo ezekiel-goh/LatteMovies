@@ -8,11 +8,9 @@
         "express-session": "^1.17.3",
         "http-errors": "^2.0.0",
         "mysql2": "^2.3.3",
-
         "node-fetch": "2.0",
         "path": "^0.12.7"
 
-        "node-fetch": "^2.6.11"
 
     },
     "scripts": {
