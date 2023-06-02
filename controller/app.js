@@ -382,7 +382,7 @@ app.delete('/api/moviePublisher/:movieId', (req, res, next) => {
     .then(function () {
       return res.sendStatus(200);
     })
-    .catch(function (error) {
+    .catch((error) => {
       if (error instanceof NOT_FOUND_ERROR) {
         next(createHttpError(404, error.message));
       } else {
