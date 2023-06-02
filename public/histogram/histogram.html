@@ -11,6 +11,7 @@
   <div class="container">
     <h1>Views Chart</h1>
     <button id="getHistogramBtn" class="btn btn-primary">Get Chart</button>
+    <!-- canvas to display histogram -->
     <canvas id="viewsHistogram"></canvas>
   </div>
 
@@ -24,47 +25,41 @@
       var pairs = [];
 
       while (pairs.length < 100) {
-        var timestampInSeconds = Math.floor(Math.random() * 41) * 3;
-        var randomId = Math.floor(Math.random() * 6) + 1;
-        var minutes = Math.floor(timestampInSeconds / 60);
-        var seconds = timestampInSeconds % 60;
-        var formattedTimestamp = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-
-        var pair = {
+        var timestampInSeconds = Math.floor(Math.random() * 41) * 3; // random timestamp in multiples of 3
+        var randomId = Math.floor(Math.random() * 6) + 1; // random userid from 1-6(total 6 unique viewers)
+        var minutes = Math.floor(timestampInSeconds / 60); // converting timestamp to minutes
+        var seconds = timestampInSeconds % 60; // getting the extra/remaining seconds 
+        var formattedTimestamp = minutes + ":" + (seconds < 10 ? "0" : "") + seconds; // combining to make a Min:Sec timestamp
+        var pair = { // assigning names for the values for each pair value
           userId: randomId,
           timestamp: formattedTimestamp
         };
-
-        var pairExists = pairs.some(function (existingPair) {
+        var pairExists = pairs.some(function (existingPair) { // duplicate checking
           return existingPair.userId === pair.userId && existingPair.timestamp === pair.timestamp;
         });
-
-        if (!pairExists) {
+        if (!pairExists) { // if does not exist already, add to the array of data
           pairs.push(pair);
         }
       }
-      console.log(pairs);
-
+      console.log(pairs); 
       return pairs;
     }
 
     // Function to render the histogram chart
     function renderHistogram(histogramData) {
-      var canvas = document.getElementById('viewsHistogram');
-
-      // Destroy the existing chart instance if it exists
-      if (chart) {
-        chart.destroy();
-      }
-
-      var labels = histogramData.map(function (data) {
+      var canvas = document.getElementById('viewsHistogram'); // assigning the canvas to render the histogram at
+      var labels = histogramData.map(function (data) { 
         return data.timestamp;
       });
-
       var views = histogramData.map(function (data) {
         return data.views;
       });
-
+      console.log(chart);
+      // Destroy the existing chart instance ONLY if it exists specifically for 'viewsHistogram' canvas
+      if (chart != null) {
+        chart.destroy();
+        console.log(chart != null);
+      }
       // Store the chart instance in the 'chart' variable
       chart = new Chart(canvas, {
         type: 'bar',
@@ -92,9 +87,9 @@
 
             }
           },
-          indexAxis: 'x', // Display bars horizontally
-          barPercentage: 1.0, // Bars touch each other
-          categoryPercentage: 1.0 // Bars touch each other
+          indexAxis: 'x', // bars to leave no gaps
+          barPercentage: 1.0, 
+          categoryPercentage: 1.0 
         }
       });
     }
@@ -102,17 +97,17 @@
     // Event listener for the "Get Chart" button
     document.getElementById("getHistogramBtn").addEventListener("click", async function () {
       console.log('button pressed');
-      var data = { viewsData: generateRandomData() };
-      axios.post('http://localhost:3000/insertData', data)
+      var data = { viewsData: generateRandomData() }; // Step 1: generates data first
+      axios.post('http://localhost:3000/insertData', data) // Step 2: inserts data into database
         .then(function (response) {
           console.log('Data inserted successfully');
-          return axios.get('http://localhost:3000/generateHistogramData');
+          return axios.get('http://localhost:3000/generateHistogramData'); // Step 3: error not caught then retrieve the data FROM the database
         })
-        .then(function (response) {
+        .then(function (response) { // Step 4: render the histogram provided no error thrown and caught
           var histogramData = response.data;
           renderHistogram(histogramData);
         })
-        .catch(function (error) {
+        .catch(function (error) { // catch error if there is
           console.error('Error:', error);
         });
     });
