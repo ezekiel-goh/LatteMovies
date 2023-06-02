@@ -58,11 +58,11 @@ app.get("/addActor/", (req, res) => {
 
 
 app.get('/moviePublisher', (req, res) => {
-  if (req.session.role == 'Publisher') {
-    res.sendFile('/public/moviePublisher/moviePublisher.html', { root: __dirname });
-  } else {
-    res.redirect('/');
-  }
+  // if (req.session.role == 'Publisher') {
+  //   res.sendFile('/public/moviePublisher/moviePublisher.html', { root: __dirname });
+  // } else {
+  //   res.redirect('/');
+  // }
   res.sendFile('/public/moviePublisher/moviePublisher.html', { root: __dirname });
 });
 
