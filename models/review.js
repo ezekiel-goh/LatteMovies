@@ -65,7 +65,7 @@ function deleteReview(ReviewID) {
   });
 }
 function retrieveReview() {
-  const sql = `SELECT UserID, Rating, Comments FROM Reviews`
+  const sql = `SELECT MovieID, UserID, Rating, Comments FROM Reviews`
   return query(sql)
     .then((response) => {
       console.log(response[0]);
@@ -84,9 +84,5 @@ module.exports = {
   postReview,
   editReview,
   deleteReview,
-  retrieveReview
+  retrieveReview,
 };
-
-module.exports = {
-    postReview
-}
