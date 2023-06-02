@@ -12,7 +12,7 @@ const CREDIT_URL = BASE_URL + '/3/movie/{movie_id}/credits' + API_KEY;
 
 
 const main = document.getElementById('main')
-getMovies(API_URL + '&with_genres=' + '10751, 36');
+getMovies(API_URL + '&with_genres=' + '10751');
 
 
 function getMovies(url) {

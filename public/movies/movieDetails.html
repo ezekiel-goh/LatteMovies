@@ -209,8 +209,8 @@ DIT/FT/1B/08 -->
                     <img class="bd-placeholder-img" src="${IMG_URL + movies[0].poster_path}"/>
                     </div>
                     <p class="text-light"> 
-                        <br> Runtime: ${movies[0].runtime} 
-                        <br> Category: ${movies[0].category}
+                        <br> Runtime: ${movies[0].runtime} mins 
+                        <br> Price: ${movies[0].Price? `$${movies[0].Price}` : "Price not set"}
                         <br> Release date: ${movies[0].release_date}
                         <br> Overview: ${movies[0].overview}
                     <p id="actorName" class="text-light"></p>
