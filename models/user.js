@@ -25,7 +25,7 @@ module.exports.addUser = async function addUser(Username, Password, Role) {
 
 module.exports.addCustomer = async function addCustomer(Username) {
     try {
-        await query('INSERT INTO Customer(UserID, Username, MoviesBought) ' +
+        await query('INSERT INTO Customer(UserID, Username, TotalSpent) ' +
             'VALUES ( ( SELECT UserID FROM User WHERE UserID = LAST_INSERT_ID() ), ?, 0);', [Username])
             .then(() => {
                 return;
@@ -101,4 +101,17 @@ module.exports.login = function login(username, password) {
         'SELECT Username, Role FROM User WHERE Username = ? and Password = ?', 
         [username, password],
     ).then((user) => { return user[0][0]; });
+}
+
+// Customer Purchases a Movie
+module.exports.buyMovie = async function buyMovie(MovieID, CustomerID) {
+    await query('UPDATE Customer SET TotalSpent = TotalSpent + ' +
+        '(SELECT IFNULL(Price, 0) FROM Movies WHERE id = ?) ' +
+        'where CustomerID = ?', [MovieID, CustomerID])
+        .then(() => {
+            return;
+        })
+        .catch(() => {
+            throw new EMPTY_RESULT_ERROR(`Movie ${MovieID}, Customer ${CustomerID}`);
+        });
 }

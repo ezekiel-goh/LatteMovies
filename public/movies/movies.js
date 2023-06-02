@@ -1,7 +1,7 @@
 /* 
 -- Movies JS
 -- Ezekiel Goh
--- This part of the models folder contains the backend of the file 
+-- Backend of movies.html
 */
  
 const API_KEY = 'api_key=ca7e7fc5b26b0852a4e3acda4d0c7bc5';
@@ -12,7 +12,7 @@ const CREDIT_URL = BASE_URL + '/3/movie/{movie_id}/credits' + API_KEY;
 
 
 const main = document.getElementById('main')
-getMovies(API_URL + '&with_genres=' + '10751, 36');
+getMovies(API_URL + '&with_genres=' + '10751');
 
 
 function getMovies(url) {

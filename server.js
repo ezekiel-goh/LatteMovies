@@ -20,9 +20,7 @@ app.get("/reviews", (req, res) => {
   res.sendFile("/public/Reviews/Reviews.html", { root: __dirname });
 });
 
-// app.get("/exploreMovies", (req, res) => {
-//   res.sendFile("/public/movies.html", { root: __dirname });
-// });
+// MovieDetails page
 app.get("/movieDetails", (req, res) => {
   res.sendFile("/public/movies/movieDetails.html", { root: __dirname });
 });
@@ -64,15 +62,20 @@ app.get("/addActor/", (req, res) => {
 
 
 app.get('/moviePublisher', (req, res) => {
-  if (req.session.role == 'Publisher') {
-    res.sendFile('/public/moviePublisher/moviePublisher.html', { root: __dirname });
-  } else {
-    res.redirect('/');
-  }
+  // if (req.session.role == 'Publisher') {
+  //   res.sendFile('/public/moviePublisher/moviePublisher.html', { root: __dirname });
+  // } else {
+  //   res.redirect('/');
+  // }
+  res.sendFile('/public/moviePublisher/moviePublisher.html', { root: __dirname });
 });
 
 app.get('/userpage', (req, res) => {
-  res.sendFile('/public/user/user.html', { root: __dirname })
+  if (req.session.role == 'Customer') {
+    res.sendFile('/public/user/user.html', { root: __dirname });
+  } else {
+    res.redirect('/');
+  }
 });
 
 

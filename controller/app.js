@@ -12,8 +12,8 @@ app.use(express.static('public'));
 
 app.use(session({
   secret: 'secret',
-  resave: true,
-  saveUninitialized: true
+ 	resave: true,
+ 	saveUninitialized: true
 }));
 
 // import models
@@ -24,10 +24,9 @@ const Movies = require("../models/movie");
 // const user = require("../models/user");
 // const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
-// const Movies = require("../models/movie");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-  deleteUserCustomer, deleteUserPublisher, login } = require('../models/user.js');
-const review = require("../models/review.js");
+deleteUserCustomer, deleteUserPublisher, login } = require('../models/user.js');
+const review = require("../models/review");
 
 
 
@@ -55,7 +54,6 @@ app.post('/importMovies', function (req, res) {
 });
 //-- Get Movie Titles from DB
 app.get('/movies', function (req, res) {
-
   Movies.getMovies()
     .then((movies) => {
       res.json(movies);
@@ -65,13 +63,11 @@ app.get('/movies', function (req, res) {
       res.sendStatus(500);
     });
 });
-
 //inserting views data
 app.post('/insertData', function (req, res) {
   const { viewsData } = req.body;
   histogram.insertData(req, res); // Pass the req and res objects to the insertData function
 });
-
 //views getting data for histogram
 app.get('/generateHistogramData', function (req, res) {
   histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
@@ -293,6 +289,16 @@ app.delete('/user/:userid', async (req, res) => {
   }
 });
 
+app.post('/user/buymovie', async (req, res) => {
+  try {
+    const CustomerID = req.body.CustomerID;
+    const MovieID = req.body.MovieID;
+    await buyMovie(MovieID, CustomerID);
+    res.status(200).send();
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 /*-----------------
   publisher stuff
@@ -389,7 +395,7 @@ app.delete('/api/moviePublisher/:movieId', (req, res, next) => {
     .then(function () {
       return res.sendStatus(200);
     })
-    .catch(function (error) {
+    .catch((error) => {
       if (error instanceof NOT_FOUND_ERROR) {
         next(createHttpError(404, error.message));
       } else {

@@ -1,6 +1,12 @@
-<!-- Ezekiel Goh
-P2205881
-DIT/FT/1B/08 -->
+<!-- 
+Contributers
+Ezekiel Goh
+movieDetails.html
+- Show movie details by ID
+- can update movie price
+- can delete movie (individually)
+ -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,7 +56,6 @@ DIT/FT/1B/08 -->
 
     #ComFont {
         font-family: 'Nunito', sans-serif;
-        /* font-weight: regular; */
 
     }
 
@@ -133,55 +138,60 @@ DIT/FT/1B/08 -->
     document.addEventListener('DOMContentLoaded', function () {
 
         //-- Delete Movie 
+
         const deleteButton = document.getElementById("deleteBtn");
-        deleteButton.addEventListener('click', (event) => {
-            axios.delete(`${baseUrl}/movieDetails/${id}`)
-                .then((response) => {
-                    if (response.status == 200) {
-                        console.log("Movie Deleted")
+        deleteButton.addEventListener('click',  (event) => {
+            const deleteRequest = axios.delete(`${baseUrl}/movieDetails/${id}`);
+            const getRequest = axios.get(`${baseUrl}/movieDetails/${id}`);
+
+            Promise.all([deleteRequest, getRequest])
+                .then(([deleteResponse, getResponse]) => {
+                    if (deleteResponse.status === 200) {
+                        console.log("Movie deleted!");
                     } else {
-                        console.log("Error deleting movie")
+                        alert("Failed to delete movie");
                     }
                 })
-            alert("Movie Deleted!")
-                .catch(error => {
-                    console.log("Request Failed: ", error)
-                })
-
-        })
-
-        //-- Edit Movie Price
-        const editButton = document.getElementById("editBtn");
-        editButton.addEventListener('click', (event) => {
-            const priceInput = document.getElementById("inputPrice").value
-            console.log(priceInput)
-            const updatedMovie = {
-                price: priceInput
-            };
+                .catch((error) => {
+                    console.log(error);
+                    alert("Failed to delete movie");
+                });
+        });
 
 
-            axios.put(`${baseUrl}/movieDetails/${id}`, updatedMovie)
-                .then((response) => {
-                    if (response.status == 200) {
-                        console.log("Movie Price Edited")
-                    } else {
-                        console.log("Error editing movie Price")
-                    }
-                })
-        })
+
+    //-- Edit Movie Price
+    const editButton = document.getElementById("editBtn");
+    editButton.addEventListener('click', (event) => {
+        const priceInput = document.getElementById("inputPrice").value
+        console.log(priceInput)
+        const updatedMovie = {
+            price: priceInput
+        };
 
 
-        const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
-        const baseUrl = "http://localhost:3000";
-    const params = new URLSearchParams(window.location.search);
-        //-- URL Parameters
-        const id = params.get('id')
-
-        axios.get(`${baseUrl}/movieDetails/${id}`)
+        axios.put(`${baseUrl}/movieDetails/${id}`, updatedMovie)
             .then((response) => {
-                const movies = Object.values(response.data);
-                console.log(movies)
-                const details = `
+                if (response.status == 200) {
+                    console.log("Movie Price Edited")
+                } else {
+                    console.log("Error editing movie Price")
+                }
+            })
+    })
+
+
+    const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
+    const baseUrl = "http://localhost:3000";
+    const params = new URLSearchParams(window.location.search);
+    //-- URL Parameters
+    const id = params.get('id')
+
+    axios.get(`${baseUrl}/movieDetails/${id}`)
+        .then((response) => {
+            const movies = Object.values(response.data);
+            console.log(movies)
+            const details = `
                 
                 <div class="card-body ">
                     <h1 class="text-light">${movies[0].title}</h1>
@@ -189,8 +199,8 @@ DIT/FT/1B/08 -->
                     <img class="bd-placeholder-img" src="${IMG_URL + movies[0].poster_path}"/>
                     </div>
                     <p class="text-light"> 
-                        <br> Runtime: ${movies[0].runtime} 
-                        <br> Category: ${movies[0].category}
+                        <br> Runtime: ${movies[0].runtime} mins 
+                        <br> Price: ${movies[0].Price? `$${movies[0].Price}` : "Price not set"}
                         <br> Release date: ${movies[0].release_date}
                         <br> Overview: ${movies[0].overview}
                     <p id="actorName" class="text-light"></p>
@@ -201,17 +211,14 @@ DIT/FT/1B/08 -->
                 </div>
                         `;
 
-                $("#Details").append(details);
+            $("#Details").append(details);
 
-                // for (var i = 0; i <= detail.length; i++) {
-                //     const Actors = `<ul>${detail[i].first_name} ${detail[i].last_name}</ul>`
-                //     $("#actorName").append(Actors);
-                // }
-            })
 
-            .catch((error) => {
-                console.log(error);
-            });
+        })
+
+        .catch((error) => {
+            console.log(error);
+        });
 
     })
 
