@@ -25,7 +25,7 @@ module.exports.addUser = async function addUser(Username, Password, Role) {
 
 module.exports.addCustomer = async function addCustomer(Username) {
     try {
-        await query('INSERT INTO Customer(UserID, Username, MoviesBought) ' +
+        await query('INSERT INTO Customer(UserID, Username, TotalSpent) ' +
             'VALUES ( ( SELECT UserID FROM User WHERE UserID = LAST_INSERT_ID() ), ?, 0);', [Username])
             .then(() => {
                 return;
