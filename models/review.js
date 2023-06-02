@@ -20,6 +20,7 @@ function postReview(Review) {
         })
 }
 
+
 // const button = document.getElementById("post");
 // button.addEventListener("click", (event) => {
 //   event.preventDefault(); // Prevent the default form submission
