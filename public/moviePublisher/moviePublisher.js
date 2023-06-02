@@ -1,7 +1,22 @@
-function populateMoviesBody(moviesBody, movies) {
+function populateMoviesBody(moviesBody, movies, reviews) {
     moviesBody.innerHTML = '';
     const template = document.getElementById('template');
-    movies[0].forEach((movie) => {
+
+    // get average score for each movie
+    const reviewTemp = new Map();
+    for (const {MovieID, Rating} of reviews) {
+        const entry = reviewTemp.get(MovieID);
+        if (!entry) {
+            reviewTemp.set(MovieID, {MovieID, count: 1, sum: parseInt(Rating)});
+        } else {
+            ++entry.count;
+            entry.sum += parseInt(Rating);
+        }
+    }
+    const averageScores = [...reviewTemp.values()].map(({MovieID, count, sum}) => ({MovieID, average: sum / count}));
+    console.log(averageScores);
+
+    movies.forEach((movie) => {
         const node = template.content.firstElementChild.cloneNode(true);
         // node.querySelector('.movie-id').textContent = movie.id;
         node.querySelector('.movie-id').value = movie.id;
@@ -10,6 +25,15 @@ function populateMoviesBody(moviesBody, movies) {
         node.querySelector('.overview').value = movie.overview;
         node.querySelector('.release-date').value = movie.release_date.slice(0, 10); // temp workaround
         node.querySelector('.runtime').value = movie.runtime;
+
+        // initial dummy values
+        const i = averageScores.findIndex(e => e.MovieID == movie.id);
+        if (i > -1) {
+            node.querySelector('.average-score').value = averageScores[i].average;
+        } else {
+            node.querySelector('.average-score').value = 0;
+        }
+        node.querySelector('.revenue').value = 0;
 
         const updateButton = node.querySelector('.update');
         updateButton.onclick = () => {
@@ -75,13 +99,13 @@ function populateMoviesBody(moviesBody, movies) {
     });
 }
 
-function refreshMoviesBody(moviesBody) {
-    fetch('/api/moviePublisher')
-        .then((res) => res.json())
-        .then((body) => {
-            const movies = body.data;
-            populateMoviesBody(moviesBody, movies);
-        });
+async function refreshMoviesBody(moviesBody) {
+    const [movies, reviews] = await Promise.all([
+        fetch('/api/moviePublisher').then((res) => res.json()),
+        fetch('/reviews/data').then((res) => res.json())
+    ]);
+
+    populateMoviesBody(moviesBody, movies.data[0], reviews);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
