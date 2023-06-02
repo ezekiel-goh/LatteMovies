@@ -7,26 +7,6 @@ const {
     TABLE_ALREADY_EXISTS_ERROR,
 } = require('../errors');
 
-function postReview(Review) {
-    var Review = document.getElementById('Review').value
-    const sql = "INSERT INTO Reviews(review) VALUES (?)";
-    return query(sql, [Review])
-        .catch(function (error) {
-            if (error.errno === MYSQL_ERROR_CODE.DUPLICATE_ENTRY) {
-                throw new DUPLICATE_ENTRY_ERROR(`Movie with id: ${id} already exists in database`);
-            } else {
-                throw error;
-            }
-        })
-}
-const { query } = require("../database");
-
-const {
-  DUPLICATE_ENTRY_ERROR,
-  EMPTY_RESULT_ERROR,
-  MYSQL_ERROR_CODE,
-  TABLE_ALREADY_EXISTS_ERROR,
-} = require("../errors");
 
 // const button = document.getElementById("post");
 // button.addEventListener("click", (event) => {
@@ -85,6 +65,17 @@ function retrieveReview() {
     })
 }
 
+function getReview() {
+  const sql = `SELECT Rating, Comments FROM Reviews WHERE Rating = 5`
+  return query(sql)
+  .then((response) => {
+    console.log(response[0][0])
+  })
+  // .catch(function(error){
+  //   console.log(error)
+  // })
+}
+
 
 
 
@@ -92,9 +83,6 @@ module.exports = {
   postReview,
   editReview,
   deleteReview,
-  retrieveReview
+  retrieveReview,
+  getReview
 };
-
-module.exports = {
-    postReview
-}

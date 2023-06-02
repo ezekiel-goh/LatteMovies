@@ -11,9 +11,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(session({
-	secret: 'secret',
-	resave: true,
-	saveUninitialized: true
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true
 }));
 
 // import models
@@ -27,7 +27,7 @@ const moviePublisher = require("../models/moviePublisher");
 // const Movies = require("../models/movie");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
   deleteUserCustomer, deleteUserPublisher, login } = require('../models/user.js');
-const review = require("../models/review");
+const review = require("../models/review.js");
 
 
 
@@ -73,7 +73,7 @@ app.post('/insertData', function (req, res) {
 });
 
 //views getting data for histogram
-app.get('/generateHistogramData', function(req, res) {
+app.get('/generateHistogramData', function (req, res) {
   histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
 });
 //   function (err, result) {
@@ -189,6 +189,19 @@ app.get('/reviews/data', function (req, res) {
     });
 })
 
+app.get('/reviews/best', function (req, res) {
+
+  review.getReview()
+    .then((review) => {
+      res.json(review);
+      // console.log(res.json(review))
+    })
+    .catch(error => {
+      console.error('Failed to get review', error)
+      res.sendStatus(500);
+    })
+})
+
 
 //-- Delete Movie by  ID
 app.delete('/movieDetails/:id', function (req, res) {
@@ -287,8 +300,8 @@ app.delete('/user/:userid', async (req, res) => {
 
 // general login function
 app.post('/auth', (req, res) => {
-	let username = req.body.username;
-	let password = req.body.password;
+  let username = req.body.username;
+  let password = req.body.password;
 
   login(username, password)
     .then((user) => {

@@ -16,26 +16,26 @@ module.exports.getMovie = function getMovie(id) {
 
 module.exports.addMovie = function addMovie(id, title, poster_path, overview, release_date, runtime) {
     return query(
-        'INSERT INTO Movies (id, title, poster_path, overview, release_date, runtime) VALUES (?, ?, ?, ?, ?, ?)', 
+        'INSERT INTO Movies (id, title, poster_path, overview, release_date, runtime) VALUES (?, ?, ?, ?, ?, ?)',
         [id, title, poster_path, overview, release_date, runtime]
     )
-    .then(() => {
-        return;
-    })
-    .catch((error) => {
-        if (error.errno === SqlLiteErrorCodes.SQLITE_CONSTRAINT) throw new DUPLICATE_ENTRY_ERROR(`Movie ${id}`);
-    });
+        .then(() => {
+            return;
+        })
+        .catch((error) => {
+            if (error.errno === SqlLiteErrorCodes.SQLITE_CONSTRAINT) throw new DUPLICATE_ENTRY_ERROR(`Movie ${id}`);
+        });
 };
 
 module.exports.updateMovie = function updateMovie(id, updatedId, title, poster_path, overview, release_date, runtime) {
     return query(
-        'UPDATE Movies SET id = ?, title = ?, poster_path = ?, overview = ?, release_date = ?, runtime = ? WHERE id = ?', 
+        'UPDATE Movies SET id = ?, title = ?, poster_path = ?, overview = ?, release_date = ?, runtime = ? WHERE id = ?',
         [updatedId, title, poster_path, overview, release_date, runtime, id]
     )
-    .then((response) => {
-        if (!response.changes) throw new NOT_FOUND_ERROR(`Movie ${id}`);
-        return;
-    });
+        .then((response) => {
+            if (!response.changes) throw new NOT_FOUND_ERROR(`Movie ${id}`);
+            return;
+        });
 };
 
 module.exports.deleteMovie = function deleteMovie(id) {
