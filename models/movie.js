@@ -1,4 +1,6 @@
 //-- Movies.js
+// -- Ezekiel Goh
+
 const { query } = require('../database');
 
 const {
@@ -44,6 +46,7 @@ const getMovieDetailsById = function (id) {
     })
 }
 
+//-- Delete Movies from LatteMovies DB by ID
 const deleteMovieDetailsById = function (id) {
     const sql = 'DELETE FROM Movies WHERE id = ?'
     return query(sql, [id])
@@ -52,6 +55,7 @@ const deleteMovieDetailsById = function (id) {
         })
 }
 
+//-- Update Movie Price from LatteMovies DB by ID
 const updateMoviePriceById = function (price, id) {
     const sql = 'UPDATE Movies SET Price = ? WHERE id = ?;'
     return query(sql, [price, id])

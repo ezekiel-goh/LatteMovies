@@ -1,7 +1,7 @@
 /* 
 -- Movies JS
 -- Ezekiel Goh
--- This part of the models folder contains the backend of the file 
+-- Backend of movies.html
 */
  
 const API_KEY = 'api_key=ca7e7fc5b26b0852a4e3acda4d0c7bc5';

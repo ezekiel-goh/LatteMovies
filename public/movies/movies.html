@@ -1,3 +1,11 @@
+<!-- 
+Contributers
+Ezekiel Goh
+Movies.html
+- Imports Movies from API to Database
+- Able to select multiple movies for insertion
+ -->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,9 +20,6 @@
         href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap"
         rel="stylesheet">
 
-    <!-- <link href="index.css" rel="stylesheet">
-    <link href="headers.css" rel="stylesheet"> -->
-    <!-- <link href="heroes.css" rel="stylesheet"> -->
 
 
 </head>
@@ -125,8 +130,7 @@
             aria-label="Header">
             <div class="container-fluid">
                 <a href="/" class="d-flex align-items-center mt-2 mb-2 mb-lg-0 pe-3 text-white text-decoration-none">
-                    <!-- <img src="../assets/brand/SPdvdRentals.png" class="appLogo bi me-2" width="auto" height="32"
-                        role="img" /> -->
+
                 </a>
                 <button class="navbar-toggler btn btn-dark" id="navBarButton" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -141,23 +145,11 @@
                         <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
                     </ul>
 
-
-                    <!-- <form class="col-12 col-lg-auto col-lg-5 mb-3 mb-lg-0 me-lg-3" role="search">
-                                <label for="searchBar">Email address</label>
-                                <input type="search" class="form-control form-control-dark text-bg-dark" id="searchBar"
-                                    placeholder="Search for Movie titles, Categories and More" aria-label="Search">
-                            </form> -->
-                    <!-- <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form> -->
-
                     <div class="text-end">
                         <a href="/login/"><button type="button" class="btn btn-warning me-2">Login</button></a>
                     </div>
                 </div>
             </div>
-            <!--  -->
     </div>
     </nav>
 
@@ -208,10 +200,6 @@
                 const movieData = await res.json();
                 console.log(movieData)
 
-                // fetch(url, options)
-                //     .then(res => res.json())
-                //     .then(movieData => {
-                //         console.log(movieData)}
 
                 const movieDetails = {
                     id: movieData.id,
@@ -221,7 +209,6 @@
                     release_date: movieData.release_date,
                     runtime: movieData.runtime
                 };
-
 
 
                 //-- Store the movie details
@@ -261,7 +248,3 @@
 
 <script type="text/javascript" src="../movies/movies.js"></script>
 
-
-<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script> -->

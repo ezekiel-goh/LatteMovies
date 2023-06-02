@@ -1,6 +1,12 @@
-<!-- Ezekiel Goh
-P2205881
-DIT/FT/1B/08 -->
+<!-- 
+Contributers
+Ezekiel Goh
+movieDetails.html
+- Show movie details by ID
+- can update movie price
+- can delete movie (individually)
+ -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,7 +56,6 @@ DIT/FT/1B/08 -->
 
     #ComFont {
         font-family: 'Nunito', sans-serif;
-        /* font-weight: regular; */
 
     }
 
@@ -153,22 +158,7 @@ DIT/FT/1B/08 -->
                 });
         });
 
-    // const deleteButton = document.getElementById("deleteBtn");
-    // deleteButton.addEventListener('click', (event) => {
-    //     axios.delete(`${baseUrl}/movieDetails/${id}`)
-    //         .then((response) => {
-    //             if (response.status == 200) {
-    //                 console.log("Movie Deleted")
-    //             } else {
-    //                 console.log("Error deleting movie")
-    //             }
-    //         })
-    //     alert("Movie Deleted!")
-    //         .catch(error => {
-    //             console.log("Request Failed: ", error)
-    //         })
 
-    // })
 
     //-- Edit Movie Price
     const editButton = document.getElementById("editBtn");
@@ -223,10 +213,7 @@ DIT/FT/1B/08 -->
 
             $("#Details").append(details);
 
-            // for (var i = 0; i <= detail.length; i++) {
-            //     const Actors = `<ul>${detail[i].first_name} ${detail[i].last_name}</ul>`
-            //     $("#actorName").append(Actors);
-            // }
+
         })
 
         .catch((error) => {
