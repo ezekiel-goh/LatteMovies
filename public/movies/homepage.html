@@ -82,6 +82,35 @@ Homepage.html
         border-color: rgba(255, 255, 255, 0);
         border-radius: 100px;
     }
+
+    .card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-img-top {
+        transition: filter 0.3s ease-in-out;
+    }
+
+    .card:hover .card-img-top {
+        filter: blur(10px);
+    }
+
+    .card-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(255, 255, 255, 0);
+        backdrop-filter: blur(15px);
+        padding: 10px;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover .card-content {
+        transform: translateY(0);
+    }
 </style>
 
 <body class="bg-black">
@@ -120,7 +149,8 @@ Homepage.html
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form> -->
 
-                    <div class="text-end">
+                    <div class="text-end mt-2" id="ComFont">
+                        <a href="/importMovies"><button class="btn text-warning  me-5 fs-5">Welcome, Ezekiel</button></a>
                         <button id="sortABC" class="sortABC me-2 btn btn-outline-light">Sort A-Z</button>
                         <a href="/login/"><button type="button" class="btn btn-warning me-2">Login</button></a>
                     </div>
@@ -131,8 +161,8 @@ Homepage.html
 
     <main>
         <section>
-            <div class="container mt-5 pt-5">
-                <div id="main" class="row ">
+            <div class="container">
+                <div id="main" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col my-5">
                 </div>
             </div>
         </section>
@@ -156,26 +186,35 @@ Homepage.html
 
             for (var i = 0; i < movies.length; i++) {
                 const movieEl = `
-                            <div class="col-12 col-sm-4 my-3">
-                                <div class="card" style="width: 18rem" data-id="${movies[i].id}">
-                                    <img class="bd-placeholder-img" src="${IMG_URL + movies[i].poster_path}"/>
-                                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">&nbsp</text>        
-                                    <div class="d-flex justify-content-between align-items-center"> 
-                                        <h5 class="text-dark">${movies[i].title}</h5>
-                                        <h4 class="favorite-icon">&hearts;</h4>
-                                        <a href="/movieDetails?id=${movies[i].id}" class="btn btn-dark rounded-5">View</a>
-                                    </div>
+
+                        <div class="col">
+                            <a href="/movieDetails?id=${movies[i].id}" class="card bg-black ">
+                            <img src="${IMG_URL + movies[i].poster_path}" class="card-img-top" alt="Movie Poster">
+                                <div class="card-content ">
+                                    <h2 class="card-title text-white">${movies[i].title}</h2>
                                 </div>
-                            </div>`;
+                            </a>
+                        </div>`
                 mainElement.insertAdjacentHTML("beforeend", movieEl);
             }
         };
 
+        // <div class="col-12 col-sm-4 my-3">
+        //                         <div class="card" style="width: 18rem" data-id="${movies[i].id}">
+        //                             <img class="bd-placeholder-img" src="${IMG_URL + movies[i].poster_path}"/>
+        //                             <text x="50%" y="50%" fill="#eceeef" dy=".3em">&nbsp</text>        
+        //                             <div class="d-flex justify-content-between align-items-center"> 
+        //                                 <h5 class="text-dark">${movies[i].title}</h5>
+        //                                 <h4 class="favorite-icon">&hearts;</h4>
+        //                                 <a href="/movieDetails?id=${movies[i].id}" class="btn btn-dark rounded-5">View</a>
+        //                             </div>
+        //                         </div>
+        //                     </div>`;
         const sortMovies = (movies) => {
             if (sorted) {
                 // Sort movies back to the original order
                 movies.sort((a, b) => a.id - b.id);
-            } else {
+            } else if (!sorted) {
                 // Sort movies alphabetically
                 movies.sort((a, b) => a.title.localeCompare(b.title));
             }
@@ -187,7 +226,8 @@ Homepage.html
         const button = document.getElementById("sortABC");
         button.addEventListener('click', (event) => {
             sortMovies(movies);
-            button.textContent = sorted ? "Sort A-Z" : "Sort By ID";
+            console.log(sorted)
+            button.textContent = sorted ? "Sort By ID" : "Sort A-Z";
         });
 
         axios.get(`${baseUrl}/movies`)
