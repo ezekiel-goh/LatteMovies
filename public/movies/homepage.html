@@ -230,7 +230,7 @@ Homepage.html
             button.textContent = sorted ? "Sort By ID" : "Sort A-Z";
         });
 
-        axios.get(`${baseUrl}/movies`)
+        axios.get(`/movies`)
             .then((response) => {
                 movies = Object.values(response.data);
                 console.log(movies);

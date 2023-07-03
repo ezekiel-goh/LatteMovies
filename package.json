@@ -10,8 +10,6 @@
         "mysql2": "^2.3.3",
         "node-fetch": "2.0",
         "path": "^0.12.7"
-
-
     },
     "scripts": {
         "start": "node server.js",
