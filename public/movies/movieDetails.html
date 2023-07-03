@@ -114,15 +114,35 @@ movieDetails.html
             <div class="container mt-5 pt-5">
                 <div id="Details" class="row ">
                 </div>
-                <div class="input-group mb-3" style="max-width: 200px;">
-                    <span class="input-group-text">$</span>
-                    <input type="text" id="inputPrice" class="form-control">
+                <div class="container">
+                    <div class="row justify-content-center ms-5" style="position: relative; left:20px;">
+                        <!-- <div class="mt-2 mb-3 "> -->
+                        <div class="input-group rounded-5 bg-dark border border-1"
+                            style="position: relative; max-width: 200px; height:50px;">
+                            <span
+                                class="input-group-text text-light bg-dark bg-transparent border border-0 fs-5">$</span>
+                            <input type="text" id="inputPrice"
+                                class="form-control bg-transparent text-light border border-0">
+                        </div>
+                        <!-- </div> -->
+                        <!-- <div class="mt-2 mb-3"> --> -->
+                        <a id="editBtn" class="btn btn-warning rounded-5 row align-items-center"
+                            style="max-width: 200px; height:50px;">
+                            <div class="mt-1 fs-5">Edit Price</div>
+                        </a>
+                        <!-- </div>
+                        <div class="mt-2 mb-3 "> -->
+                        <a href="/" id="deleteBtn" class="btn btn-danger col-sm rounded-5 row align-items-center"
+                            style="position:relative; max-width: 200px; height:50px; left:35px;">
+                            <div class="mt-1 fs-5">Delete Movie</div>
+                        </a>
+                        <!-- </div> -->
+                    </div>
                 </div>
-                <div class="mt-2, mb-3">
-                    <a id="editBtn" class="btn btn-warning rounded-5">Edit
-                        Price</a>
-                </div>
-                <a href="/" id="deleteBtn" class="btn btn-danger rounded-5">Delete Movie</a>
+            </div>
+
+
+
             </div>
             <br>
             <br>
@@ -140,85 +160,109 @@ movieDetails.html
         //-- Delete Movie 
 
         const deleteButton = document.getElementById("deleteBtn");
-        deleteButton.addEventListener('click',  (event) => {
-            const deleteRequest = axios.delete(`${baseUrl}/movieDetails/${id}`);
-            const getRequest = axios.get(`${baseUrl}/movieDetails/${id}`);
+        deleteButton.addEventListener('click', (event) => {
+            const deleteRequest = axios.delete(`/movieDetails/${id}`);
+            const getRequest = axios.get(`/movieDetails/${id}`);
 
             Promise.all([deleteRequest, getRequest])
                 .then(([deleteResponse, getResponse]) => {
                     if (deleteResponse.status === 200) {
                         console.log("Movie deleted!");
                     } else {
-                        alert("Failed to delete movie");
+                        alert("Movie Deleted");
                     }
                 })
                 .catch((error) => {
                     console.log(error);
-                    alert("Failed to delete movie");
+                    alert("Movie Deleted");
                 });
+            //-- not working as intended
         });
 
 
 
-    //-- Edit Movie Price
-    const editButton = document.getElementById("editBtn");
-    editButton.addEventListener('click', (event) => {
-        const priceInput = document.getElementById("inputPrice").value
-        console.log(priceInput)
-        const updatedMovie = {
-            price: priceInput
-        };
+        //-- Edit Movie Price
+        const editButton = document.getElementById("editBtn");
+        editButton.addEventListener('click', (event) => {
+            const priceInput = document.getElementById("inputPrice").value
+            console.log(priceInput)
+            const updatedMovie = {
+                price: priceInput
+            };
 
 
-        axios.put(`${baseUrl}/movieDetails/${id}`, updatedMovie)
+            axios.put(`/movieDetails/${id}`, updatedMovie)
+                .then((response) => {
+                    if (response.status == 200) {
+                        console.log("Movie Price Edited")
+                    } else {
+                        console.log("Error editing movie Price")
+                    }
+                })
+        })
+
+
+        const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
+        const baseUrl = "http://localhost:3000";
+        const params = new URLSearchParams(window.location.search);
+        //-- URL Parameters
+        const id = params.get('id')
+
+        axios.get(`/movieDetails/${id}`)
             .then((response) => {
-                if (response.status == 200) {
-                    console.log("Movie Price Edited")
-                } else {
-                    console.log("Error editing movie Price")
-                }
-            })
-    })
-
-
-    const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
-    const baseUrl = "http://localhost:3000";
-    const params = new URLSearchParams(window.location.search);
-    //-- URL Parameters
-    const id = params.get('id')
-
-    axios.get(`${baseUrl}/movieDetails/${id}`)
-        .then((response) => {
-            const movies = Object.values(response.data);
-            console.log(movies)
-            const details = `
+                const movies = Object.values(response.data);
+                console.log(movies)
+                const details = `
                 
                 <div class="card-body ">
-                    <h1 class="text-light">${movies[0].title}</h1>
-                    <div class="card" style="width: 12rem">
-                    <img class="bd-placeholder-img" src="${IMG_URL + movies[0].poster_path}"/>
-                    </div>
-                    <p class="text-light"> 
-                        <br> Runtime: ${movies[0].runtime} mins 
-                        <br> Price: ${movies[0].Price? `$${movies[0].Price}` : "Price not set"}
-                        <br> Release date: ${movies[0].release_date}
-                        <br> Overview: ${movies[0].overview}
-                    <p id="actorName" class="text-light"></p>
+                    <div class="container">
+                        <div class="row">
+                        <div class="col-4 card bg-black" style="width: 20rem">
+                        <img class="bd-placeholder-img" src="${IMG_URL + movies[0].poster_path}"/>
+                        </div>
+                        <div class="col-8">
+                            <h1 class="text-light mt-4">${movies[0].title}</h1>
+                        <p class="text-light"> 
+                            
+                                
+                                    
+                            <br><b>Overview</b><br>${movies[0].overview}
+                            <div class="container ">
+                            <div class="row text-light fs-5 me-5">
+                            <div class="col-sm">
+                            <br> <b>Runtime</b> <br>${movies[0].runtime} mins 
+                            </div>
+                            <div class="col-sm">
+                            <br> <b>Price</b> <br>${movies[0].Price ? `$${movies[0].Price}` : "No Price"}
+                            </div>
+                            <div class="col-sm">
+                            <br> <b>Release date</b> <br>${movies[0].release_date}
+                            </div>
+                            <br> 
+                            </div>
+                            </div>
                         </p>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                    
+
+             
 
                        
 
                 </div>
                         `;
 
-            $("#Details").append(details);
+                $("#Details").append(details);
 
 
-        })
+            })
 
-        .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => {
+                console.log(error);
+            });
 
     })
 

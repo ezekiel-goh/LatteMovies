@@ -34,18 +34,78 @@ function showMovies(data) {
     movieEl.classList.add('col-4')
     movieEl.innerHTML = `
 
-    <div class="col-12 col-sm-4 my-3">
-          <div class="card" style="width: 18rem">
-          <img class="bd-placeholder-img" src="${IMG_URL + poster_path}"><text x="50%" y="50%" fill="#eceeef" dy=".3em">'&nbsp'</text></img>          
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                <input type="checkbox" class="movie-checkbox btn btn-sm btn-outline-dark" id="${id}">
-                <label for="${id}" style="color:red">Add</label><br>
-                </div> 
-                <text class="text-dark">${title}</text>
-              </div>
-             </div>
-          </div>
+    <style>
+
+    .form-group {
+      position: relative;
+      top: 55px;
+      left: 135px;
+    }
+
+    .form-group input {
+      padding: 0;
+      height: initial;
+      width: initial;
+      margin-bottom: 0;
+      display: none;
+      cursor: pointer;
+    }
+    
+    .form-group label {
+      position: relative;
+      cursor: pointer;
+      bottom: 9px;
+    }
+    
+    .form-group label:before {
+      content:'';
+      -webkit-appearance: none;
+      background-color: #FFC107;
+      border: 1px solid #FFC107;
+      border-radius: 5px;    
+      bottom: 3px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+      padding: 10px;
+      display: inline-block;
+      position: relative;
+      vertical-align: middle;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    
+    .form-group input:checked + label:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 3px;
+      left: 9px;
+      width: 6px;
+      height: 14px;
+      border: solid #000;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    
+    .backgroundCB {
+      border-radius: 15px;
+      background: #000;
+      border: 2px solid #000;
+      padding: 20px; 
+      width: 120px;
+      height: 48px; 
+    }
+
+    </style>
+
+    <div class="col">
+    <div class="form-group">
+    <div class="backgroundCB">
+    <input type="checkbox" class="movie-checkbox btn btn-sm btn-outline-dark" id="${id}" ">
+    <label class="tB" for="${id}">Select</label>
+    </div>
+    </div>
+          <img src="${IMG_URL + poster_path}" class="card-img-top" alt="Movie Poster">
+          <h5 class="card-title text-white mt-3">${title}</h5>
     </div>
     `
 
@@ -53,6 +113,20 @@ function showMovies(data) {
 
   })
 }
+
+{/* <div class="col">
+<img src="${IMG_URL + poster_path}" class="card-img-top" alt="Movie Poster">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="btn-group">
+      <input type="checkbox" class="movie-checkbox btn btn-sm btn-outline-dark" id="${id}">
+      <label for="${id}" style="color:white">Add</label><br>
+      </div> 
+      <div class="card-content">
+      <h2 class="card-title text-white">${title}</h2>
+      </div>
+    </div>
+</div>
+</div> */}
 
 
 

@@ -2,10 +2,12 @@
 const express = require("express");
 const session = require('express-session');
 const createHttpError = require('http-errors');
+const cors = require("cors")
 
 const { EMPTY_RESULT_ERROR, DUPLICATE_ENTRY_ERROR, TABLE_ALREADY_EXISTS_ERROR, NOT_FOUND_ERROR } = require('../errors');
 
 const app = express();
+app.use(cors())
 app.use(express.json()); // to process JSON in request body
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -35,8 +37,6 @@ const bodyParser = require("body-parser");
 //use the middleware
 app.use(bodyParser.json());
 
-const cors = require("cors");
-app.use(cors());
 
 
 // -- Movie Details
