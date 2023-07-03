@@ -115,31 +115,31 @@ movieDetails.html
                 <div id="Details" class="row ">
                 </div>
                 <div class="container">
-                    <div class="row justify-content-sm-end">
-                        <div class="mt-2 mb-3 col">
-                            <div class="input-group rounded-5 bg-dark border border-1"
-                                style="max-width: 200px; height:50px;">
-                                <span
-                                    class="input-group-text text-light bg-dark bg-transparent border border-0 fs-5">$</span>
-                                <input type="text" id="inputPrice"
-                                    class="form-control bg-transparent text-light border border-0">
-                            </div>
+                    <div class="row justify-content-center ms-5" style="position: relative; left:20px;">
+                        <!-- <div class="mt-2 mb-3 "> -->
+                        <div class="input-group rounded-5 bg-dark border border-1"
+                            style="position: relative; max-width: 200px; height:50px;">
+                            <span
+                                class="input-group-text text-light bg-dark bg-transparent border border-0 fs-5">$</span>
+                            <input type="text" id="inputPrice"
+                                class="form-control bg-transparent text-light border border-0">
                         </div>
-                        <div class="mt-2 mb-3 col">
-                            <a id="editBtn" class="btn btn-warning rounded-5 row align-items-center"
-                                style="max-width: 200px; height:50px;">
-                                <div class="mt-1 fs-5">Edit Price</div>
-                            </a>
-                        </div>
-                        <div class="mt-2 mb-3 col">
-                            <a href="/" id="deleteBtn" class="btn btn-danger col-sm rounded-5 row align-items-center"
-                                style="max-width: 200px; height:50px;">
-                                <div class="mt-1 fs-5">Delete Movie</div>
-                            </a>
-                        </div>
-
+                        <!-- </div> -->
+                        <!-- <div class="mt-2 mb-3"> --> -->
+                        <a id="editBtn" class="btn btn-warning rounded-5 row align-items-center"
+                            style="max-width: 200px; height:50px;">
+                            <div class="mt-1 fs-5">Edit Price</div>
+                        </a>
+                        <!-- </div>
+                        <div class="mt-2 mb-3 "> -->
+                        <a href="/" id="deleteBtn" class="btn btn-danger col-sm rounded-5 row align-items-center"
+                            style="position:relative; max-width: 200px; height:50px; left:35px;">
+                            <div class="mt-1 fs-5">Delete Movie</div>
+                        </a>
+                        <!-- </div> -->
                     </div>
                 </div>
+            </div>
 
 
 
@@ -191,7 +191,7 @@ movieDetails.html
             };
 
 
-            axios.put(`${baseUrl}/movieDetails/${id}`, updatedMovie)
+            axios.put(`/movieDetails/${id}`, updatedMovie)
                 .then((response) => {
                     if (response.status == 200) {
                         console.log("Movie Price Edited")
@@ -208,7 +208,7 @@ movieDetails.html
         //-- URL Parameters
         const id = params.get('id')
 
-        axios.get(`${baseUrl}/movieDetails/${id}`)
+        axios.get(`/movieDetails/${id}`)
             .then((response) => {
                 const movies = Object.values(response.data);
                 console.log(movies)
