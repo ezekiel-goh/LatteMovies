@@ -161,8 +161,8 @@ movieDetails.html
 
         const deleteButton = document.getElementById("deleteBtn");
         deleteButton.addEventListener('click', (event) => {
-            const deleteRequest = axios.delete(`${baseUrl}/movieDetails/${id}`);
-            const getRequest = axios.get(`${baseUrl}/movieDetails/${id}`);
+            const deleteRequest = axios.delete(`/movieDetails/${id}`);
+            const getRequest = axios.get(`/movieDetails/${id}`);
 
             Promise.all([deleteRequest, getRequest])
                 .then(([deleteResponse, getResponse]) => {
