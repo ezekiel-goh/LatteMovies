@@ -52,10 +52,6 @@ app.get('/histogram.js', (req, res) => {
   }
 });
 
-app.get("/addActor/", (req, res) => {
-  res.sendFile("/public/addActor.html", { root: __dirname });
-});
-
 
 app.get('/moviePublisher', (req, res) => {
   // if (req.session.role == 'Publisher') {
@@ -72,6 +68,10 @@ app.get('/userpage', (req, res) => {
   } else {
     res.redirect('/');
   }
+});
+
+app.get("/register", (req, res) => {
+  res.sendFile("/public/register.html", { root: __dirname });
 });
 
 
