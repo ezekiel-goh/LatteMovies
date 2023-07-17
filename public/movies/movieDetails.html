@@ -80,6 +80,74 @@ movieDetails.html
         border-color: rgba(255, 255, 255, 0);
         border-radius: 100px;
     }
+
+    .large-font {
+        font-size: 40px;
+    }
+
+    .top-20 {
+        position: relative;
+        top: 20vh;
+    }
+
+    ion-icon.active {
+        animation: like 0.5s 1;
+        fill: #FFC107;
+        stroke: none;
+    }
+
+    ion-icon {
+        fill: transparent;
+        stroke-width: 25;
+        transition: all 0.5s;
+    }
+
+    #tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -60px;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }
+
+    @-webkit-keyframes like {
+        0% {
+            transform: scale(1);
+        }
+
+        90% {
+            transform: scale(1.2);
+        }
+
+        100% {
+            transform: scale(1.1);
+        }
+    }
+
+    .icons .heartIcon {
+        width: 40px;
+        height: 40px;
+        font-size: 50px;
+    }
 </style>
 
 <body class="bg-black">
@@ -121,7 +189,23 @@ movieDetails.html
                                 <div id="posterIMG" class="col-4 card bg-black" style="width: 20rem">
                                     <!-- image url here -->
                                 </div>
-                                <div class="col-8">
+                                <div class="col-8" style="max-width: 800px;">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <div id="MovieTitle">
+                                                </div>
+                                            </div>
+                                            <div class="icons col-3">
+                                                <div class='large-font text-warning pt-4'>
+                                                    <ion-icon name="heart" class="heartIcon" data-toggle="tooltip"
+                                                        data-original-title="Like/Unlike">
+                                                        <!-- #1 fix tooltip -->
+                                                    </ion-icon>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div id="Details">
                                     </div>
                                     <div class="container">
@@ -154,27 +238,60 @@ movieDetails.html
                             </div>
                         </div>
                     </div>
-
                 </div>
-
-
-
             </div>
-            <br>
-            <br>
-            <br>
+            <div style="position: relative; top: 80px; text-align: center;" class="text-light">
+                <h2>Watch Movie</h2>
+
+                <div style="text-align: center;">
+                    <video width="800" height="600" controls>
+                        <source src="../tenMoreSteps.mp4" type="video/mp4">
+                        <source src="movie.ogg" type="video/ogg">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
         </section>
     </main>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-
 <script>
+
+    let icon = document.querySelector('ion-icon');
+    icon.onclick = function () {
+        const userID = 1;   // ID of the user who likes the movie
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');  // ID of the movie to be liked
+
+        const data = {
+            id: id,
+            userID: userID
+        };
+        if (icon.classList.toggle('active')) {
+            axios.post(`/likedMovies`, data)
+                .then(response => {
+                    console.log('Movie liked:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error liking movie:', error);
+                });
+        } else {
+            console.log('disliked');
+        }
+    };
+
 
     document.addEventListener('DOMContentLoaded', function () {
 
-        //-- Delete Movie 
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip({
+                placement: 'bottom'
+            });
+        });
 
+        //-- Delete Movie 
         const deleteButton = document.getElementById("deleteBtn");
         deleteButton.addEventListener('click', (event) => {
             const deleteRequest = axios.delete(`/movieDetails/${id}`);
@@ -230,8 +347,9 @@ movieDetails.html
                 console.log(movies)
                 const IMGPoster =
                     `<img class="bd-placeholder-img" src="${IMG_URL + movies[0].poster_path}"/>`
+                const movTitle = `<h1 class="text-light mt-4" style="max-width: 600px;">${movies[0].title}</h1>`
                 const details =
-                    `<h1 class="text-light mt-4">${movies[0].title}</h1>
+                    `
                     <p class="text-light"> 
                         <br><b>Overview</b><br>${movies[0].overview}
                         <div class="container ">
@@ -250,8 +368,9 @@ movieDetails.html
                         </div>
                     </p>`;
 
-                $("#Details").append(details);
                 $("#posterIMG").append(IMGPoster);
+                $("#MovieTitle").append(movTitle);
+                $("#Details").append(details);
 
             })
 

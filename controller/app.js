@@ -127,6 +127,21 @@ app.put('/movieDetails/:id', function (req, res) {
     });
 });
 
+//-- Favorite Movies (INSERT)
+app.post('/likedMovies', function (req, res) {
+  const { id, userID } = req.body;
+
+  favorite.postLiked({ id, userID })
+    .then(() => {
+      res.sendStatus(201); 
+    })
+    .catch(error => {
+      console.error('Error posting liked movie:', error);
+      res.sendStatus(500);
+    });
+});
+
+
 //-- Submit Review
 app.post('/reviews', function (req, res) {
   const Comments = req.body.Comments
