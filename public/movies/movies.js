@@ -12,14 +12,18 @@ const CREDIT_URL = BASE_URL + '/3/movie/{movie_id}/credits' + API_KEY;
 
 
 const main = document.getElementById('main')
-getMovies(API_URL + '&with_genres=' + '10751');
+getMovies(API_URL + '&with_genres=' + '28, 10751');
 
 
 function getMovies(url) {
   fetch(url).then(res => res.json())
     .then(data => {
       showMovies(data.results);
-      console.log(data.results);
+      const movieData = data.results
+      for (var i = 0; i < movieData.length; i++) {
+        console.log(movieData[i].genre_ids[0]);
+    }
+    
     })
 }
 
@@ -104,7 +108,7 @@ function showMovies(data) {
     <label class="tB" for="${id}">Select</label>
     </div>
     </div>
-          <img src="${IMG_URL + poster_path}" class="card-img-top" alt="Movie Poster">
+          <img src="${IMG_URL + poster_path}" class="card-img-top" alt="Movie Poster"> 
           <h5 class="card-title text-white mt-3">${title}</h5>
     </div>
     `

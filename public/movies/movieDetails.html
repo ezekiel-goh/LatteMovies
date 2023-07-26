@@ -102,6 +102,53 @@ movieDetails.html
         transition: all 0.5s;
     }
 
+    .carousel-container {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .carousel-track {
+        display: flex;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .col {
+        flex: 0 0 auto;
+        margin: 0 5px;
+        /* Adjust the spacing between cards */
+    }
+
+    .card {
+        position: relative;
+        overflow: hidden;
+        max-width: 250px;
+        height: auto;
+    }
+
+    .card-img-top {
+        transition: filter 0.3s ease-in-out;
+    }
+
+    .card:hover .card-img-top {
+        filter: blur(15px);
+    }
+
+    .card-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(255, 255, 255, 0);
+        /* backdrop-filter: blur(15px); */
+        padding: 10px;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover .card-content {
+        transform: translateY(0);
+    }
+
     #tooltip {
         position: relative;
         display: inline-block;
@@ -226,9 +273,10 @@ movieDetails.html
                                                 </a>
                                             </div>
                                             <div class="col-sm my-2">
-                                                <a href="/" id="deleteBtn" class="btn btn-danger rounded-5"
+                                                <!-- disabled -->
+                                                <a href="/" id="deleteBtn" class="btn btn-secondary rounded-5"
                                                     style="position:relative; min-width: 150px; height:50px;">
-                                                    <div class="mt-1 fs-5">Delete Movie</div>
+                                                    <div class="mt-1 fs-5">Delete DISABLED</div>
                                                 </a>
                                             </div>
                                         </div>
@@ -251,6 +299,29 @@ movieDetails.html
                     </video>
                 </div>
             </div>
+
+            <div class="container" id="ComFont">
+                <div class="mt-5">
+                    <div class="text-start text-light mt-5" style="position:relative; top: 60px;">
+                        <h2>Recommended Movies</h2>
+                        <button type="button" class="btn btn-dark" id="slideRightBtn">
+                            <ion-icon name="arrow-back-outline"></ion-icon>
+                        </button>
+                        <button type="button" class="btn btn-dark" id="slideLeftBtn">
+                            <ion-icon name="arrow-forward-outline"></ion-icon>
+                        </button>
+
+                        <div class="carousel-container" id="carouselContainer">
+                            <div class="carousel-track">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
         </section>
     </main>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -282,6 +353,80 @@ movieDetails.html
         }
     };
 
+    //-- score attributes
+    function getPriceScore(price) {
+        const priceChart = {
+            '1': { min: 0, max: 2.99 },
+            '2': { min: 3, max: 5.99 },
+            '3': { min: 6, max: 8.99 },
+            '4': { min: 9, max: 11.99 },
+            '5': { min: 12, max: 14.99 },
+            '6': { min: 15, max: 17.99 },
+            '7': { min: 18, max: 25 },
+        };
+        for (const [score, range] of Object.entries(priceChart)) {
+            if (price >= range.min && price <= range.max) {
+                return score;
+            }
+        }
+    }
+
+    function getDurationScore(duration) {
+        const durationChart = {
+            '1': { min: 0, max: 60 },
+            '2': { min: 61, max: 70 },
+            '3': { min: 71, max: 80 },
+            '4': { min: 81, max: 90 },
+            '5': { min: 91, max: 100 },
+            '6': { min: 101, max: 110 },
+            '7': { min: 111, max: 120 },
+            '8': { min: 121, max: 130 },
+            '9': { min: 131, max: 140 },
+            '10': { min: 141, max: 150 },
+            '11': { min: 151, max: 160 },
+            '12': { min: 161, max: 170 },
+            '13': { min: 171, max: 180 },
+            '14': { min: 181, max: 190 },
+            '15': { min: 191, max: 200 },
+            '16': { min: 201, max: 230 },
+            '17': { min: 231, max: Infinity },
+        };
+
+        for (const [score, range] of Object.entries(durationChart)) {
+            if (duration >= range.min && duration <= range.max) {
+                return score;
+            }
+        }
+        return 0;
+    }
+
+    function getGenreScore(genre_id) {
+        const genreChart = {
+            '28': '1',        // Action
+            '12': '2',        // Adventure
+            '16': '3',        // Animation
+            '35': '4',        // Comedy
+            '80': '5',        // Crime
+            '99': '6',        // Documentary
+            '18': '7',        // Drama
+            '10751': '8',     // Family
+            '14': '9',        // Fantasy
+            '36': '10',       // History
+            '27': '11',       // Horror
+            '10402': '12',    // Music
+            '9648': '13',     // Mystery
+            '10749': '14',    // Romance
+            '878': '15',      // Science Fiction
+            '10770': '16',    // TV Movie
+            '53': '17',       // Thriller
+            '10752': '18',    // War
+            '37': '19',       // Western
+        };
+
+        return genreChart[genre_id];
+    }
+
+
 
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -291,27 +436,28 @@ movieDetails.html
             });
         });
 
-        //-- Delete Movie 
-        const deleteButton = document.getElementById("deleteBtn");
-        deleteButton.addEventListener('click', (event) => {
-            const deleteRequest = axios.delete(`/movieDetails/${id}`);
-            const getRequest = axios.get(`/movieDetails/${id}`);
-
-            Promise.all([deleteRequest, getRequest])
-                .then(([deleteResponse, getResponse]) => {
-                    if (deleteResponse.status === 200) {
-                        console.log("Movie deleted!");
-                    } else {
-                        alert("Movie Deleted");
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                    alert("Movie Deleted");
+        //-- Delete Movie [TEMP DISABLED]
+        /*
+                const deleteButton = document.getElementById("deleteBtn");
+                deleteButton.addEventListener('click', (event) => {
+                    const deleteRequest = axios.delete(`/movieDetails/${id}`);
+                    const getRequest = axios.get(`/movieDetails/${id}`);
+        
+                    Promise.all([deleteRequest, getRequest])
+                        .then(([deleteResponse, getResponse]) => {
+                            if (deleteResponse.status === 200) {
+                                console.log("Movie deleted!");
+                            } else {
+                                alert("Movie Deleted");
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            alert("Movie Deleted");
+                        });
+                    //-- not working as intended
                 });
-            //-- not working as intended
-        });
-
+        */
 
 
         //-- Edit Movie Price
@@ -351,7 +497,9 @@ movieDetails.html
                 const details =
                     `
                     <p class="text-light"> 
-                        <br><b>Overview</b><br>${movies[0].overview}
+                        <div class="ms-3 text-light">
+                            <br><b>Overview</b><br>${movies[0].overview}
+                        </div>
                         <div class="container ">
                             <div class="row text-light fs-5 me-5">
                                 <div class="col-sm">
@@ -372,13 +520,116 @@ movieDetails.html
                 $("#MovieTitle").append(movTitle);
                 $("#Details").append(details);
 
-            })
+                const priceScore = getPriceScore(movies[0].Price);
+                const durationScore = getDurationScore(movies[0].runtime);
+                const genreScore = getGenreScore(movies[0].genre_id);
+                console.log([priceScore, durationScore, genreScore])
 
+
+
+
+
+
+
+
+                axios.get(`/allMovieDetails/`)
+                    .then((response) => {
+                        const allMovies = Object.values(response.data);
+                        const currentMovie = movies.find(movie => id === movie.id);
+
+                        const similarMovies = allMovies.filter((movie) => {
+                            const moviePriceScore = getPriceScore(movie.Price);
+                            const movieDurationScore = getDurationScore(movie.runtime);
+                            const movieGenreScore = getGenreScore(movie.genre_id);
+                            return (
+                                moviePriceScore === priceScore &&
+                                movieDurationScore === durationScore &&
+                                movieGenreScore === genreScore &&
+                                movie.id !== parseInt(id)
+                            )
+                        })
+
+                        const carouselTrack = document.querySelector('.carousel-track');
+
+                        function createMovieCard(movie) {
+                            const card = document.createElement('div');
+                            card.className = 'col';
+                            card.innerHTML = `
+                            <a href="/movieDetails?id=${movie.id}" class="card bg-black">
+                              <img src="${IMG_URL + movie.poster_path}" class="card-img-top" alt="Movie Poster">
+                              <div class="card-content">
+                                <h2 class="card-title text-white">${movie.title}</h2>
+                              </div>
+                            </a>
+                            `;
+                            return card;
+                        }
+
+                        function populateCarousel() {
+                            for (const movie of similarMovies) {
+                                const movieCard = createMovieCard(movie);
+                                carouselTrack.appendChild(movieCard);
+                            }
+                        }
+
+                        const carouselContainer = document.getElementById('carouselContainer');
+                        const isScrollable = carouselContainer.scrollWidth > carouselContainer.clientWidth;
+
+                        const slideRightBtn = document.getElementById('slideRightBtn');
+                        const slideLeftBtn = document.getElementById('slideLeftBtn');
+                        if (!isScrollable) {
+                            slideRightBtn.style.display = 'none';
+                            slideLeftBtn.style.display = 'none';
+                        } else {
+                            slideRightBtn.style.display = 'block';
+                            slideLeftBtn.style.display = 'block';
+                        }
+
+                        populateCarousel();
+
+                        function slideCarousel(direction) {
+                            const cardWidth = carouselTrack.querySelector('.col').offsetWidth;
+                            const trackPosition = carouselTrack.style.transform ? parseInt(carouselTrack.style.transform.match(/-?\d+/)[0]) : 0;
+                            const newTrackPosition = direction === 'right' ? trackPosition + cardWidth : trackPosition - cardWidth;
+                            carouselTrack.style.transform = `translateX(${newTrackPosition}px)`;
+                        }
+
+                        // To slide left and right, you can use buttons or other triggers like:
+                        document.querySelector('#slideRightBtn').addEventListener('click', () => slideCarousel('right'));
+                        document.querySelector('#slideLeftBtn').addEventListener('click', () => slideCarousel('left'));
+
+
+                        // Log the titles of movies with similar scores
+                        console.log("Movies with similar scores:");
+
+                        for (const movie of similarMovies) {
+                            console.log(movie.title);
+
+                            const movieEl = `
+                        <div class="col">
+                            <a href="/movieDetails?id=${movies.id}" class="card bg-black ">
+                            <img src="${IMG_URL + movies.poster_path}" class="card-img-top" alt="Movie Poster">
+                                <div class="card-content ">
+                                    <h2 class="card-title text-white">${movies.title}</h2>
+                                </div>
+                            </a>
+                        </div>`
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+            })
             .catch((error) => {
                 console.log(error);
             });
-
     })
+
+
+
+</script>
+<script>
 
 </script>
 <script>
