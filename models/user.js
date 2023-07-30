@@ -98,7 +98,7 @@ module.exports.deleteUserPublisher = async function deleteUserPublisher(UserID) 
 // general login function
 module.exports.login = function login(username, password) {
     return query(
-        'SELECT Username, Role FROM User WHERE Username = ? and Password = ?', 
+        'SELECT Username, Role FROM User WHERE Username = ? and Password = ?',
         [username, password],
     ).then((user) => { return user[0][0]; });
 }
@@ -118,12 +118,26 @@ module.exports.buyMovie = async function buyMovie(MovieID, CustomerID) {
 
 module.exports.getPurchase = async function getPurchase(UserID) {
     //    const connection = getConnection();
-    const Purchase = await query('select UserID, MovieID, Price, DateBought from Purchase where UserID = ?', [UserID]);
+    const Purchase = await query(`select 
+        M.title, M.Price, M.release_date, M.runtime, P.DateBought
+        from 
+        Purchase P, Movies M, User U
+        where P.MovieID = M.id
+        and P.UserID = U.UserID
+        and U.UserID = ?`, [UserID]);
     return Purchase;
 };
 
 module.exports.getReviewByUser = async function getReviewByUser(UserID) {
     //    const connection = getConnection();
-    const Review = await query('select MovieID, UserID, Rating, Comments from Reviews where UserID = ?', [UserID]);
+    const Review = await query(`
+    select
+    M.title, M.release_date, R.Rating, R.Comments
+    from
+    Movies M, Reviews R, User U
+    where
+    M.id = R.MovieID and
+    R.UserID = U.UserID
+    and U.UserID = ?`, [UserID]);
     return Review;
 };
