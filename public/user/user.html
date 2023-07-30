@@ -18,6 +18,11 @@
             color: aliceblue;
         }
 
+        .content-section {
+            display: none;
+            /* Hide all content sections by default */
+        }
+
         #navBar {
             border-radius: 30px 30px 30px 30px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.31);
@@ -39,7 +44,7 @@
 <body class="bg-black">
     <div class="cover-container d-f p-3 mx-auto flex-column">
 
-        <nav class="navbar navbar-expand-sm p-3 m-2 fixed-top bg-dark" id="navBar" style="background-color: #000;"
+        <nav class="navbar navbar-expand-sm p-3 m-2 bg-dark" id="navBar" style="background-color: #000;"
             aria-label="Header">
             <div class="container-fluid">
                 <a href="/" class="d-flex align-items-center mt-2 mb-2 mb-lg-0 pe-3 text-white text-decoration-none">
@@ -76,7 +81,7 @@
             </div>
         </nav>
     </div>
-
+    <!--
     <div class="container row" id="UserContent">
         <h1>User Page</h1>
 
@@ -157,9 +162,31 @@
             </div>
         </div>
     </div>
+-->
 
+    <div class="container text-light">
 
+        <h1>Display Data</h1>
+        <!-- Dropdown menu -->
+        <select id="contentSelector">
+            <option value="reviews">Reviews</option>
+            <option value="purchases">Purchases</option>
+        </select>
 
+        <!-- Content sections -->
+        <div id="reviews" class="content-section">
+            <!-- Data 1 goes here -->
+            <p>Loading Reviews..</p>
+            <p id="reviewdata"></p>
+        </div>
+
+        <div id="purchases" class="content-section">
+            <!-- Data 2 goes here -->
+            <p>Loading Purchases...</p>
+            <p id="purchasedata"></p>
+        </div>
+
+    </div>
 
     <!-- JQuery, Axios -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -168,13 +195,93 @@
     <script>
 
         const baseUrl = 'http://localhost:3000';
-        //  This login will only work when there is an existing record
-        // at UserID index 13. Choose another existing UserID
-        // to display the details of other User records.
-        // The UserID is hardcoded as the Login function does
-        // not exist yet.
-        const loggedInUserID = 13;
+        const loggedInUserID = 1;
 
+        // Function to fetch data from the backend using Axios
+        function fetchDataFromAPI(apiURL) {
+            return axios.get(apiURL)
+                .then((response) => {
+                    if (apiURL === `${baseUrl}/reviews/data/${loggedInUserID}`) {
+                        const data = response.data
+                        data.forEach(review => {
+                            const reviewHTML = `
+                        <div class='container border border-2 border-white rounded mx-3 my-4'>
+                            <p>MovieID: ${review.MovieID}</p>
+                            <p>UserID: ${review.UserID}</p>
+                            <p>Rating: ${review.Rating}</p>
+                            <p>Comments: ${review.Comments}</p>
+                        </div>
+                        `;
+                            $('#reviewdata').append(reviewHTML);
+                        });
+                    }
+                    else if (apiURL === `${baseUrl}/purchase/${loggedInUserID}`) {
+                        const data = response.data
+                        data.forEach(purchase => {
+                            const purchaseHTML = `
+                        <div class='container border border-2 border-white rounded mx-3 my-4'>
+                            <p>UserID: ${purchase.UserID}</p>
+                            <p>MovieID: ${purchase.MovieID}</p>
+                            <p>Price: ${purchase.Price}</p>
+                            <p>Date Bought: ${purchase.DateBought}</p>
+                        </div>
+                        `;
+                            $('#purchasedata').append(purchaseHTML);
+                        });
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    return {}; // Return an empty object or handle the error appropriately
+                });
+        }
+
+        // Function to update the displayed content
+        function updateDisplayedContent(selectedValue, data) {
+            const allContentSections = $('.content-section');
+
+            // Hide all content sections
+            allContentSections.hide();
+
+            // Show the selected content section
+            const selectedContentSection = $('#' + selectedValue);
+            selectedContentSection.show();
+
+            // Update the content of the selected section with the data
+            selectedContentSection.find('p').text(data[selectedValue]);
+        }
+
+        // Event listener for dropdown menu change
+        $('#contentSelector').on('change', async function () {
+            const selectedValue = $(this).val();
+
+            // Fetch data from multiple APIs using Axios
+            const reviewAPI = `${baseUrl}/reviews/data/${loggedInUserID}`;
+            const purchaseAPI = `${baseUrl}/purchase/${loggedInUserID}`;
+
+            const requests = [
+                fetchDataFromAPI(reviewAPI),
+                fetchDataFromAPI(purchaseAPI)
+            ];
+
+            try {
+                const [reviews, purchases] = await Promise.all(requests);
+                const data = {
+                    reviews: reviews,
+                    purchases: purchases
+                };
+                updateDisplayedContent(selectedValue, data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+
+        // Initial content display
+        $('#reviews').show();
+
+
+        /*
         // retrieve user data
         axios.get(`${baseUrl}/user/${loggedInUserID}`)
             .then((response) => {
@@ -277,7 +384,7 @@
                     console.log(error);
                 });
         });
-
+*/
     </script>
 
     <main>

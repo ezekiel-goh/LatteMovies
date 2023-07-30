@@ -115,3 +115,15 @@ module.exports.buyMovie = async function buyMovie(MovieID, CustomerID) {
             throw new EMPTY_RESULT_ERROR(`Movie ${MovieID}, Customer ${CustomerID}`);
         });
 }
+
+module.exports.getPurchase = async function getPurchase(UserID) {
+    //    const connection = getConnection();
+    const Purchase = await query('select UserID, MovieID, Price, DateBought from Purchase where UserID = ?', [UserID]);
+    return Purchase;
+};
+
+module.exports.getReviewByUser = async function getReviewByUser(UserID) {
+    //    const connection = getConnection();
+    const Review = await query('select MovieID, UserID, Rating, Comments from Reviews where UserID = ?', [UserID]);
+    return Review;
+};
