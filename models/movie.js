@@ -13,9 +13,9 @@ const {
 
 //-- Create API Movies into LatteMovies DB
 const postMovies = function (movieDetails) {
-    const { id, title, poster_path, overview, release_date, runtime } = movieDetails
-    const sql = "INSERT INTO Movies(id, title, poster_path, overview, release_date, runtime) VALUES (?, ?, ?, ?, ?, ?)";
-    return query(sql, [id, title, poster_path, overview, release_date, runtime])
+    const { id, title, poster_path, overview, release_date, runtime, price, genre_id } = movieDetails
+    const sql = "INSERT INTO Movies(id, title, poster_path, overview, release_date, runtime, price, genre_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    return query(sql, [id, title, poster_path, overview, release_date, runtime, price, genre_id])
         .catch(function (error) {
             if (error.errno === MYSQL_ERROR_CODE.DUPLICATE_ENTRY) {
                 console.log(`Movie with movie id: ${id} already exists in database`)
@@ -46,6 +46,16 @@ const getMovieDetailsById = function (id) {
     })
 }
 
+//-- Retrieve Movies from LatteMovies DB (For Recommendations)
+const getMovieDetails = function () {
+    const sql = 'SELECT * FROM Movies'
+    return query(sql).then(function (result) {
+        console.log(result[0]);
+        const rows = result[0];
+        return rows;
+    })
+}
+
 //-- Delete Movies from LatteMovies DB by ID
 const deleteMovieDetailsById = function (id) {
     const sql = 'DELETE FROM Movies WHERE id = ?'
@@ -68,6 +78,7 @@ module.exports = {
     postMovies,
     getMovies,
     getMovieDetailsById,
+    getMovieDetails,
     deleteMovieDetailsById,
     updateMoviePriceById
 }

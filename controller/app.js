@@ -84,6 +84,19 @@ app.get('/generateHistogramData', function(req, res) {
 
 // -- Review Details
 
+//-- Get Movie Details (for Recommendations)
+app.get('/allMovieDetails/', function (req, res) {
+
+  Movies.getMovieDetails()
+    .then((movieDetails) => {
+      res.json(movieDetails);
+    })
+    .catch(error => {
+      console.error('Failed to retrieve movie(s)', error);
+      res.sendStatus(500);
+    });
+});
+
 //-- Get Movie by ID
 app.get('/movieDetails/:id', function (req, res) {
   const id = req.params.id
