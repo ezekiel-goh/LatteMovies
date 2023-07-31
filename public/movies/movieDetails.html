@@ -176,6 +176,29 @@ movieDetails.html
         visibility: visible;
     }
 
+    .carousel-container {
+        overflow: hidden;
+        position: relative;
+        /* Set the width of the carousel container to fit the screen */
+        width: 100%;
+        /* Set the overflow behavior to auto to enable horizontal scrolling when needed */
+        overflow-x: auto;
+        /* Remove horizontal scrollbar */
+        scrollbar-width: none;
+        /* Hide scrollbar for Firefox */
+        -ms-overflow-style: none;
+    }
+
+    .carousel-track {
+        /* Remove the display property to allow the track to flex its items */
+        display: flex;
+        /* Update the transition property to allow smooth scrolling */
+        transition: transform 0.3s ease-in-out;
+        /* Set the width to fit the content of all movie cards */
+        width: fit-content;
+    }
+
+
     @-webkit-keyframes like {
         0% {
             transform: scale(1);
@@ -304,17 +327,18 @@ movieDetails.html
                 <div class="mt-5">
                     <div class="text-start text-light mt-5" style="position:relative; top: 60px;">
                         <h2>Recommended Movies</h2>
-                        <button type="button" class="btn btn-dark" id="slideRightBtn">
+                        <!-- <button type="button" class="btn btn-dark" id="slideRightBtn">
                             <ion-icon name="arrow-back-outline"></ion-icon>
                         </button>
                         <button type="button" class="btn btn-dark" id="slideLeftBtn">
                             <ion-icon name="arrow-forward-outline"></ion-icon>
-                        </button>
+                        </button> -->
 
                         <div class="carousel-container" id="carouselContainer">
                             <div class="carousel-track">
 
                             </div>
+                            &nbsp
                         </div>
                     </div>
                 </div>
@@ -523,7 +547,10 @@ movieDetails.html
                 const priceScore = getPriceScore(movies[0].Price);
                 const durationScore = getDurationScore(movies[0].runtime);
                 const genreScore = getGenreScore(movies[0].genre_id);
-                console.log([priceScore, durationScore, genreScore])
+
+                const currentIdentifiers = [priceScore, durationScore, genreScore]
+
+                console.log(currentIdentifiers)
 
 
 
@@ -537,17 +564,35 @@ movieDetails.html
                         const allMovies = Object.values(response.data);
                         const currentMovie = movies.find(movie => id === movie.id);
 
+                        // const priceScore = getPriceScore(currentMovie.Price);
+                        // const durationScore = getDurationScore(currentMovie.runtime);
+                        // const genreScore = getGenreScore(currentMovie.genre_id);
+                        // const currentIdentifiers = [priceScore, durationScore, genreScore];
+
+                        // Filter similar movies that match at least 2 out of 3 identifiers
                         const similarMovies = allMovies.filter((movie) => {
                             const moviePriceScore = getPriceScore(movie.Price);
                             const movieDurationScore = getDurationScore(movie.runtime);
                             const movieGenreScore = getGenreScore(movie.genre_id);
-                            return (
-                                moviePriceScore === priceScore &&
-                                movieDurationScore === durationScore &&
-                                movieGenreScore === genreScore &&
-                                movie.id !== parseInt(id)
-                            )
-                        })
+                            const matchingIdentifiers = [moviePriceScore, movieDurationScore, movieGenreScore];
+                            const matchingCount = currentIdentifiers.filter((identifier) => matchingIdentifiers.includes(identifier)).length;
+                            return matchingCount >= 2 && movie.id !== parseInt(id);
+                        });
+
+                        // const similarMovies = allMovies.filter((movie) => {
+                        //     const moviePriceScore = getPriceScore(movie.Price);
+                        //     const movieDurationScore = getDurationScore(movie.runtime);
+                        //     const movieGenreScore = getGenreScore(movie.genre_id);
+                        //     return (
+                        //         moviePriceScore === priceScore &&
+                        //         movieDurationScore === durationScore &&
+                        //         movieGenreScore === genreScore &&
+                        //         movie.id !== parseInt(id)
+                        //     )
+                        // })
+
+
+
 
                         const carouselTrack = document.querySelector('.carousel-track');
 
@@ -566,7 +611,9 @@ movieDetails.html
                         }
 
                         function populateCarousel() {
-                            for (const movie of similarMovies) {
+                            const maxRecommendedMovies = 10;
+                            const recommendedMovies = similarMovies.slice(0, maxRecommendedMovies);
+                            for (const movie of recommendedMovies) {
                                 const movieCard = createMovieCard(movie);
                                 carouselTrack.appendChild(movieCard);
                             }
@@ -575,15 +622,15 @@ movieDetails.html
                         const carouselContainer = document.getElementById('carouselContainer');
                         const isScrollable = carouselContainer.scrollWidth > carouselContainer.clientWidth;
 
-                        const slideRightBtn = document.getElementById('slideRightBtn');
-                        const slideLeftBtn = document.getElementById('slideLeftBtn');
-                        if (!isScrollable) {
-                            slideRightBtn.style.display = 'none';
-                            slideLeftBtn.style.display = 'none';
-                        } else {
-                            slideRightBtn.style.display = 'block';
-                            slideLeftBtn.style.display = 'block';
-                        }
+                        // const slideRightBtn = document.getElementById('slideRightBtn');
+                        // const slideLeftBtn = document.getElementById('slideLeftBtn');
+                        // if (isScrollable) {
+                        //     slideRightBtn.style.display = 'none';
+                        //     slideLeftBtn.style.display = 'none';
+                        // } else if (!isScrollable) {
+                        //     slideRightBtn.style.display = 'block';
+                        //     slideLeftBtn.style.display = 'block';
+                        // }
 
                         populateCarousel();
 
@@ -594,9 +641,6 @@ movieDetails.html
                             carouselTrack.style.transform = `translateX(${newTrackPosition}px)`;
                         }
 
-                        // To slide left and right, you can use buttons or other triggers like:
-                        document.querySelector('#slideRightBtn').addEventListener('click', () => slideCarousel('right'));
-                        document.querySelector('#slideLeftBtn').addEventListener('click', () => slideCarousel('left'));
 
 
                         // Log the titles of movies with similar scores

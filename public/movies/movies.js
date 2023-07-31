@@ -10,12 +10,41 @@ const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
 const API_URL = BASE_URL + '/3/discover/movie?sort_by=popularity.desc&' + API_KEY;
 const CREDIT_URL = BASE_URL + '/3/movie/{movie_id}/credits' + API_KEY;
 
+const PAGE_SIZE = 20;
+let currentPage = 1;
 
 const main = document.getElementById('main')
-getMovies(API_URL + '&with_genres=' + '28, 10751');
+const moviesContainer = document.getElementById('moviesContainer'); // Add this line to get the container element
+getMovies(API_URL + '&with_genres=' + '10751', currentPage);
+
+const loadMoreBtn = document.getElementById('loadMoreBtn');
+loadMoreBtn.addEventListener('click', loadMoreMovies);
+
+// const prevButton = document.getElementById('prev');
+// const nextButton = document.getElementById('next');
+
+// prevButton.addEventListener('click', () => {
+//   if (currentPage > 1) {
+//     currentPage--;
+//     getMovies(API_URL + '&with_genres=' + 10751, currentPage);
+//     scrollToTop();
+//   }
+// });
+
+// nextButton.addEventListener('click', () => {
+//   currentPage++;
+//   getMovies(API_URL + '&with_genres=' + 10751, currentPage);
+//   scrollToTop();
+// });
+
+// function scrollToTop() {
+//   moviesContainer.scrollIntoView({ behavior: 'smooth' });
+//   scrollToTop();
+// }
 
 
-function getMovies(url) {
+function getMovies(url, page) {
+  url = url + '&page=' + page;
   fetch(url).then(res => res.json())
     .then(data => {
       showMovies(data.results);
@@ -27,9 +56,14 @@ function getMovies(url) {
     })
 }
 
+function loadMoreMovies() {
+  currentPage++; // Increment the current page
+  getMovies(API_URL + '&with_genres=28, 10751', currentPage);
+}
+
 
 function showMovies(data) {
-  main.innerHTML = '';
+  // main.innerHTML = '';
   //-- removes every HTML content in main
 
   data.forEach(movie => {
@@ -108,8 +142,9 @@ function showMovies(data) {
     <label class="tB" for="${id}">Select</label>
     </div>
     </div>
-          <img src="${IMG_URL + poster_path}" class="card-img-top" alt="Movie Poster"> 
-          <h5 class="card-title text-white mt-3">${title}</h5>
+          <img src="${IMG_URL + poster_path}" class="card-img-top" alt="Movie Poster">
+          <div class="card-title text-white mt-3 style="font-size: 15px;
+          ">${title}</div>
     </div>
     `
 
@@ -118,19 +153,6 @@ function showMovies(data) {
   })
 }
 
-{/* <div class="col">
-<img src="${IMG_URL + poster_path}" class="card-img-top" alt="Movie Poster">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="btn-group">
-      <input type="checkbox" class="movie-checkbox btn btn-sm btn-outline-dark" id="${id}">
-      <label for="${id}" style="color:white">Add</label><br>
-      </div> 
-      <div class="card-content">
-      <h2 class="card-title text-white">${title}</h2>
-      </div>
-    </div>
-</div>
-</div> */}
 
 
 
