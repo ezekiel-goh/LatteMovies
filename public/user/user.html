@@ -186,10 +186,17 @@
                 <p id="reviewdata"></p>
             </div>
 
-        <div id="purchases" class="content-section">
-            <!-- Data 2 goes here -->
-            <h5>Your Purchases</h5>
-            <p id="purchasedata"></p>
+            <div id="purchases" class="content-section">
+                <!-- Data 2 goes here -->
+                <h5>Your Purchases</h5>
+                <p id="purchasedata"></p>
+            </div>
+
+            <div id="favourites" class="content-section">
+                <!-- Data 3 goes here -->
+                <h5>Your Favourites</h5>
+                <p id="favouritedata"></p>
+            </div>
         </div>
 
     </div>
@@ -238,7 +245,7 @@
                     }
                     else if (apiURL === `/favourites/${loggedInUserID}`) {
                         const data = response.data
-                        data.forEach(favourite => { //M.title, M.Price, M.release_date, M.runtime, P.DateBought
+                        data.forEach(favourite => { //M.title, M.Price, M.release_date, M.runtime
                             const favouriteHTML = `
                         <div class='container border border-2 border-white rounded mx-3 my-4'>
                             <p>Title: ${favourite.title}</p>
@@ -285,10 +292,11 @@
 
                     $('#getUserData').append(dataHtml);
                 }).then(() => {
-                    const [reviews, purchases] = Promise.all(requests);
+                    const [reviews, purchases, favourites] = Promise.all(requests);
                     const data = {
                         reviews: reviews,
-                        purchases: purchases
+                        purchases: purchases,
+                        favourites: favourites
                     };
                     dropdownData = data;
                 }).catch((error) => {
@@ -304,17 +312,6 @@
                 fetchDataFromAPI(purchaseAPI),
                 fetchDataFromAPI(favouriteAPI)
             ];
-
-            try {
-                const [reviews, purchases] = await Promise.all(requests);
-                const data = {
-                    reviews: reviews,
-                    purchases: purchases
-                };
-                dropdownData = data;
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
         });
 
         $('#contentSelector').on('change', async function () {
