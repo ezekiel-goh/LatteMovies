@@ -244,7 +244,7 @@ movieDetails.html
                 <h2>Watch Movie</h2>
 
                 <div style="text-align: center;">
-                    <video width="800" height="600" controls>
+                    <video id="moviePlayer" width="800" height="600" controls>
                         <source src="../tenMoreSteps.mp4" type="video/mp4">
                         <source src="movie.ogg" type="video/ogg">
                         Your browser does not support the video tag.
@@ -255,6 +255,35 @@ movieDetails.html
     </main>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <!--timestamp/histogram parts-->
+    <script type="module">
+        const moviePlayer = document.getElementById('moviePlayer');
+
+        function getMovieIDFromURL() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var movieID = urlParams.get('id');
+            console.log('Movie ID from URL:', movieID);
+            return movieID;
+        }
+        // For testing purposes
+        var currentUserID = 1;
+        // const movieID = 1;
+        var movieID = getMovieIDFromURL(); // getting movieid from url
+        let lastTimestamp = -1;
+
+        function handleTimeChange() {
+            console.log('timestamp change');
+            const currentTime = Math.floor(moviePlayer.currentTime);
+
+            if (currentTime !== lastTimestamp) {
+                insertData(currentUserID, movieID, currentTime);
+                lastTimestamp = currentTime;
+            }
+        }
+        moviePlayer.addEventListener('seeked', handleTimeChange);
+        console.log('Movie ID from URL:', movieID);
+    </script>
+    <!--timestamp/histogram parts ends here-->
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>

@@ -24,7 +24,7 @@ const histogram = require("../models/histogram");
 // const moviePublisher = require("../models/moviePublisher");
 const Movies = require("../models/movie");
 // const user = require("../models/user");
-// const histogram = require("../models/histogram");
+const { insertData, generateHistogramData } = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
   deleteUserCustomer, deleteUserPublisher, login, buyMovie } = require('../models/user.js');
@@ -65,9 +65,17 @@ app.get('/movies', function (req, res) {
 });
 //inserting views data
 app.post('/insertData', function (req, res) {
-  const { viewsData } = req.body;
-  histogram.insertData(req, res); // Pass the req and res objects to the insertData function
+  const { userID, movieID, timestamp } = req.body;
+  histogram.insertData(userID, movieID, timestamp)
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch(error => {
+      console.error('Failed to insert data:', error);
+      res.sendStatus(500);
+    });
 });
+
 //views getting data for histogram
 app.get('/generateHistogramData', function(req, res) {
   histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
