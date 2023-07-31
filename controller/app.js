@@ -27,7 +27,8 @@ const Movies = require("../models/movie");
 const { insertData, generateHistogramData } = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-  deleteUserCustomer, deleteUserPublisher, login, buyMovie } = require('../models/user.js');
+  deleteUserCustomer, deleteUserPublisher, login, 
+  buyMovie, getPurchase, getReviewByUser } = require('../models/user.js');
 const review = require("../models/review");
 
 
@@ -241,6 +242,20 @@ app.put('/movieDetails/:id', function (req, res) {
 /**
  * User C.R.U.D.
  */
+app.get('/reviews/data/:userid', async (req, res) => {
+  const userID = req.params.userid;
+  const userInfo = await getReviewByUser(userID);
+  res.status(200).json(userInfo[0]);
+  console.log(userInfo[0]);
+});
+
+app.get('/purchase/:userid', async (req, res) => {
+  const userID = req.params.userid;
+  const userInfo = await getPurchase(userID);
+  res.status(200).json(userInfo[0]);
+  console.log(userInfo[0]);
+});
+
 app.get('/user/:userid', async (req, res) => {
   const userID = req.params.userid;
   const userInfo = await getUserInfo(userID);
