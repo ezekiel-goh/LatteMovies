@@ -166,26 +166,34 @@
 
     <div class="container text-light">
 
-        <h1>User Information</h1>
+        <div class="container border border-2 border-warning mx-3 my-4">
+            <h1>User Information</h1>
+            <p id="getUserData"></p>
+        </div>
+
         <!-- Dropdown menu -->
-        <select id="contentSelector">
-            <option value="reviews">Reviews</option>
-            <option value="purchases">Purchases</option>
-        </select>
-
-        <!-- Content sections -->
-        <div id="reviews" class="content-section">
-            <!-- Data 1 goes here -->
-            <h5>Your Reviews</h5>
-            <p id="reviewdata"></p>
+        <div class="container mx-3 my-4">
+            <h4>View your data</h4>
+            <select id="contentSelector">
+                <option value="reviews">Reviews</option>
+                <option value="purchases">Purchases</option>
+            </select>
         </div>
 
-        <div id="purchases" class="content-section">
-            <!-- Data 2 goes here -->
-            <h5>Your Purchases</h5>
-            <p id="purchasedata"></p>
-        </div>
+        <div class="container mx-3 my-4">
+            <!-- Content sections -->
+            <div id="reviews" class="content-section">
+                <!-- Data 1 goes here -->
+                <h5>Your Reviews</h5>
+                <p id="reviewdata"></p>
+            </div>
 
+            <div id="purchases" class="content-section">
+                <!-- Data 2 goes here -->
+                <h5>Your Purchases</h5>
+                <p id="purchasedata"></p>
+            </div>
+        </div>
     </div>
 
     <!-- JQuery, Axios -->
@@ -252,6 +260,28 @@
 
         document.addEventListener('DOMContentLoaded', async function () {
 
+            axios.get(`/user/${loggedInUserID}`)
+                .then((response) => {
+                    const data = response.data[0];
+                    const dataHtml = `
+        <p> <em>UserID:</em> ${data.UserID} </p>
+        <p> <em>Username:</em> ${data.Username}</p>
+        <p> <em>Password:</em> ${data.Password}</p>
+        <p> <em>Role:</em> ${data.Role}</p>
+        <p> <em>Date Joined:</em> ${data.DateJoined}</p>
+        `;
+
+                    $('#getUserData').append(dataHtml);
+                }).then(() => {
+                    const [reviews, purchases] = Promise.all(requests);
+                    const data = {
+                        reviews: reviews,
+                        purchases: purchases
+                    };
+                    dropdownData = data;
+                }).catch((error) => {
+                    console.error('Error fetching data:', error);
+                })
             // Fetch data from multiple APIs using Axios
             const reviewAPI = `/reviews/data/${loggedInUserID}`;
             const purchaseAPI = `/purchase/${loggedInUserID}`;
@@ -260,17 +290,6 @@
                 fetchDataFromAPI(reviewAPI),
                 fetchDataFromAPI(purchaseAPI)
             ];
-
-            try {
-                const [reviews, purchases] = await Promise.all(requests);
-                const data = {
-                    reviews: reviews,
-                    purchases: purchases
-                };
-                dropdownData = data;
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
         });
 
         $('#contentSelector').on('change', async function () {
@@ -278,33 +297,6 @@
             dropdownSelection = selectedValue;
             updateDisplayedContent(dropdownSelection, dropdownData);
         });
-
-        // Event listener for dropdown menu change
-        // $('#contentSelector').on('change', async function () {
-        //     const selectedValue = $(this).val();
-
-        //     // Fetch data from multiple APIs using Axios
-        //     const reviewAPI = `${baseUrl}/reviews/data/${loggedInUserID}`;
-        //     const purchaseAPI = `${baseUrl}/purchase/${loggedInUserID}`;
-
-        //     const requests = [
-        //         fetchDataFromAPI(reviewAPI),
-        //         fetchDataFromAPI(purchaseAPI)
-        //     ];
-
-        //     try {
-        //         const [reviews, purchases] = await Promise.all(requests);
-        //         const data = {
-        //             reviews: reviews,
-        //             purchases: purchases
-        //         };
-        //         updateDisplayedContent(selectedValue, data);
-        //         console.log('Selected value: ' + selectedValue);
-
-        //     } catch (error) {
-        //         console.error('Error fetching data:', error);
-        //     }
-        // });
 
         /*
         // retrieve user data
