@@ -141,3 +141,16 @@ module.exports.getReviewByUser = async function getReviewByUser(UserID) {
     and U.UserID = ?`, [UserID]);
     return Review;
 };
+
+module.exports.getFavouriteByUser = async function getFavouriteByUser(UserID) {
+    const Favourite = await query(`
+    select
+    M.title, M.release_date, M.runtime, M.Price 
+    from
+    Movies M, Favourites F, User U
+    where
+    M.id = F.id and
+    F.UserID = U.UserID
+    and U.UserID = ?`, [UserID]);
+    return Favourite;
+}

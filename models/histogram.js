@@ -1,40 +1,51 @@
 const { query } = require('../database');
 
-function insertData(req, res) {
-  try {
-    if (!req.body || !req.body.viewsData) {
-      console.log('Missing viewsData in request body');
-      res.sendStatus(400);
-      return;
-    }
+// function insertData(req, res) {
+//   try {
+//     if (!req.body || !req.body.viewsData) {
+//       console.log('Missing viewsData in request body');
+//       res.sendStatus(400);
+//       return;
+//     }
     
-    console.log(req.body.viewsData);
-    const { viewsData } = req.body;
-    console.log('Trying to insert data');
+//     console.log(req.body.viewsData);
+//     const { viewsData } = req.body;
+//     console.log('Trying to insert data');
 
-    const deleteSql = "DELETE FROM Views";
-    const emptyViewsTable = query(deleteSql);
+//     const deleteSql = "DELETE FROM Views";
+//     const emptyViewsTable = query(deleteSql);
 
-    const insertPromises = viewsData.map(({ userId, timestamp }) => {
-      const sql = "INSERT INTO Views(UserID, Timestamp) VALUES (?, ?)";
-      return query(sql, [userId, timestamp]);
+//     const insertPromises = viewsData.map(({ userId, timestamp }) => {
+//       const sql = "INSERT INTO Views(UserID, Timestamp) VALUES (?, ?)";
+//       return query(sql, [userId, timestamp]);
+//     });
+
+//     Promise.all([emptyViewsTable, ...insertPromises]) // emptyViewsTable promise first, then concurrent request of insertPromises
+//       .then(() => {
+//         console.log('Data inserted successfully');
+//         res.sendStatus(200);
+//       })
+//       .catch(error => {
+//         console.log('Error inserting data:', error);
+//         res.sendStatus(500);
+//       });
+//   } catch (error) {
+//     console.log('Error inserting data:', error);
+//     res.sendStatus(500);
+//   }
+// }
+function insertData(userID, movieID, timestamp) {
+  console.log(userID, movieID, timestamp)
+  const sql = "INSERT INTO Views(UserID, MovieID, Timestamp) VALUES (?, ?, ?)";
+  query(sql, [userID, movieID, timestamp])
+    .then(() => {
+      console.log('Data inserted successfully');
+      console.log(query)
+    })
+    .catch(error => {
+      console.log('Error inserting data:', error);
     });
-
-    Promise.all([emptyViewsTable, ...insertPromises]) // emptyViewsTable promise first, then concurrent request of insertPromises
-      .then(() => {
-        console.log('Data inserted successfully');
-        res.sendStatus(200);
-      })
-      .catch(error => {
-        console.log('Error inserting data:', error);
-        res.sendStatus(500);
-      });
-  } catch (error) {
-    console.log('Error inserting data:', error);
-    res.sendStatus(500);
-  }
 }
-
 
 function generateHistogramData(req, res) { // retrieving data from database for the histogram generation
   try {
@@ -57,5 +68,7 @@ function generateHistogramData(req, res) { // retrieving data from database for 
     res.sendStatus(500);
   }
 }
+
+
 
 module.exports = { insertData, generateHistogramData };

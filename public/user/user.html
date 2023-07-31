@@ -172,13 +172,11 @@
         </div>
 
         <!-- Dropdown menu -->
-        <div class="container mx-3 my-4">
-            <h4>View your data</h4>
-            <select id="contentSelector">
-                <option value="reviews">Reviews</option>
-                <option value="purchases">Purchases</option>
-            </select>
-        </div>
+        <select id="contentSelector">
+            <option value="reviews">Reviews</option>
+            <option value="purchases">Purchases</option>
+            <option value="favourites">Favourites</option>
+        </select>
 
         <div class="container mx-3 my-4">
             <!-- Content sections -->
@@ -188,12 +186,12 @@
                 <p id="reviewdata"></p>
             </div>
 
-            <div id="purchases" class="content-section">
-                <!-- Data 2 goes here -->
-                <h5>Your Purchases</h5>
-                <p id="purchasedata"></p>
-            </div>
+        <div id="purchases" class="content-section">
+            <!-- Data 2 goes here -->
+            <h5>Your Purchases</h5>
+            <p id="purchasedata"></p>
         </div>
+
     </div>
 
     <!-- JQuery, Axios -->
@@ -236,6 +234,20 @@
                         </div>
                         `;
                             $('#purchasedata').append(purchaseHTML);
+                        });
+                    }
+                    else if (apiURL === `/favourites/${loggedInUserID}`) {
+                        const data = response.data
+                        data.forEach(favourite => { //M.title, M.Price, M.release_date, M.runtime, P.DateBought
+                            const favouriteHTML = `
+                        <div class='container border border-2 border-white rounded mx-3 my-4'>
+                            <p>Title: ${favourite.title}</p>
+                            <p>Price: $${favourite.Price}</p>
+                            <p>Release Date: ${favourite.release_date}</p>
+                            <p>Runtime: ${favourite.runtime} mins</p>
+                        </div>
+                        `;
+                            $('#favouritedata').append(favouriteHTML);
                         });
                     }
 
@@ -285,11 +297,24 @@
             // Fetch data from multiple APIs using Axios
             const reviewAPI = `/reviews/data/${loggedInUserID}`;
             const purchaseAPI = `/purchase/${loggedInUserID}`;
+            const favouriteAPI = `/favourites/${loggedInUserID}`;
 
             const requests = [
                 fetchDataFromAPI(reviewAPI),
-                fetchDataFromAPI(purchaseAPI)
+                fetchDataFromAPI(purchaseAPI),
+                fetchDataFromAPI(favouriteAPI)
             ];
+
+            try {
+                const [reviews, purchases] = await Promise.all(requests);
+                const data = {
+                    reviews: reviews,
+                    purchases: purchases
+                };
+                dropdownData = data;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         });
 
         $('#contentSelector').on('change', async function () {
