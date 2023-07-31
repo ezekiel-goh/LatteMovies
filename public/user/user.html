@@ -194,14 +194,14 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
 
-        const baseUrl = 'http://localhost:3000';
+        //const baseUrl = 'http://localhost:3000';
         const loggedInUserID = 1;
 
         // Function to fetch data from the backend using Axios
         function fetchDataFromAPI(apiURL) {
             return axios.get(apiURL)
                 .then((response) => {
-                    if (apiURL === `${baseUrl}/reviews/data/${loggedInUserID}`) {
+                    if (apiURL === `/reviews/data/${loggedInUserID}`) {
                         const data = response.data
                         data.forEach(review => {//M.title, M.release_date, R.Rating, R.Comments
                             const reviewHTML = `
@@ -215,7 +215,7 @@
                             $('#reviewdata').append(reviewHTML);
                         });
                     }
-                    else if (apiURL === `${baseUrl}/purchase/${loggedInUserID}`) {
+                    else if (apiURL === `/purchase/${loggedInUserID}`) {
                         const data = response.data
                         data.forEach(purchase => { //M.title, M.Price, M.release_date, M.runtime, P.DateBought
                             const purchaseHTML = `
@@ -251,11 +251,10 @@
         var dropdownSelection, dropdownData;
 
         document.addEventListener('DOMContentLoaded', async function () {
-            // const selectedValue = $(this).val();
 
             // Fetch data from multiple APIs using Axios
-            const reviewAPI = `${baseUrl}/reviews/data/${loggedInUserID}`;
-            const purchaseAPI = `${baseUrl}/purchase/${loggedInUserID}`;
+            const reviewAPI = `/reviews/data/${loggedInUserID}`;
+            const purchaseAPI = `/purchase/${loggedInUserID}`;
 
             const requests = [
                 fetchDataFromAPI(reviewAPI),
@@ -269,13 +268,9 @@
                     purchases: purchases
                 };
                 dropdownData = data;
-                // updateDisplayedContent(selectedValue, data);
-                //console.log('Selected value: ' + selectedValue);
-
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
-
         });
 
         $('#contentSelector').on('change', async function () {

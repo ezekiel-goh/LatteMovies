@@ -5,7 +5,7 @@ const { TABLE_ALREADY_EXISTS_ERROR, EMPTY_RESULT_ERROR,
 
 module.exports.getUserInfo = async function getUserInfo(UserID) {
     //    const connection = getConnection();
-    const User = await query('SELECT UserID, Username, Password, Role FROM User WHERE UserID = ?', [UserID]);
+    const User = await query('SELECT Username, Role, DateJoined FROM User WHERE UserID = ?', [UserID]);
     return User;
 };
 
