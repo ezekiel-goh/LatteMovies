@@ -143,8 +143,7 @@ function showMovies(data) {
     </div>
     </div>
           <img src="${IMG_URL + poster_path}" class="card-img-top" alt="Movie Poster">
-          <div class="card-title text-white mt-3 style="font-size: 15px;
-          ">${title}</div>
+          <h5 class="card-title text-white mt-3 ">${title}</h5>
     </div>
     `
 

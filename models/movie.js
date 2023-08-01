@@ -28,7 +28,7 @@ const postMovies = function (movieDetails) {
 
 //-- Retrieve Movies from LatteMovies DB
 const getMovies = function () {
-    const sql = 'SELECT title, poster_path, id FROM Movies'
+    const sql = 'SELECT title, poster_path, id, genre_id FROM Movies'
     return query(sql).then(function (response) {
         console.log(response[0]);
         const rows = response[0];
