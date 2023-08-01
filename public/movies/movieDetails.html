@@ -250,14 +250,21 @@ movieDetails.html
                         Your browser does not support the video tag.
                     </video>
                 </div>
+                <div style="align-items: center;">
+                    <canvas id="viewsHistogram"></canvas>
+                </div>
             </div>
         </section>
     </main>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <!--timestamp/histogram parts-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../../models/histogram.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module">
         const moviePlayer = document.getElementById('moviePlayer');
+        let chart = null;
 
         function getMovieIDFromURL() {
             var urlParams = new URLSearchParams(window.location.search);
@@ -272,16 +279,91 @@ movieDetails.html
         let lastTimestamp = -1;
 
         function handleTimeChange() {
-            console.log('timestamp change');
+            console.log('Timestamp change');
             const currentTime = Math.floor(moviePlayer.currentTime);
 
             if (currentTime !== lastTimestamp) {
-                insertData(currentUserID, movieID, currentTime);
+                const minutes = Math.floor(currentTime / 60);
+                const seconds = currentTime % 60;
+                const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                const userID = currentUserID;
+                const data = {
+                    userID: userID,
+                    movieID: movieID,
+                    timestamp: formattedTime
+                };
+
+                axios.post('http://localhost:3000/insertData', data)
+                    .then(response => {
+                        console.log('Data inserted successfully:', response.data);
+                    })
+                    .catch(error => {
+                        console.error('Error inserting data:', error);
+                    });
+
                 lastTimestamp = currentTime;
             }
         }
+
         moviePlayer.addEventListener('seeked', handleTimeChange);
         console.log('Movie ID from URL:', movieID);
+
+        function renderHistogram(histogramData) {
+
+            var canvas = document.getElementById('viewsHistogram');
+
+            // Destroy the existing chart instance if it exists
+            if (chart) {
+                chart.destroy();
+            }
+
+            var labels = histogramData.map(function (data) {
+                return data.timestamp;
+            });
+
+            var views = histogramData.map(function (data) {
+                return data.views;
+            });
+
+            // Store the chart instance in the 'chart' variable
+            chart = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Views',
+                        data: views,
+                        backgroundColor: 'rgba(255, 255, 0, 0.7)', // Yellow color with 70% opacity
+                        borderColor: 'rgba(255, 255, 0, 1)', // Yellow color
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0,
+                            stepSize: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Fetching histogram data...');
+            axios.get('http://localhost:3000/generateHistogramData')
+                .then(function (response) {
+                    console.log('Histogram data taken successfully!');
+                    console.log(response.data);
+                    const histogramData = response.data;
+                    renderHistogram(histogramData);
+                    console.log('Histogram data loaded successfully!');
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        });
     </script>
     <!--timestamp/histogram parts ends here-->
 </body>
