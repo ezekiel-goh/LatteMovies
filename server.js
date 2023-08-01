@@ -35,6 +35,10 @@ app.get("/reviews", (req, res) => {
   res.sendFile("/public/reviews/reviews.html", { root: __dirname });
 });
 
+app.get("/reviews/best/html", (req, res) => {
+  res.sendFile("public/reviews/BestReviews.html", { root: __dirname})
+})
+
 app.get("/movieDetails", (req, res) => {
   res.sendFile("/public/movieDetails.html", { root: __dirname });
 });
