@@ -2,10 +2,12 @@
 const express = require("express");
 const session = require('express-session');
 const createHttpError = require('http-errors');
+const cors = require("cors")
 
 const { EMPTY_RESULT_ERROR, DUPLICATE_ENTRY_ERROR, TABLE_ALREADY_EXISTS_ERROR, NOT_FOUND_ERROR } = require('../errors');
 
 const app = express();
+app.use(cors())
 app.use(express.json()); // to process JSON in request body
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -22,10 +24,11 @@ const histogram = require("../models/histogram");
 // const moviePublisher = require("../models/moviePublisher");
 const Movies = require("../models/movie");
 // const user = require("../models/user");
-// const histogram = require("../models/histogram");
+const { insertData, generateHistogramData } = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-deleteUserCustomer, deleteUserPublisher, login } = require('../models/user.js');
+  deleteUserCustomer, deleteUserPublisher, login, 
+  buyMovie, getPurchase, getReviewByUser, getFavouriteByUser } = require('../models/user.js');
 const review = require("../models/review");
 
 
@@ -35,8 +38,6 @@ const bodyParser = require("body-parser");
 //use the middleware
 app.use(bodyParser.json());
 
-const cors = require("cors");
-app.use(cors());
 
 
 // -- Movie Details
@@ -65,9 +66,17 @@ app.get('/movies', function (req, res) {
 });
 //inserting views data
 app.post('/insertData', function (req, res) {
-  const { viewsData } = req.body;
-  histogram.insertData(req, res); // Pass the req and res objects to the insertData function
+  const { userID, movieID, timestamp } = req.body;
+  histogram.insertData(userID, movieID, timestamp)
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch(error => {
+      console.error('Failed to insert data:', error);
+      res.sendStatus(500);
+    });
 });
+
 //views getting data for histogram
 app.get('/generateHistogramData', function (req, res) {
   histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
@@ -125,6 +134,21 @@ app.put('/movieDetails/:id', function (req, res) {
       res.sendStatus(500);
     });
 });
+
+//-- Favorite Movies (INSERT)
+app.post('/likedMovies', function (req, res) {
+  const { id, userID } = req.body;
+
+  favorite.postLiked({ id, userID })
+    .then(() => {
+      res.sendStatus(201); 
+    })
+    .catch(error => {
+      console.error('Error posting liked movie:', error);
+      res.sendStatus(500);
+    });
+});
+
 
 //-- Submit Review
 app.post('/reviews', function (req, res) {
@@ -270,6 +294,27 @@ app.put('/movieDetails/:id', function (req, res) {
 /**
  * User C.R.U.D.
  */
+app.get('/reviews/data/:userid', async (req, res) => {
+  const userID = req.params.userid;
+  const userInfo = await getReviewByUser(userID);
+  res.status(200).json(userInfo[0]);
+  console.log(userInfo[0]);
+});
+
+app.get('/purchase/:userid', async (req, res) => {
+  const userID = req.params.userid;
+  const userInfo = await getPurchase(userID);
+  res.status(200).json(userInfo[0]);
+  console.log(userInfo[0]);
+});
+
+app.get('/favourites/:userid', async (req, res) => {
+  const userID = req.params.userid;
+  const userInfo = await getFavouriteByUser(userID);
+  res.status(200).json(userInfo[0]);
+  console.log(userInfo[0]);
+});
+
 app.get('/user/:userid', async (req, res) => {
   const userID = req.params.userid;
   const userInfo = await getUserInfo(userID);

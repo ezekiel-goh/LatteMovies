@@ -5,7 +5,7 @@ const { TABLE_ALREADY_EXISTS_ERROR, EMPTY_RESULT_ERROR,
 
 module.exports.getUserInfo = async function getUserInfo(UserID) {
     //    const connection = getConnection();
-    const User = await query('SELECT UserID, Username, Password, Role FROM User WHERE UserID = ?', [UserID]);
+    const User = await query('SELECT UserID, Username, Password, Role, DateJoined FROM User WHERE UserID = ?', [UserID]);
     return User;
 };
 
@@ -98,7 +98,7 @@ module.exports.deleteUserPublisher = async function deleteUserPublisher(UserID) 
 // general login function
 module.exports.login = function login(username, password) {
     return query(
-        'SELECT Username, Role FROM User WHERE Username = ? and Password = ?', 
+        'SELECT Username, Role FROM User WHERE Username = ? and Password = ?',
         [username, password],
     ).then((user) => { return user[0][0]; });
 }
@@ -114,4 +114,43 @@ module.exports.buyMovie = async function buyMovie(MovieID, CustomerID) {
         .catch(() => {
             throw new EMPTY_RESULT_ERROR(`Movie ${MovieID}, Customer ${CustomerID}`);
         });
+}
+
+module.exports.getPurchase = async function getPurchase(UserID) {
+    //    const connection = getConnection();
+    const Purchase = await query(`select 
+        M.title, M.Price, M.release_date, M.runtime, P.DateBought
+        from 
+        Purchase P, Movies M, User U
+        where P.MovieID = M.id
+        and P.UserID = U.UserID
+        and U.UserID = ?`, [UserID]);
+    return Purchase;
+};
+
+module.exports.getReviewByUser = async function getReviewByUser(UserID) {
+    //    const connection = getConnection();
+    const Review = await query(`
+    select
+    M.title, M.release_date, R.Rating, R.Comments
+    from
+    Movies M, Reviews R, User U
+    where
+    M.id = R.MovieID and
+    R.UserID = U.UserID
+    and U.UserID = ?`, [UserID]);
+    return Review;
+};
+
+module.exports.getFavouriteByUser = async function getFavouriteByUser(UserID) {
+    const Favourite = await query(`
+    select
+    M.title, M.release_date, M.runtime, M.Price 
+    from
+    Movies M, Favourites F, User U
+    where
+    M.id = F.id and
+    F.UserID = U.UserID
+    and U.UserID = ?`, [UserID]);
+    return Favourite;
 }

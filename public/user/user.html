@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
+    <title>User Info</title>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap"
@@ -14,40 +14,75 @@
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 
     <style>
-        body {
-            background-color: lightgray;
+        div#UserContent {
+            color: aliceblue;
         }
 
-        nav {
-            background-color: black;
-            padding-top: 5px;
-            padding-bottom: 5px;
-            width: 100%;
+        .content-section {
+            display: none;
+            /* Hide all content sections by default */
         }
 
-        li {
-            display: inline;
-            margin-left: 1em;
-            margin-right: 1em;
+        #navBar {
+            border-radius: 30px 30px 30px 30px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.31);
         }
 
-        a {
-            color: white;
+        #navBarMovies {
+            border-radius: 30px 30px 30px 30px;
+            box-shadow: 2px 2px 10px rgba(128, 128, 128, 0.31);
+        }
+
+        #navBarButton {
+            background-color: rgb(255, 255, 255);
+            border-color: rgba(255, 255, 255, 0);
+            border-radius: 100px;
         }
     </style>
 </head>
 
-<body>
-    <nav>
-        <ul>
-            <li><a href="javascript:void(0)">Home</a></li>
-            <li><a href="javascript:void(0)">Import</a></li>
-            <li><a href="javascript:void(0)">User</a></li>
-            <li><a href="javascript:void(0)">About</a></li>
-        </ul>
-    </nav>
+<body class="bg-black">
+    <div class="cover-container d-f p-3 mx-auto flex-column">
 
-    <div class="container row">
+        <nav class="navbar navbar-expand-sm p-3 m-2 bg-dark" id="navBar" style="background-color: #000;"
+            aria-label="Header">
+            <div class="container-fluid">
+                <a href="/" class="d-flex align-items-center mt-2 mb-2 mb-lg-0 pe-3 text-white text-decoration-none">
+                    <!-- <img src="../assets/brand/SPdvdRentals.png" class="appLogo bi me-2" width="auto" height="32"
+                        role="img" /> -->
+                </a>
+                <button class="navbar-toggler btn btn-dark" id="navBarButton" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
+                        <li><a href="/" class="nav-link px-2 text-light fs-5">&nbspHomepage</a></li>
+                        <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import Movies</a>
+                        <li><a href="/userpage" class="nav-link px-3 text-secondary fs-5">Users</a>
+
+                        </li>
+                        <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
+                    </ul>
+
+
+                    <!-- <form class="col-12 col-lg-auto col-lg-5 mb-3 mb-lg-0 me-lg-3" role="search">
+                                <label for="searchBar">Email address</label>
+                                <input type="search" class="form-control form-control-dark text-bg-dark" id="searchBar"
+                                    placeholder="Search for Movie titles, Categories and More" aria-label="Search">
+                            </form> -->
+                    <!-- <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form> -->
+
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!--
+    <div class="container row" id="UserContent">
         <h1>User Page</h1>
 
         <div class="col-4">
@@ -127,24 +162,179 @@
             </div>
         </div>
     </div>
+-->
 
+    <div class="container text-light">
 
+        <div class="container border border-2 border-warning mx-3 my-4">
+            <h1>User Information</h1>
+            <p id="getUserData"></p>
+        </div>
 
+        <!-- Dropdown menu -->
+        <select id="contentSelector">
+            <option value="reviews">Reviews</option>
+            <option value="purchases">Purchases</option>
+            <option value="favourites">Favourites</option>
+        </select>
+
+        <div class="container mx-3 my-4">
+
+            <!-- Content sections -->
+            <div id="reviews" class="content-section">
+                <!-- Data 1 goes here -->
+                <h5>Your Reviews</h5>
+                <p id="reviewcount"></p>
+                <p id="reviewdata"></p>
+            </div>
+
+            <div id="purchases" class="content-section">
+                <!-- Data 2 goes here -->
+                <h5>Your Purchases</h5>
+                <p id="purchasecount"></p>
+                <p id="purchasedata"></p>
+            </div>
+
+            <div id="favourites" class="content-section">
+                <!-- Data 3 goes here -->
+                <h5>Your Favourites</h5>
+                <p id="favouritecount"></p>
+                <p id="favouritedata"></p>
+            </div>
+        </div>
+
+        <div id="favourites" class="content-section">
+            <!-- Data  3goes here -->
+            <h5>Your Favourites</h5>
+            <p id="favouritedata"></p>
+        </div>
+        </div>
+
+    </div>
 
     <!-- JQuery, Axios -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+        // hardcoded login user
+        const loggedInUserID = 1;
 
-        const baseUrl = 'http://localhost:3000';
-        //  This login will only work when there is an existing record
-        // at UserID index 13. Choose another existing UserID
-        // to display the details of other User records.
-        // The UserID is hardcoded as the Login function does
-        // not exist yet.
-        const loggedInUserID = 13;
+        // Function to fetch data from the backend using Axios
+        function fetchDataFromAPI(apiURL) {
+            return axios.get(apiURL)
+                .then((response) => {
+                    if (apiURL === `/reviews/data/${loggedInUserID}`) {
+                        const data = response.data
+                        data.forEach(review => {//M.title, M.release_date, R.Rating, R.Comments
+                            const reviewHTML = `
+                        <div class='container border border-2 border-white rounded mx-3 my-4'>
+                            <p>Title: ${review.title}</p>
+                            <p>Release Date: ${review.release_date}</p>
+                            <p>Rating: ${review.Rating}</p>
+                            <p>Comments: ${review.Comments}</p>
+                        </div>
+                        `;
+                            $('#reviewdata').append(reviewHTML);
+                        });
+                        $('#reviewcount').append(`<h6>Total Count: ${data.length}`);
+                    }
+                    else if (apiURL === `/purchase/${loggedInUserID}`) {
+                        const data = response.data
+                        data.forEach(purchase => { //M.title, M.Price, M.release_date, M.runtime, P.DateBought
+                            const purchaseHTML = `
+                        <div class='container border border-2 border-white rounded mx-3 my-4'>
+                            <p>Title: ${purchase.title}</p>
+                            <p>Price: $${purchase.Price}</p>
+                            <p>Release Date: ${purchase.release_date}</p>
+                            <p>Runtime: ${purchase.runtime} mins</p>
+                            <p>Date Bought: ${purchase.DateBought}</p>
+                        </div>
+                        `;
+                            $('#purchasedata').append(purchaseHTML);
+                        });
+                        $('#purchasecount').append(`<h6>Total Count: ${data.length}`);
+                    }
+                    else if (apiURL === `/favourites/${loggedInUserID}`) {
+                        const data = response.data
+                        data.forEach(favourite => { //M.title, M.Price, M.release_date, M.runtime
+                            const favouriteHTML = `
+                        <div class='container border border-2 border-white rounded mx-3 my-4'>
+                            <p>Title: ${favourite.title}</p>
+                            <p>Price: $${favourite.Price}</p>
+                            <p>Release Date: ${favourite.release_date}</p>
+                            <p>Runtime: ${favourite.runtime} mins</p>
+                        </div>
+                        `;
+                            $('#favouritedata').append(favouriteHTML);
+                        });
+                        $('#favouritecount').append(`<h6>Total Count: ${data.length}`);
+                    }
 
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    return {}; // Return an empty object or handle the error appropriately
+                });
+        }
+
+        // Function to update the displayed content
+        function updateDisplayedContent(selectedValue, data) {
+            const allContentSections = $('.content-section');
+
+            allContentSections.hide();
+
+            const selectedContentSection = $('#' + selectedValue);
+            selectedContentSection.show();
+        }
+
+        var dropdownSelection, dropdownData;
+
+        // Display when page loads
+        document.addEventListener('DOMContentLoaded', async function () {
+
+            axios.get(`/user/${loggedInUserID}`)
+                .then((response) => {
+                    const data = response.data[0];
+                    const dataHtml = `
+        <p> <em>UserID:</em> ${data.UserID} </p>
+        <p> <em>Username:</em> ${data.Username}</p>
+        <p> <em>Password:</em> ${data.Password}</p>
+        <p> <em>Role:</em> ${data.Role}</p>
+        <p> <em>Date Joined:</em> ${data.DateJoined}</p>
+        `;
+
+                    $('#getUserData').append(dataHtml);
+                }).then(() => {
+                    const [reviews, purchases, favourites] = Promise.all(requests);
+                    const data = {
+                        reviews: reviews,
+                        purchases: purchases,
+                        favourites: favourites
+                    };
+                    dropdownData = data;
+                }).catch((error) => {
+                    console.error('Error fetching data:', error);
+                })
+            // Fetch data from multiple APIs using Axios
+            const reviewAPI = `/reviews/data/${loggedInUserID}`;
+            const purchaseAPI = `/purchase/${loggedInUserID}`;
+            const favouriteAPI = `/favourites/${loggedInUserID}`;
+
+            const requests = [
+                fetchDataFromAPI(reviewAPI),
+                fetchDataFromAPI(purchaseAPI),
+                fetchDataFromAPI(favouriteAPI)
+            ];
+        });
+
+        $('#contentSelector').on('change', async function () {
+            const selectedValue = $(this).val();
+            dropdownSelection = selectedValue;
+            updateDisplayedContent(dropdownSelection, dropdownData);
+        });
+
+        /*
         // retrieve user data
         axios.get(`${baseUrl}/user/${loggedInUserID}`)
             .then((response) => {
@@ -247,8 +437,18 @@
                     console.log(error);
                 });
         });
-
+*/
     </script>
+
+    <main>
+        <section>
+            <div class="container mt-5 pt-5">
+                <div id="main" class="row ">
+                </div>
+            </div>
+        </section>
+    </main>
+
 </body>
 
 </html>
