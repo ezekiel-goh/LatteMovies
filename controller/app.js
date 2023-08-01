@@ -82,7 +82,6 @@ app.get('/generateHistogramData', function (req, res) {
 //   }
 // }
 
-// -- Review Details
 
 //-- Get Movie by ID
 app.get('/movieDetails/:id', function (req, res) {
@@ -159,6 +158,7 @@ app.put('/reviews', function (req, res) {
     });
 })
 
+//Delete review by ID
 app.delete('/reviews/:id', function (req, res) {
   const ReviewID = req.params.id
   console.log(req.body.ReviewID)
@@ -172,12 +172,27 @@ app.delete('/reviews/:id', function (req, res) {
     });
 })
 
+//Delete all reviews
+app.delete('/reviews', function (req, res) {
+  review.deleteAllReview()
+    .then(() => {
+      res.sendStatus(201); // Return a success status code
+    })
+    .catch(error => {
+      console.error('Failed to delete review(s)', error);
+      res.sendStatus(500);
+    });
+})
+
 // -- Get Review
 app.get('/reviews/data', function (req, res) {
 
-  review.retrieveReview()
-    .then((review) => {
-      res.json(review);
+  Promise.all([review.retrieveReview(), review.getAvgRating()])
+    .then((response) => {
+      // console.log(JSON.stringify(response))
+      res.json(response);
+      console.log(response[1][0])
+      return response
     })
     .catch(error => {
       console.error('Failed to retrieve review(s)', error);
@@ -185,21 +200,45 @@ app.get('/reviews/data', function (req, res) {
     });
 })
 
+app.get('/reviews/sort', function (req, res) {
+//Promise.all([deleteUserCustomer(UserID), deleteUserPublisher(UserID)]).then(() => {
+  review.sortReviewByID()
+  .then((response) => {
+    res.json(response);
+    console.log(response[0])
+  })
+  .catch(error => {
+    res.sendStatus(500);
+  })
+})
+
+app.get('/reviews/sort2', function (req, res) {
+
+  review.sortReviewByRating()
+  .then((response) => {
+    res.json(response);
+    console.log(response[0])
+  })
+  .catch(error => {
+    res.sendStatus(500);
+  })
+})
+
 app.get('/reviews/best', function (req, res) {
 
   review.getReview()
     .then((review) => {
       res.json(review);
-      // console.log(res.json(review))
+      console.log(review)
     })
     .catch(error => {
       console.error('Failed to get review', error)
-      res.sendStatus(500);
+      // res.sendStatus(500);
     })
 })
 
 
-//-- Delete Movie by  ID
+//-- Delete Movie by ID
 app.delete('/movieDetails/:id', function (req, res) {
   const id = req.params.id
 

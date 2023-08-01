@@ -38,15 +38,14 @@
         axios.get(`${baseUrl}/reviews/best`)
             .then((response) => {
                 const reviews = Object.values(response);
-                console.log(reviews)
 
                 reviewsList.innerHTML = "";
 
-
-                const list = document.createElement("li");
-                list.textContent = `Rating: ${reviews.Rating}, Comments: ${reviews.Comments}`;
-                reviewsList.appendChild(list);
-
+                for (i = 0; i < reviews[0][0].length; i++) {
+                    const list = document.createElement("li");
+                    list.textContent = `Rating: ${JSON.stringify(reviews[0][0][i].Rating)}, Comments: ${JSON.stringify(reviews[0][0][i].Comments)}`;
+                    reviewsList.appendChild(list);
+                }
             })
             .catch(function (error) {
                 console.log(error);
