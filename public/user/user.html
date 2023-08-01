@@ -179,22 +179,26 @@
         </select>
 
         <div class="container mx-3 my-4">
+
             <!-- Content sections -->
             <div id="reviews" class="content-section">
                 <!-- Data 1 goes here -->
                 <h5>Your Reviews</h5>
+                <p id="reviewcount"></p>
                 <p id="reviewdata"></p>
             </div>
 
             <div id="purchases" class="content-section">
                 <!-- Data 2 goes here -->
                 <h5>Your Purchases</h5>
+                <p id="purchasecount"></p>
                 <p id="purchasedata"></p>
             </div>
 
             <div id="favourites" class="content-section">
                 <!-- Data 3 goes here -->
                 <h5>Your Favourites</h5>
+                <p id="favouritecount"></p>
                 <p id="favouritedata"></p>
             </div>
         </div>
@@ -206,8 +210,7 @@
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-
-        //const baseUrl = 'http://localhost:3000';
+        // hardcoded login user
         const loggedInUserID = 1;
 
         // Function to fetch data from the backend using Axios
@@ -227,6 +230,7 @@
                         `;
                             $('#reviewdata').append(reviewHTML);
                         });
+                        $('#reviewcount').append(`<h6>Total Count: ${data.length}`);
                     }
                     else if (apiURL === `/purchase/${loggedInUserID}`) {
                         const data = response.data
@@ -242,6 +246,7 @@
                         `;
                             $('#purchasedata').append(purchaseHTML);
                         });
+                        $('#purchasecount').append(`<h6>Total Count: ${data.length}`);
                     }
                     else if (apiURL === `/favourites/${loggedInUserID}`) {
                         const data = response.data
@@ -256,6 +261,7 @@
                         `;
                             $('#favouritedata').append(favouriteHTML);
                         });
+                        $('#favouritecount').append(`<h6>Total Count: ${data.length}`);
                     }
 
                 })
@@ -277,6 +283,7 @@
 
         var dropdownSelection, dropdownData;
 
+        // Display when page loads
         document.addEventListener('DOMContentLoaded', async function () {
 
             axios.get(`/user/${loggedInUserID}`)
