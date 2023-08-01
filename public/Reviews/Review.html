@@ -1,0 +1,222 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.108.0">
+    <title>Reviews</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
+    <!-- <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap"
+        rel="stylesheet">
+</head>
+
+<main>
+    <section>
+        <h1>Reviews</h1>
+        <h4>Thompson Dave</h4>
+        <form id="reviewForm">
+            <input type="number" max="5" inputmode="numeric" id="rating" name="rating" placeholder="what would you rate this movie out of 5?"
+                required>
+            <input type="text" id="review" name="Review" placeholder="Give review..." required>
+            <button type="submit" id="post" class="btn btn-primary">Submit</button>
+        </form>
+        <form id="alterForm">
+            <input type="number" max="5" id="reviewID" name="reviewID" placeholder="which review would you want to delete?"
+                required>
+            <input type="number" max="5" id="alterRating" name="newRating"
+                placeholder="what would you rate this movie out of 5?" required>
+            <input type="text" id="alterReview" name="Review" placeholder="Give review..." required>
+            <button type="submit" id="update" class="btn btn-primary">Update</button>
+        </form>
+        <form id="deleteForm">
+            <input type="number" id="deleteID" name="deleteID" placeholder="which review would you want to delete?"
+                required>
+            <button type="submit" id="delete" class="btn btn-primary">Delete</button>
+        </form>
+        <form id="deleteAllForm">
+            <button type="submit" id="deleteAll" class="btn btn-primary">Delete all reviews</button>
+        </form>
+        <label for="sort-by">Sort by:</label>
+        <select name="sort-by" id="sort-by">
+            <option value="ID">Sort by ID</option>
+            <option value="Rating">Sort by Rating</option>
+        </select>
+        <button type="submit" id="retrieve" class="btn btn-primary">Retrieve</button>
+        <div id="component">
+            <ul id="average"></ul>
+        </div>
+        <div id="list">
+            <ul id="reviewList"></ul>
+        </div>
+    </section>
+</main>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="Reviews.js"></script>
+<script src="../../models/review.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+<script>
+    // window.addEventListener('DOMContentLoaded', function () {
+    // Post review
+    const submit = document.getElementById("post")
+    submit.addEventListener("click", (event) => {
+        event.preventDefault();
+        const postComment = document.getElementById("review").value
+        const postRating = document.getElementById("rating").value
+        console.log(postComment, postRating)
+        const post = {
+
+            Comments: postComment,
+            Rating: postRating
+        }
+
+        const baseUrl = "http://localhost:3000"
+        axios.post(`${baseUrl}/reviews`, post)
+            .then((response) => {
+                if (response.status == 200) {
+                    console.log("Review submitted!")
+                } else {
+                    console.log("An error occurred")
+                }
+            })
+    })
+
+    //update review
+    const submit3 = document.getElementById("update")
+    submit3.addEventListener("click", (event) => {
+        event.preventDefault();
+        const reviewID = document.getElementById("reviewID").value
+        const newRating = document.getElementById("alterRating").value
+        const newReview = document.getElementById("alterReview").value
+        console.log(reviewID, newReview)
+        const update = {
+            ReviewID: reviewID,
+            Rating: newRating,
+            Comments: newReview
+        }
+
+        const baseUrl = "http://localhost:3000"
+        axios.put(`${baseUrl}/reviews`, update)
+            .then((response) => {
+                if (response.status == 200) {
+                    console.log("Review submitted!")
+                } else {
+                    console.log("An error occurred")
+                }
+            })
+    })
+
+    //delete review
+    const deleteBtn = document.getElementById("delete")
+    deleteBtn.addEventListener("click", (event) => {
+        const id = document.getElementById("deleteID").value
+        const baseUrl = "http://localhost:3000";
+        axios.delete(`${baseUrl}/reviews/${id}`)
+            .then((response) => {
+                if (response.status == 200) {
+                    console.log("Review deleted!");
+                } else {
+                    console.log("An error occurred");
+                }
+            });
+    })
+
+    //delete all reviews
+    const deleteAllBtn = document.getElementById("deleteAll")
+    deleteAllBtn.addEventListener("click", (event) => {
+        const baseUrl = "http://localhost:3000";
+        axios.delete(`${baseUrl}/reviews`)
+            .then((response) => {
+                if (response.status == 200) {
+                    console.log("Review deleted!");
+                } else {
+                    console.log("An error occurred");
+                }
+            });
+    })
+
+    // Get review
+    const retrieve = document.getElementById("retrieve");
+    retrieve.addEventListener("click", (event) => {
+        event.preventDefault(); // Prevent default form submission behavior
+        const reviewList = document.getElementById("reviewList");
+        const average = document.getElementById("average")
+        const baseUrl = "http://localhost:3000";
+
+        axios.get(`${baseUrl}/reviews/data`)
+            .then((response) => {
+                const retrieved = Object.values(response);
+                reviewList.innerHTML = "";
+                average.innerHTML = ""
+
+                const avg = document.createElement("li");
+                avg.textContent = `Average: ${JSON.stringify(retrieved[0][1][0][0].average)}/5.0`
+                average.appendChild(avg);
+
+                for (i = 0; i < retrieved[0][0].length; i++) {
+                    const list = document.createElement("li");
+                    list.textContent = `Length: ${JSON.stringify(retrieved[0][1][0][0].average)}, ID: ${JSON.stringify(retrieved[0][0][i].ReviewID)}, Rating: ${JSON.stringify(retrieved[0][0][i].Rating)}, Comments: ${JSON.stringify(retrieved[0][0][i].Comments)}`;
+                    reviewList.appendChild(list);
+                }
+            })
+            .catch((error) => {
+                console.log("An error occurred:", error);
+            });
+    })
+
+    // Sorting reviews
+    // document.getElementById("sort-by").value = "Rating"
+    const sort = document.getElementById("sort-by");
+    sort.addEventListener("change", (event) => {
+        // window.alert("Changed")
+        event.preventDefault();
+        const baseUrl = "http://localhost:3000";
+        const selectedValue = sort.value
+        const reviewList = document.getElementById("reviewList");
+        if (selectedValue === "ID") {
+
+            axios.get(`${baseUrl}/reviews/sort`)
+                .then((response) => {
+                    const sorted = Object.values(response);
+                    reviewList.innerHTML = "";
+
+                    for (i = 0; i < sorted[0][0].length; i++) {
+                        const list = document.createElement("li");
+                        list.textContent = `ID: ${JSON.stringify(sorted[0][0][i].ReviewID)}, Rating: ${JSON.stringify(sorted[0][0][i].Rating)}, Comments: ${JSON.stringify(sorted[0][0][i].Comments)}`;
+                        reviewList.appendChild(list);
+                    }
+                })
+                .catch((error) => {
+                    console.log("An error occurred:", error);
+                });
+        }
+        else if (selectedValue === "Rating") {
+            axios.get(`${baseUrl}/reviews/sort2`)
+                .then((response) => {
+                    const sorted = Object.values(response);
+                    reviewList.innerHTML = "";
+
+                    for (i = 0; i < sorted[0][0].length; i++) {
+                        const list = document.createElement("li");
+                        list.textContent = `ID: ${JSON.stringify(sorted[0][0][i].ReviewID)}, Rating: ${JSON.stringify(sorted[0][0][i].Rating)}, Comments: ${JSON.stringify(sorted[0][0][i].Comments)}`;
+                        reviewList.appendChild(list);
+                    }
+                })
+                .catch((error) => {
+                    console.log("An error occurred:", error);
+                });
+        }
+    });
+
+
+
+</script>
