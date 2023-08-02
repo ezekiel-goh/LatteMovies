@@ -58,7 +58,7 @@ function getMovies(url, page) {
 
 function loadMoreMovies() {
   currentPage++; // Increment the current page
-  getMovies(API_URL + '&with_genres=28, 10751', currentPage);
+  getMovies(API_URL + '&with_genres=28, 35, 10751', currentPage);
 }
 
 

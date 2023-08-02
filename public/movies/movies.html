@@ -169,7 +169,7 @@ Movies.html
                     </div>
 
                 </div>
-                <div id="main" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col my-5">      
+                <div id="main" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col my-5">
                 </div>
 
 
@@ -179,7 +179,7 @@ Movies.html
 
     </main>
     <button id="submitBtn" class="submitBtn btn  btn-light">Submit</button>
-    <button class="btn btn-dark ms-5"id="loadMoreBtn">Load More Movies</button>
+    <button class="btn btn-dark ms-5" id="loadMoreBtn">Load More Movies</button>
 
     </div>
 </body>
@@ -238,15 +238,16 @@ Movies.html
         let selectedMovies = Array.from(checkboxes).map((checkbox) => checkbox.id);
         console.log("You have selected:", selectedMovies);
 
-        for (let i = 0; i < selectedMovies.length; i++) {
-            const id = (selectedMovies[i]);
-            console.log(id)
-            console.log(selectedMovies)
+        // for (let i = 0; i < selectedMovies.length; i++) {
+        //     const id = (selectedMovies[i]);
+        //     console.log(id)
+        //     console.log(selectedMovies)
 
-
+        const movieFetchPromises = selectedMovies.map(async (id) => {
             try {
                 //--fetch details
-                const url = `https://api.themoviedb.org/3/movie/${id}language=en-US`;
+
+                const url = `https://api.themoviedb.org/3/movie/${id}?language=en-US`;
                 const options = {
                     method: 'GET',
                     headers: {
@@ -257,7 +258,7 @@ Movies.html
 
                 const res = await fetch(url, options)
                 const movieData = await res.json();
-                console.log(movieData)
+                console.log(movieData);
 
                 function generateRandomNumbers(count) {
                     const min = 2;
@@ -288,9 +289,6 @@ Movies.html
                     genre_id: movieData.genres[0].id
                 };
 
-                
-
-                //-- Store the movie details
                 const response = await fetch('/importMovies', {
                     method: 'POST',
                     headers: {
@@ -298,7 +296,6 @@ Movies.html
                     },
                     body: JSON.stringify(movieDetails)
                 });
-
                 if (response.ok) {
                     console.log('Movie details submitted successfully');
                     // Handle success case if needed
@@ -306,12 +303,20 @@ Movies.html
                     console.error('Failed to submit movie details');
                     // Handle failure case if needed
                 }
-
+                return movieDetails
             } catch (error) {
                 console.error('Error submitting movie details:', error);
-                // Handle error case if needed
             }
+        });
+
+        //-- Use Promise.all to wait for all concurrent requests to finish
+        try {
+            const movieDetailsArray = await Promise.all(movieFetchPromises)
+            console.log('All movie details submitted:', movieDetailsArray);
+        } catch (error) {
+            console.error('Error submitting movie details:', error);
         }
+
 
         //-- uncheck boxes after submit
         checkboxes.forEach((checkbox) => {
