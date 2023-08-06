@@ -274,7 +274,7 @@
                         `;
                             $('#reviewdata').append(reviewHTML);
                         });
-                        $('#reviewcount').append(`<h6>Total Count: ${data.length}`);
+                        $('#reviewcount').append(`<h6>Total Count: ${data.length}</h6>`);
                     }
                     else if (apiURL === `/purchase/${loggedInUserID}`) {
                         const data = response.data
@@ -290,7 +290,7 @@
                         `;
                             $('#purchasedata').append(purchaseHTML);
                         });
-                        $('#purchasecount').append(`<h6>Total Count: ${data.length}`);
+                        $('#purchasecount').append(`<h6>Total Count: ${data.length}</h6>`);
                     }
                     else if (apiURL === `/favourites/${loggedInUserID}`) {
                         const data = response.data
@@ -305,7 +305,7 @@
                         `;
                             $('#favouritedata').append(favouriteHTML);
                         });
-                        $('#favouritecount').append(`<h6>Total Count: ${data.length}`);
+                        $('#favouritecount').append(`<h6>Total Count: ${data.length}</h6>`);
                     }
 
                 })
@@ -329,7 +329,18 @@
 
         // Display when page loads
         document.addEventListener('DOMContentLoaded', async function () {
+            // Declare variables to fetch data from multiple APIs using Axios
+            const reviewAPI = `/reviews/data/${loggedInUserID}`;
+            const purchaseAPI = `/purchase/${loggedInUserID}`;
+            const favouriteAPI = `/favourites/${loggedInUserID}`;
 
+            const requests = [
+                fetchDataFromAPI(reviewAPI),
+                fetchDataFromAPI(purchaseAPI),
+                fetchDataFromAPI(favouriteAPI)
+            ];
+
+            // first, get the user details
             axios.get(`/user/${loggedInUserID}`)
                 .then((response) => {
                     const data = response.data[0];
@@ -342,7 +353,7 @@
         `;
 
                     $('#getUserData').append(dataHtml);
-                }).then(() => {
+                }).then(() => {// then, perform concurrent request to retrieve dropdown menu data
                     const [reviews, purchases, favourites] = Promise.all(requests);
                     const data = {
                         reviews: reviews,
@@ -350,29 +361,25 @@
                         favourites: favourites
                     };
                     dropdownData = data;
-                }).catch((error) => {
-                    console.error('Error fetching data:', error);
                 })
-            // Fetch data from multiple APIs using Axios
-            const reviewAPI = `/reviews/data/${loggedInUserID}`;
-            const purchaseAPI = `/purchase/${loggedInUserID}`;
-            const favouriteAPI = `/favourites/${loggedInUserID}`;
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                });
 
-            const requests = [
-                fetchDataFromAPI(reviewAPI),
-                fetchDataFromAPI(purchaseAPI),
-                fetchDataFromAPI(favouriteAPI)
-            ];
+            // display initial content
+            setTimeout(function () {
+                $('#reviews').show();
+                $('#loading').hide();
+            }, 1000); // 2-second delay
+
         });
 
+        // update displayed content when selecting another dropdown menu option
         $('#contentSelector').on('change', async function () {
             const selectedValue = $(this).val();
             dropdownSelection = selectedValue;
             updateDisplayedContent(dropdownSelection, dropdownData);
         });
-
-        // initial content display
-        $('#reviews').show();
 
         /*
         // retrieve user data
