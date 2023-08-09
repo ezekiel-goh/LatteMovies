@@ -90,6 +90,8 @@ Homepage.html
     .card {
         position: relative;
         overflow: hidden;
+
+
     }
 
     .card-img-top {
@@ -98,6 +100,7 @@ Homepage.html
 
     .card:hover .card-img-top {
         filter: blur(15px);
+        background-color: rgba(103, 103, 103, 0.36);
     }
 
     .card-content {
@@ -105,7 +108,6 @@ Homepage.html
         bottom: 0;
         left: 0;
         right: 0;
-        background-color: rgba(255, 255, 255, 0);
         /* backdrop-filter: blur(15px); */
         padding: 10px;
         transform: translateY(100%);
@@ -114,6 +116,56 @@ Homepage.html
 
     .card:hover .card-content {
         transform: translateY(0);
+    }
+
+    .category-header {
+        font-size: 24px;
+        /* Adjust font size for category header */
+        font-weight: bold;
+        color: #fff;
+        /* Set text color to white */
+        background-color: #000;
+        /* Set background color for category header */
+        padding: 10px;
+        /* Add padding for spacing */
+        margin: 20px 0;
+        /* Add margin for spacing between category headers */
+        border-radius: 10px;
+        /* Add border-radius for rounded corners */
+    }
+
+    .dropdown-menu.show {
+        display: block;
+        position: absolute;
+        z-index: 1000;
+        width: 100%;
+        background-color: #000;
+        border: none;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .dropdown-item {
+        color: white;
+    }
+
+    .dropdown-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    span {
+        background: #000000;
+        color: #fff;
+        padding: 0px 10px 0px 10px;
+        border-radius: 10px;
+        margin: 5px;
+        -webkit-box-decoration-break: clone;
+        -moz-background-inline-policy: clone;
+        box-decoration-break: clone;
+    }
+
+    #main h2 {
+        line-height: 1.3;
+        margin-right: 5px;
     }
 
     #main h1 {
@@ -142,11 +194,17 @@ Homepage.html
                     <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
                         <li><a href="/" class="nav-link px-2 text-light fs-5">&nbspHomepage</a></li>
                         <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import Movies</a>
-                        <!-- <li><a href="/userpage" class="nav-link px-3 text-secondary fs-5">Users</a> -->
+                            <!-- <li><a href="/userpage" class="nav-link px-3 text-secondary fs-5">Users</a> -->
 
                         </li>
                         <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
                     </ul>
+
+                    <form class="d-flex" role="search" style="position:relative; right:150px;">
+                        <input class="form-control me-2" type="search" id="searchBar" placeholder="Search movies..."
+                            aria-label="Search">
+                        <button class="btn btn-outline-success" type="button" id="searchButton">Search</button>
+                    </form>
 
 
                     <!-- <form class="col-12 col-lg-auto col-lg-5 mb-3 mb-lg-0 me-lg-3" role="search">
@@ -185,8 +243,9 @@ Homepage.html
 
     <main>
         <section>
-            <div class="container">
-                <div id="main" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col my-5" class="text-light">
+            <div class="container" style="min-height: 750px;">
+                <div id="main" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col my-5"
+                    class="text-light">
                 </div>
             </div>
             <!-- <div class="container">
@@ -196,6 +255,47 @@ Homepage.html
     </main>
 
 </body>
+<div class="container text-light">
+    <footer class="py-5">
+        <div class="row">
+            <div class="col-6 col-md-2 mb-3">
+                <h5>Section</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Movies</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">TMDB</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Developers</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Latte Database</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">About</a></li>
+                </ul>
+            </div>
+
+
+            <div class="col-md-5 offset-md-1 mb-3">
+                <form>
+                    <h5>Contact Us!</h5>
+                    <p>Fresh movies from the silver screen.</p>
+                    <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                        <label for="newsletter1" class="visually-hidden">Email address</label>
+                        <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+            <p>
+                Therefore, my beloved, as you have always obeyed,
+                <br>so now, not only as in my presence but much more in my
+                <br> absence, work out your own salvation with fear and trembling,
+                <br>for it is God who works in you, both to will and to work for his good pleasure.
+                <br><br>
+                <b>Philippians 2:12-13</b>
+            </p>
+
+        </div>
+    </footer>
+</div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 
@@ -286,6 +386,34 @@ Homepage.html
         const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
         const baseUrl = "http://localhost:3000";
 
+        const searchBar = document.getElementById("searchBar");
+        const dropdownSearch = document.createElement("div");
+        dropdownSearch.className = "dropdown-menu show";
+        dropdownSearch.id = "searchDropdown";
+
+        searchBar.addEventListener("input", () => {
+            const searchTerm = searchBar.value.toLowerCase();
+
+            if (searchTerm.trim() === "") {
+                dropdownSearch.innerHTML = "";
+                return;
+            }
+
+            const matchingMovies = movies.filter(movie => movie.title.toLowerCase().includes(searchTerm));
+            dropdownSearch.innerHTML = "";
+
+            matchingMovies.forEach(movie => {
+                const dropdownItem = document.createElement("a");
+                dropdownItem.className = "dropdown-item";
+                dropdownItem.href = `/movieDetails?id=${movie.id}`;
+                dropdownItem.textContent = movie.title;
+
+                dropdownSearch.appendChild(dropdownItem);
+            });
+        });
+
+        searchBar.parentNode.appendChild(dropdownSearch);
+
         let movies = [];
         const updatedMovieElements = (movies, sortOption) => {
             const mainElement = document.getElementById("main");
@@ -301,10 +429,11 @@ Homepage.html
                         currentCategory = category.name;
 
                         // Add category header
-                        
+
                         const categoryHeader = document.createElement("h1");
-                        categoryHeader.textContent = currentCategory;
+                        categoryHeader.innerHTML = `${currentCategory} &rarr;`;
                         mainElement.appendChild(categoryHeader);
+
                     }
 
                     // Add movie card under the category
@@ -313,7 +442,7 @@ Homepage.html
                 <a href="/movieDetails?id=${movie.id}" class="card bg-black ">
                 <img src="${IMG_URL + movie.poster_path}" class="card-img-top" alt="Movie Poster">
                     <div class="card-content ">
-                        <h2 class="card-title text-white">${movie.title}</h2>
+                        <div class="card-title text-white"><h2><span>${movie.title}</span><h2></div>
                     </div>
                 </a>
             </div>`;
@@ -326,18 +455,20 @@ Homepage.html
                     <a href="/movieDetails?id=${movie.id}" class="card bg-black ">
                     <img src="${IMG_URL + movie.poster_path}" class="card-img-top" alt="Movie Poster">
                         <div class="card-content ">
-                            <h2 class="card-title text-white">${movie.title}</h2>
+                         <div class="card-title text-white"><h2><span>${movie.title}</span><h2></div>
                         </div>
                     </a>
                 </div>`;
                     mainElement.insertAdjacentHTML("beforeend", movieEl);
+
+
                 });
             }
         };
 
 
 
-    
+
         const sortMovies = (movies, sortOption) => {
             if (sortOption === "az") {
                 // Sort movies back to the original order
@@ -416,6 +547,7 @@ Homepage.html
 
     });
 </script>
+
 
 
 </html>
