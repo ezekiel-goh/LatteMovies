@@ -7,715 +7,1041 @@ movieDetails.html
 - can delete movie (individually)
  -->
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Latte Movies</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap"
-        rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
-
-</head>
-<style>
-    .form-control-dark {
-        border-color: var(--bs-gray);
-    }
-
-    .form-control-dark:focus {
-        border-color: #fff;
-        box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
-    }
-
-    .text-small {
-        font-size: 85%;
-    }
-
-    .dropdown-toggle {
-        outline: 0;
-    }
-
-    .placeholder {
-        color: white;
-    }
-
-
-    #searchBar.form-control::placeholder {
-        color: rgb(170, 170, 170);
-    }
-
-    #ComFont {
-        font-family: 'Nunito', sans-serif;
-
-    }
-
-    .appLogo {
-        margin-right: 2.7%;
-    }
-
-    #navBar {
-        border-radius: 30px 30px 30px 30px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.31);
-    }
-
-    #navBarMovies {
-        border-radius: 30px 30px 30px 30px;
-        box-shadow: 2px 2px 10px rgba(128, 128, 128, 0.31);
-    }
-
-    #navBarButton {
-        background-color: rgb(255, 255, 255);
-        border-color: rgba(255, 255, 255, 0);
-        border-radius: 100px;
-    }
-
-    .large-font {
-        font-size: 40px;
-    }
-
-    .top-20 {
-        position: relative;
-        top: 20vh;
-    }
-
-    ion-icon.active {
-        animation: like 0.5s 1;
-        fill: #FFC107;
-        stroke: none;
-    }
-
-    ion-icon {
-        fill: transparent;
-        stroke-width: 25;
-        transition: all 0.5s;
-    }
-
-    #tooltip {
-        position: relative;
-        display: inline-block;
-        border-bottom: 1px dotted black;
-    }
-
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 120px;
-        background-color: black;
-        color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 5px 0;
-
-        /* Position the tooltip */
-        position: absolute;
-        z-index: 1;
-        bottom: 100%;
-        left: 50%;
-        margin-left: -60px;
-    }
-
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-    }
-
-    @-webkit-keyframes like {
-        0% {
-            transform: scale(1);
-        }
-
-        90% {
-            transform: scale(1.2);
-        }
-
-        100% {
-            transform: scale(1.1);
-        }
-    }
-
-    .icons .heartIcon {
-        width: 40px;
-        height: 40px;
-        font-size: 50px;
-    }
-</style>
-
-<body class="bg-black">
-    <div class="cover-container d-f p-3 mx-auto flex-column">
-
-        <nav class="navbar navbar-expand-sm p-3 m-2 fixed-top bg-dark" id="navBar" style="background-color: #000;"
-            aria-label="Header">
-            <div class="container-fluid">
-                <a href="/" class="d-flex align-items-center mt-2 mb-2 mb-lg-0 pe-3 text-white text-decoration-none">
-                </a>
-                <button class="navbar-toggler btn btn-dark" id="navBarButton" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
-                        <li><a href="/" class="nav-link px-2 text-light fs-5">&nbspHomepage</a></li>
-                        <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import Movies</a>
-                        </li>
-                        <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
-                    </ul>
-
-                    <div class="text-end">
-                        <a href="/login/"><button type="button" class="btn btn-warning me-2">Login</button></a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </div>
-
-    <main>
-        <section>
-            <div class="container mt-5 pt-5">
-                <div class="row">
-                    <div class="card-body">
-                        <div class="container">
-                            <div class="row">
-                                <div id="posterIMG" class="col-4 card bg-black" style="width: 20rem">
-                                    <!-- image url here -->
-                                </div>
-                                <div class="col-8" style="max-width: 800px;">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-9">
-                                                <div id="MovieTitle">
-                                                </div>
-                                            </div>
-                                            <div class="icons col-3">
-                                                <div class='large-font text-warning pt-4'>
-                                                    <ion-icon name="heart" class="heartIcon" data-toggle="tooltip"
-                                                        data-original-title="Like/Unlike">
-                                                        <!-- #1 fix tooltip -->
-                                                    </ion-icon>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="Details">
-                                    </div>
-                                    <div class="container">
-                                        <div class="row mt-5" style="position: relative;">
-                                            <div class="col-sm my-2">
-                                                <div class="input-group bg-dark rounded-5 border border-1"
-                                                    style="position: relative; min-width: 180px; max-width: 220px; height:50px;">
-                                                    <span
-                                                        class="input-group-text text-light bg-dark bg-transparent border border-0 fs-5">$</span>
-                                                    <input type="text" id="inputPrice"
-                                                        class="form-control bg-transparent text-light border border-0">
-                                                </div>
-                                            </div>
-                                            <div class="col-sm my-2">
-                                                <a id="editBtn" class="btn btn-warning rounded-5"
-                                                    style="min-width: 150px; height:50px;">
-                                                    <div class="mt-1 fs-5">Edit Price</div>
-                                                </a>
-                                            </div>
-                                            <div class="col-sm my-2">
-                                                <a href="/" id="deleteBtn" class="btn btn-danger rounded-5"
-                                                    style="position:relative; min-width: 150px; height:50px;">
-                                                    <div class="mt-1 fs-5">Delete Movie</div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div style="position: relative; top: 80px; text-align: center;" class="text-light">
-                <h2>Watch Movie</h2>
-
-                <div style="text-align: center;">
-                    <video id="moviePlayer" width="800" height="600" controls>
-                        <source src="../tenMoreSteps.mp4" type="video/mp4">
-                        <source src="movie.ogg" type="video/ogg">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <div style="align-items: center;">
-                    <canvas id="viewsHistogram"></canvas>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    </script>
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <!--timestamp/histogram parts-->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="../../models/histogram.js" type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module">
-        const moviePlayer = document.getElementById('moviePlayer');
-        let chart = null;
-
-        function getMovieIDFromURL() {
-            var urlParams = new URLSearchParams(window.location.search);
-            var movieID = urlParams.get('id');
-            console.log('Movie ID from URL:', movieID);
-            return movieID;
-        }
-        // For testing purposes
-        var currentUserID = 1;
-        // const movieID = 1;
-        var movieID = getMovieIDFromURL(); // getting movieid from url
-        let lastTimestamp = -1;
-
-        function handleTimeChange() {
-            console.log('Timestamp change');
-            const currentTime = Math.floor(moviePlayer.currentTime);
-
-            if (currentTime !== lastTimestamp) {
-                const minutes = Math.floor(currentTime / 60);
-                const seconds = currentTime % 60;
-                const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                const userID = currentUserID;
-                const data = {
-                    userID: userID,
-                    movieID: movieID,
-                    timestamp: formattedTime
-                };
-
-                axios.post('http://localhost:3000/insertData', data)
-                    .then(response => {
-                        console.log('Data inserted successfully:', response.data);
-                    })
-                    .catch(error => {
-                        console.error('Error inserting data:', error);
-                    });
-
-                lastTimestamp = currentTime;
-            }
-        }
-
-        moviePlayer.addEventListener('seeked', handleTimeChange);
-        console.log('Movie ID from URL:', movieID);
-
-        function renderHistogram(histogramData) {
-
-            var canvas = document.getElementById('viewsHistogram');
-
-            // Destroy the existing chart instance if it exists
-            if (chart) {
-                chart.destroy();
-            }
-
-            var labels = histogramData.map(function (data) {
-                return data.timestamp;
-            });
-
-            var views = histogramData.map(function (data) {
-                return data.views;
-            });
-
-            // Store the chart instance in the 'chart' variable
-            chart = new Chart(canvas, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Views',
-                        data: views,
-                        backgroundColor: 'rgba(255, 255, 0, 0.7)', // Yellow color with 70% opacity
-                        borderColor: 'rgba(255, 255, 0, 1)', // Yellow color
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            precision: 0,
-                            stepSize: 1
-                        }
-                    }
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('Fetching histogram data...');
-            axios.get('http://localhost:3000/generateHistogramData')
-                .then(function (response) {
-                    console.log('Histogram data taken successfully!');
-                    console.log(response.data);
-                    const histogramData = response.data;
-                    renderHistogram(histogramData);
-                    console.log('Histogram data loaded successfully!');
-                })
-                .catch(function (error) {
-                    console.error('Error:', error);
-                });
-        });
-    </script>
-    <!--timestamp/histogram parts ends here-->
-</body>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
-
-    let icon = document.querySelector('ion-icon');
-    icon.onclick = function () {
-        const userID = 1;   // ID of the user who likes the movie
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');  // ID of the movie to be liked
-
-        const data = {
-            id: id,
-            userID: userID
-        };
-        if (icon.classList.toggle('active')) {
-            axios.post(`/likedMovies`, data)
-                .then(response => {
-                    console.log('Movie liked:', response.data);
-                })
-                .catch(error => {
-                    console.error('Error liking movie:', error);
-                });
-        } else {
-            console.log('disliked');
-        }
-    };
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-
-        $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip({
-                placement: 'bottom'
-            });
-        });
-
-        //-- Delete Movie 
-        const deleteButton = document.getElementById("deleteBtn");
-        deleteButton.addEventListener('click', (event) => {
-            const deleteRequest = axios.delete(`/movieDetails/${id}`);
-            const getRequest = axios.get(`/movieDetails/${id}`);
-
-            Promise.all([deleteRequest, getRequest])
-                .then(([deleteResponse, getResponse]) => {
-                    if (deleteResponse.status === 200) {
-                        console.log("Movie deleted!");
-                    } else {
-                        alert("Movie Deleted");
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                    alert("Movie Deleted");
-                });
-            //-- not working as intended
-        });
-
-
-
-        //-- Edit Movie Price
-        const editButton = document.getElementById("editBtn");
-        editButton.addEventListener('click', (event) => {
-            const priceInput = document.getElementById("inputPrice").value
-            console.log(priceInput)
-            const updatedMovie = {
-                price: priceInput
-            };
-
-
-            axios.put(`/movieDetails/${id}`, updatedMovie)
-                .then((response) => {
-                    if (response.status == 200) {
-                        console.log("Movie Price Edited")
-                    } else {
-                        console.log("Error editing movie Price")
-                    }
-                })
-        })
-
-
-        const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
-        const baseUrl = "http://localhost:3000";
-        const params = new URLSearchParams(window.location.search);
-        //-- URL Parameters
-        const id = params.get('id')
-
-        axios.get(`/movieDetails/${id}`)
-            .then((response) => {
-                const movies = Object.values(response.data);
-                console.log(movies)
-                const IMGPoster =
-                    `<img class="bd-placeholder-img" src="${IMG_URL + movies[0].poster_path}"/>`
-                const movTitle = `<h1 class="text-light mt-4" style="max-width: 600px;">${movies[0].title}</h1>`
-                const details =
-                    `
-                    <p class="text-light"> 
-                        <br><b>Overview</b><br>${movies[0].overview}
-                        <div class="container ">
-                            <div class="row text-light fs-5 me-5">
-                                <div class="col-sm">
-                                    <br> <b>Runtime</b> <br>${movies[0].runtime} mins 
-                                </div>
-                                <div class="col-sm">
-                                    <br> <b>Price</b> <br>${movies[0].Price ? `$${movies[0].Price}` : "No Price"}
-                                </div>
-                                <div class="col-sm">
-                                    <br> <b>Release date</b> <br>${movies[0].release_date}
-                                </div>
-                                <br> 
-                            </div>
-                        </div>
-                    </p>`;
-
-                $("#posterIMG").append(IMGPoster);
-                $("#MovieTitle").append(movTitle);
-                $("#Details").append(details);
-
-            })
-
-            .catch((error) => {
-                console.log(error);
-            });
-
-    })
-
-</script>
-<script>
-    function movieDelAlert() {
-        alert("Movie Deleted!")
-    }
-</script>
-
-<main>
-    <section>
-        <h1>Reviews</h1>
-        <h4>Thompson Dave</h4>
-        <form id="reviewForm">
-            <input type="number" max="5" inputmode="numeric" id="rating" name="rating"
-                placeholder="what would you rate this movie out of 5?" required>
-            <input type="text" id="review" name="Review" placeholder="Give review..." required>
-            <button type="submit" id="post" class="btn btn-primary">Submit</button>
-        </form>
-        <form id="alterForm">
-            <input type="number" max="5" id="reviewID" name="reviewID"
-                placeholder="which review would you want to delete?" required>
-            <input type="number" max="5" id="alterRating" name="newRating"
-                placeholder="what would you rate this movie out of 5?" required>
-            <input type="text" id="alterReview" name="Review" placeholder="Give review..." required>
-            <button type="submit" id="update" class="btn btn-primary">Update</button>
-        </form>
-        <form id="deleteForm">
-            <input type="number" id="deleteID" name="deleteID" placeholder="which review would you want to delete?"
-                required>
-            <button type="submit" id="delete" class="btn btn-primary">Delete</button>
-        </form>
-        <form id="deleteAllForm">
-            <button type="submit" id="deleteAll" class="btn btn-primary">Delete all reviews</button>
-        </form>
-        <label for="sort-by">Sort by:</label>
-        <select name="sort-by" id="sort-by">
-            <option value="ID">Sort by ID</option>
-            <option value="Rating">Sort by Rating</option>
-        </select>
-        <button type="submit" id="retrieve" class="btn btn-primary">Retrieve</button>
-        <div id="component">
-            <ul id="average"></ul>
-        </div>
-        <div id="list">
-            <ul id="reviewList"></ul>
-        </div>
-    </section>
-</main>
-</div>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="Reviews.js"></script>
-<script src="../../models/review.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
-
-<script>
-    // window.addEventListener('DOMContentLoaded', function () {
-    // Post review
-
-    const submit = document.getElementById("post")
-    submit.addEventListener("click", (event) => {
-        event.preventDefault();
-        const urlParams = new URLSearchParams(window.location.search);
-        const movieID = urlParams.get('id');
-        const postComment = document.getElementById("review").value
-        const postRating = document.getElementById("rating").value
-        console.log(postComment, postRating)
-        const post = {
-            MovieID: movieID,
-            Comments: postComment,
-            Rating: postRating
-        }
-
-        const baseUrl = "http://localhost:3000"
-        axios.post(`${baseUrl}/reviews`, post)
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log("Review submitted!")
-                } else {
-                    console.log("An error occurred")
-                }
-            })
-    })
-
-    //fish
-
-    //update review
-    const submit3 = document.getElementById("update")
-    submit3.addEventListener("click", (event) => {
-        event.preventDefault();
-        const reviewID = document.getElementById("reviewID").value
-        const newRating = document.getElementById("alterRating").value
-        const newReview = document.getElementById("alterReview").value
-        console.log(reviewID, newReview)
-        const update = {
-            ReviewID: reviewID,
-            Rating: newRating,
-            Comments: newReview
-        }
-
-        const baseUrl = "http://localhost:3000"
-        axios.put(`${baseUrl}/reviews`, update)
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log("Review submitted!")
-                } else {
-                    console.log("An error occurred")
-                }
-            })
-    })
-
-    //delete review
-    const deleteBtn = document.getElementById("delete")
-    deleteBtn.addEventListener("click", (event) => {
-        const id = document.getElementById("deleteID").value
-        const baseUrl = "http://localhost:3000";
-        axios.delete(`${baseUrl}/reviews/${id}`)
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log("Review deleted!");
-                } else {
-                    console.log("An error occurred");
-                }
-            });
-    })
-
-    //delete all reviews
-    const deleteAllBtn = document.getElementById("deleteAll")
-    deleteAllBtn.addEventListener("click", (event) => {
-        event.preventDefault();
-        const baseUrl = "http://localhost:3000";
-        const urlParams = new URLSearchParams(window.location.search);
-        const MovieID = urlParams.get('id');
-        axios.delete(`${baseUrl}/reviews/${MovieID}`)
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log("Review deleted!");
-                } else {
-                    console.log("An error occurred");
-                }
-            });
-    })
-
-    // Get review
-    const retrieve = document.getElementById("retrieve");
-    retrieve.addEventListener("click", (event) => {
-        event.preventDefault(); // Prevent default form submission behavior
-        const reviewList = document.getElementById("reviewList");
-        const average = document.getElementById("average")
-        const baseUrl = "http://localhost:3000";
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const MovieID = urlParams.get('id');
-
-        axios.get(`${baseUrl}/reviews/data/${MovieID}`)
-            .then((response) => {
-                const retrieved = Object.values(response);
-                reviewList.innerHTML = "";
-                average.innerHTML = ""
-
-                const avg = document.createElement("li");
-                avg.textContent = `Average: ${JSON.stringify(retrieved[0][1][0][0].average)}/5.0`
-                average.appendChild(avg);
-
-                for (i = 0; i < retrieved[0][0].length; i++) {
-                    const list = document.createElement("li");
-                    list.textContent = `ID: ${JSON.stringify(retrieved[0][0][i].ReviewID)}, Rating: ${JSON.stringify(retrieved[0][0][i].Rating)}, Comments: ${JSON.stringify(retrieved[0][0][i].Comments)}`;
-                    reviewList.appendChild(list);
-                }
-            })
-            .catch((error) => {
-                console.log("An error occurred:", error);
-            });
-    })
-
-    // Sorting reviews
-    // document.getElementById("sort-by").value = "Rating"
-    const sort = document.getElementById("sort-by");
-    sort.addEventListener("change", (event) => {
-        // window.alert("Changed")
-        event.preventDefault();
-        const urlParams = new URLSearchParams(window.location.search);
-        const MovieID = urlParams.get('id');
-        const baseUrl = "http://localhost:3000";
-        const selectedValue = sort.value
-        const reviewList = document.getElementById("reviewList");
-        if (selectedValue === "ID") {
-
-            axios.get(`${baseUrl}/reviews/sort/${MovieID}`)
-                .then((response) => {
-                    const sorted = Object.values(response);
-                    reviewList.innerHTML = "";
-
-                    for (i = 0; i < sorted[0][0].length; i++) {
-                        const list = document.createElement("li");
-                        list.textContent = `ID: ${JSON.stringify(sorted[0][0][i].ReviewID)}, Rating: ${JSON.stringify(sorted[0][0][i].Rating)}, Comments: ${JSON.stringify(sorted[0][0][i].Comments)}`;
-                        reviewList.appendChild(list);
-                    }
-                })
-                .catch((error) => {
-                    console.log("An error occurred:", error);
-                });
-        }
-        else if (selectedValue === "Rating") {
-            axios.get(`${baseUrl}/reviews/sort2/${MovieID}`)
-                .then((response) => {
-                    const sorted = Object.values(response);
-                    reviewList.innerHTML = "";
-
-                    for (i = 0; i < sorted[0][0].length; i++) {
-                        const list = document.createElement("li");
-                        list.textContent = `ID: ${JSON.stringify(sorted[0][0][i].ReviewID)}, Rating: ${JSON.stringify(sorted[0][0][i].Rating)}, Comments: ${JSON.stringify(sorted[0][0][i].Comments)}`;
-                        reviewList.appendChild(list);
-                    }
-                })
-                .catch((error) => {
-                    console.log("An error occurred:", error);
-                });
-        }
-    });
-
-
-
-</script>
-
-</html>
+ <!DOCTYPE html>
+ <html lang="en">
+ 
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+     <title>Latte Movies</title>
+ 
+     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link
+         href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap"
+         rel="stylesheet">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+ 
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+ 
+ 
+ </head>
+ <style>
+     .form-control-dark {
+         border-color: var(--bs-gray);
+     }
+ 
+     .form-control-dark:focus {
+         border-color: #fff;
+         box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
+     }
+ 
+     .text-small {
+         font-size: 85%;
+     }
+ 
+     .dropdown-toggle {
+         outline: 0;
+     }
+ 
+     .placeholder {
+         color: white;
+     }
+ 
+ 
+     #searchBar.form-control::placeholder {
+         color: rgb(170, 170, 170);
+     }
+ 
+     #ComFont {
+         font-family: 'Nunito', sans-serif;
+ 
+     }
+ 
+     .appLogo {
+         margin-right: 2.7%;
+     }
+ 
+     #navBar {
+         border-radius: 30px 30px 30px 30px;
+         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.31);
+     }
+ 
+     #navBarMovies {
+         border-radius: 30px 30px 30px 30px;
+         box-shadow: 2px 2px 10px rgba(128, 128, 128, 0.31);
+     }
+ 
+     #navBarButton {
+         background-color: rgb(255, 255, 255);
+         border-color: rgba(255, 255, 255, 0);
+         border-radius: 100px;
+     }
+ 
+     .large-font {
+         font-size: 40px;
+     }
+ 
+     .top-20 {
+         position: relative;
+         top: 20vh;
+     }
+ 
+     ion-icon.active {
+         animation: like 0.5s 1;
+         fill: #FFC107;
+         stroke: none;
+     }
+ 
+     ion-icon {
+         fill: transparent;
+         stroke-width: 25;
+         transition: all 0.5s;
+     }
+ 
+     span {
+         background: #000000;
+         color: #fff;
+         padding: 0px 10px 0px 10px;
+         border-radius: 10px;
+         margin: 5px;
+         -webkit-box-decoration-break: clone;
+         -moz-background-inline-policy: clone;
+         box-decoration-break: clone;
+     }
+ 
+     .carousel-container {
+         overflow: hidden;
+         position: relative;
+     }
+ 
+     .carousel-track {
+         display: flex;
+         transition: transform 0.3s ease-in-out;
+     }
+ 
+     .col {
+         flex: 0 0 auto;
+         margin: 0 5px;
+         /* Adjust the spacing between cards */
+     }
+ 
+     .card {
+         position: relative;
+         overflow: hidden;
+         max-width: 250px;
+         height: auto;
+     }
+ 
+     .card-img-top {
+         transition: filter 0.3s ease-in-out;
+     }
+ 
+     .card:hover .card-img-top {
+         filter: blur(15px);
+     }
+ 
+     .card-content {
+         position: absolute;
+         bottom: 0;
+         left: 0;
+         right: 0;
+         background-color: rgba(255, 255, 255, 0);
+         /* backdrop-filter: blur(15px); */
+         padding: 10px;
+         transform: translateY(100%);
+         transition: transform 0.3s ease-in-out;
+     }
+ 
+     .card:hover .card-content {
+         transform: translateY(0);
+     }
+ 
+     #tooltip {
+         position: relative;
+         display: inline-block;
+         border-bottom: 1px dotted rgb(255, 255, 255);
+     }
+ 
+     .tooltip .tooltiptext {
+         visibility: hidden;
+         width: 120px;
+         background-color: rgb(255, 255, 255);
+         color: #fff;
+         text-align: center;
+         border-radius: 6px;
+         padding: 5px 0;
+ 
+         /* Position the tooltip */
+         position: absolute;
+         z-index: 1;
+         bottom: 100%;
+         left: 50%;
+         margin-left: -60px;
+     }
+ 
+     .tooltip:hover .tooltiptext {
+         visibility: visible;
+     }
+ 
+     .carousel-container {
+         overflow: hidden;
+         position: relative;
+         /* Set the width of the carousel container to fit the screen */
+         width: 100%;
+         /* Set the overflow behavior to auto to enable horizontal scrolling when needed */
+         overflow-x: auto;
+         /* Remove horizontal scrollbar */
+         scrollbar-width: none;
+         /* Hide scrollbar for Firefox */
+         -ms-overflow-style: none;
+     }
+ 
+     .carousel-track {
+         /* Remove the display property to allow the track to flex its items */
+         display: flex;
+         /* Update the transition property to allow smooth scrolling */
+         transition: transform 0.3s ease-in-out;
+         /* Set the width to fit the content of all movie cards */
+         width: fit-content;
+ 
+     }
+ 
+     .carousel-container::-webkit-scrollbar {
+         display: none;
+     }
+ 
+ 
+     @-webkit-keyframes like {
+         0% {
+             transform: scale(1);
+         }
+ 
+         90% {
+             transform: scale(1.2);
+         }
+ 
+         100% {
+             transform: scale(1.1);
+         }
+     }
+ 
+     .icons .heartIcon {
+         width: 40px;
+         height: 40px;
+         font-size: 50px;
+     }
+ </style>
+ 
+ <body class="bg-black">
+     <div class="cover-container d-f p-3 mx-auto flex-column">
+ 
+         <nav class="navbar navbar-expand-sm p-3 m-2 fixed-top bg-dark" id="navBar" style="background-color: #000;"
+             aria-label="Header">
+             <div class="container-fluid">
+                 <a href="/" class="d-flex align-items-center mt-2 mb-2 mb-lg-0 pe-3 text-white text-decoration-none">
+                 </a>
+                 <button class="navbar-toggler btn btn-dark" id="navBarButton" type="button" data-bs-toggle="collapse"
+                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                     aria-expanded="false" aria-label="Toggle navigation">
+                     <span class="navbar-toggler-icon"></span>
+                 </button>
+                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                     <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
+                         <li><a href="/" class="nav-link px-2 text-secondary fs-5">&nbspHomepage</a></li>
+                         <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import Movies</a>
+                         </li>
+                         <li><a href="/userpage" class="nav-link px-3 text-secondary fs-5">Users</a>
+                         </li>
+                         <li><a href="/moviePublisher" class="nav-link px-3 text-secondary fs-5">Publishers</a>
+                         </li>
+                         <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
+                     </ul>
+ 
+                     <div class="text-end">
+                         <a href="/login/"><button type="button" class="btn btn-warning me-2">Login</button></a>
+                     </div>
+                 </div>
+             </div>
+         </nav>
+     </div>
+ 
+     <main>
+         <section>
+             <div class="container mt-5 pt-5">
+                 <div class="row">
+                     <div class="card-body">
+                         <div class="container">
+                             <div class="row">
+                                 <div id="posterIMG" class="col-4 card bg-black" style="width: 20rem">
+                                     <!-- image url here -->
+                                 </div>
+                                 <div class="col-8" style="max-width: 800px;">
+                                     <div class="container">
+                                         <div class="row">
+                                             <div class="col-9" style="height: 84px;">
+                                                 <div id="MovieTitle">
+                                                 </div>
+                                             </div>
+                                             <div class="icons col-3">
+                                                 <div class='large-font text-warning pt-4'>
+                                                     <ion-icon name="heart" class="heartIcon" data-toggle="tooltip"
+                                                         data-original-title="Like/Unlike">
+                                                         <!-- #1 fix tooltip -->
+                                                     </ion-icon>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div id="Details" style="height: 255px;">
+                                     </div>
+                                     <div class="container">
+                                         <div class="row mt-5" style="position: relative;">
+                                             <div class="col-sm my-2">
+                                                 <div class="input-group bg-dark rounded-5 border border-1"
+                                                     style="position: relative; min-width: 180px; max-width: 220px; height:50px;">
+                                                     <span
+                                                         class="input-group-text text-light bg-dark bg-transparent border border-0 fs-5">$</span>
+                                                     <input type="text" id="inputPrice"
+                                                         class="form-control bg-transparent text-light border border-0">
+                                                 </div>
+                                                 <!-- <div class="text-secondary ms-4">disabled for demo</div> -->
+                                             </div>
+                                             <div class="col-sm my-2">
+                                                 <a id="editBtn" class="btn btn-warning rounded-5"
+                                                     style="min-width: 150px; height:50px;  ">
+                                                     <div class="mt-1 fs-5">Edit Price</div>
+                                                 </a>
+                                             </div>
+                                             <div class="col-sm my-2">
+                                                 <!-- disabled -->
+                                                 <a href="/" id="deleteBtn" class="btn btn-danger rounded-5"
+                                                     style="position:relative; min-width: 150px; height:50px;  ">
+                                                     <div class="mt-1 fs-5">Delete</div>
+                                                 </a>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+ 
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div style="position: relative; top: 80px; text-align: center;" class="text-light">
+                 <h2>Watch Movie</h2>
+ 
+                 <div style="text-align: center;">
+                     <video id="moviePlayer" width="800" height="600" controls>
+                         <source src="../tenMoreSteps.mp4" type="video/mp4">
+                         <source src="movie.ogg" type="video/ogg">
+                         Your browser does not support the video tag.
+                     </video>
+                 </div>
+                 <section>
+                     <h1>Reviews</h1>
+                     <h4>Thompson Dave</h4>
+                     <form id="reviewForm">
+                         <input type="number" max="5" inputmode="numeric" id="rating" name="rating"
+                             placeholder="what would you rate this movie out of 5?" required>
+                         <input type="text" id="review" name="Review" placeholder="Give review..." required>
+                         <button type="submit" id="post" class="btn btn-primary">Submit</button>
+                     </form>
+                     <label for="sort-by">Sort by:</label>
+                     <select name="sort-by" id="sort-by">
+                         <option value="ID">Sort by ID</option>
+                         <option value="Rating">Sort by Rating</option>
+                     </select>
+                     <button type="submit" id="retrieve" class="btn btn-primary">Retrieve</button>
+                     <div id="component">
+                         <ul id="average"></ul>
+                     </div>
+                     <div id="list">
+                         <ul id="reviewList"></ul>
+                     </div>
+                 </section>
+                 <div style="margin: 0 auto; width:800px; height:300px;">
+                     <canvas id="viewsHistogram" style="background-color: rgb(51, 51, 51)"></canvas>
+                 </div>
+             </div>
+ 
+             <div class="container" id="ComFont">
+                 <div class="mt-5">
+                     <div class="text-start text-light mt-5" style="position:relative; top: 60px;">
+                         <h2>Recommended Movies</h2>
+                         <!-- <button type="button" class="btn btn-dark" id="slideRightBtn">
+                             <ion-icon name="arrow-back-outline"></ion-icon>
+                         </button>
+                         <button type="button" class="btn btn-dark" id="slideLeftBtn">
+                             <ion-icon name="arrow-forward-outline"></ion-icon>
+                         </button> -->
+ 
+                         <div class="carousel-container" id="carouselContainer">
+                             <div class="carousel-track">
+ 
+                             </div>
+                             &nbsp
+                         </div>
+                     </div>
+                 </div>
+             </div>
+ 
+ 
+ 
+         </section>
+     </main>
+ 
+     </script>
+     <script src="Reviews.js"></script>
+     <script src="../../models/review.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+         crossorigin="anonymous"></script>
+ 
+     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+     <!--timestamp/histogram parts-->
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <script type="module">
+         function getRandomInt(min, max) {
+             const userID = Math.floor(Math.random() * (max - min + 1)) + min;
+             console.log(userID);
+             return userID;
+         }
+         const moviePlayer = document.getElementById('moviePlayer');
+         let chart = null;
+         var movieID = null;
+ 
+         function getMovieIDFromURL() {
+             var urlParams = new URLSearchParams(window.location.search);
+             return urlParams.get('id');
+         }
+         // For testing purposes
+         var currentUserID = getRandomInt(1, 100000);
+         console.log(currentUserID);
+         // const movieID = 1;
+         movieID = getMovieIDFromURL(); // getting movieid from url
+         let lastTimestamp = -1;
+ 
+         function handleTimeChange() {
+             console.log('Timestamp change');
+             const currentTime = Math.floor(moviePlayer.currentTime);
+ 
+             if (currentTime !== lastTimestamp) {
+                 const minutes = Math.floor(currentTime / 60);
+                 const seconds = currentTime % 60;
+                 const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                 const userID = currentUserID;
+                 const data = {
+                     userID: userID,
+                     movieID: movieID,
+                     timestamp: formattedTime
+                 };
+ 
+                 axios.post('http://localhost:3000/insertData', data)
+                     .then(response => {
+                         console.log('Data inserted successfully:', response.data);
+                     })
+                     .catch(error => {
+                         console.error('Error inserting data:', error);
+                     });
+ 
+                 lastTimestamp = currentTime;
+             }
+         }
+ 
+         moviePlayer.addEventListener('seeked', handleTimeChange);
+         console.log('Movie ID from URL:', movieID);
+ 
+         function renderHistogram(histogramData) {
+ 
+             var canvas = document.getElementById('viewsHistogram');
+ 
+             if (chart) {
+                 chart.destroy();
+             }
+             var labels = histogramData.map(function (data) {
+                 return data.Timestamp;
+             });
+             var views = histogramData.map(function (data) {
+                 return data.views;
+             });
+ 
+             // Store the chart instance in the 'chart' variable
+             chart = new Chart(canvas, {
+                 type: 'bar',
+                 data: {
+                     labels: labels,
+                     datasets: [{
+                         label: 'Views',
+                         data: views,
+                         backgroundColor: '#ffc107', // Yellow color with 70% opacity
+                         borderColor: '#ffc107', // Yellow color
+                         borderWidth: 1
+                     }]
+                 },
+                 options: {
+                     title: {
+                         display: true,
+                         text: 'Replayed parts',
+                         color: 'white'
+                     },
+                     layout: {
+                         padding: {
+                             top: 20,
+                             bottom: 20,
+                             left: 50, // Add some padding to the left
+                             right: 50, // Add some padding to the right
+                         }
+                     },
+                     scales: {
+                         x: {
+                             ticks: {
+                                 color: 'white',
+                             }
+                         },
+                         y: {
+                             beginAtZero: true,
+                             ticks: {
+                                 color: 'white',
+                                 precision: 0,
+                                 stepSize: 1
+                             },
+                             precision: 0,
+                             stepSize: 1
+                         }
+                     },
+                     plugins: {
+                         legend: {
+                             display: true,
+                             position: 'right', // Move legend to the right
+                             labels: {
+                                 color: 'white' // Color of legend labels
+                             }
+                         }
+                     },
+                     indexAxis: 'x', // bars to leave no gaps
+                     barPercentage: 1.0,
+                     categoryPercentage: 1.0,
+                     maintainAspectRatio: false,
+                     onClick: (event, activeElements) => {
+                         if (activeElements.length > 0) {
+                             // Get the timestamp from the clicked bar
+                             const clickedTimestamp = labels[activeElements[0].index];
+ 
+                             // Assuming you have a function to seek the video player
+                             seekVideoToTimestamp(clickedTimestamp);
+                         }
+                     }
+                 }
+             });
+             console.log(chart.options)
+         }
+         document.addEventListener('DOMContentLoaded', function () {
+             console.log('Fetching histogram data for movieID ' + movieID);
+             axios.get(`/movieHistogram/${movieID}`)
+                 .then(function (response) {
+                     const histogramData = response.data
+                     console.log('Histogram data taken successfully!');
+                     console.log(histogramData);
+                     console.log('Histogram data loaded successfully!');
+                     renderHistogram(histogramData);
+                 })
+                 .catch(function (error) {
+                     console.error('Error:', error);
+                 });
+         });
+     </script>
+     <!--timestamp/histogram parts ends here-->
+ </body>
+ &nbsp
+ 
+ 
+ <div class="container text-light">
+     <footer class="py-5">
+         <!-- <div class="row">
+             <div class="col-6 col-md-2 mb-3">
+                 <h5>Section</h5>
+                 <ul class="nav flex-column">
+                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Movies</a></li>
+                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">TMDB</a></li>
+                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Developers</a></li>
+                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Latte Database</a></li>
+                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">About</a></li>
+                 </ul>
+             </div>
+ 
+ 
+             <div class="col-md-5 offset-md-1 mb-3">
+                 <form>
+                     <h5>Contact Us!</h5>
+                     <p>Fresh movies from the silver screen.</p>
+                     <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                         <label for="newsletter1" class="visually-hidden">Email address</label>
+                         <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
+                         <button class="btn btn-primary" type="button">Subscribe</button>
+                     </div>
+                 </form>
+             </div>
+         </div> -->
+ 
+         <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+             <p>
+                 Above all else, guard your heart,<br>
+                 for everything you do flows from it
+                 <br><br>
+             </p>
+ 
+         </div>
+     </footer>
+ </div>
+ <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+ <script>
+ 
+     let icon = document.querySelector('ion-icon');
+     icon.onclick = function () {
+         const userID = 1;   // ID of the user who likes the movie
+         const params = new URLSearchParams(window.location.search);
+         const id = params.get('id');  // ID of the movie to be liked
+ 
+         const data = {
+             id: id,
+             userID: userID
+         };
+         if (icon.classList.toggle('active')) {
+             axios.post(`/likedMovies`, data)
+                 .then(response => {
+                     console.log('Movie liked:', response.data);
+                 })
+                 .catch(error => {
+                     console.error('Error liking movie:', error);
+                 });
+         } else {
+             console.log('disliked');
+         }
+     };
+ 
+     //-- score attributes
+     function getPriceScore(price) {
+         const priceChart = {
+             '1': { min: 0, max: 2.99 },
+             '2': { min: 3, max: 5.99 },
+             '3': { min: 6, max: 8.99 },
+             '4': { min: 9, max: 11.99 },
+             '5': { min: 12, max: 14.99 },
+             '6': { min: 15, max: 17.99 },
+             '7': { min: 18, max: 25 },
+         };
+         for (const [score, range] of Object.entries(priceChart)) {
+             if (price >= range.min && price <= range.max) {
+                 return score;
+             }
+         }
+     }
+ 
+     function getDurationScore(duration) {
+         const durationChart = {
+             '1': { min: 0, max: 60 },
+             '2': { min: 61, max: 70 },
+             '3': { min: 71, max: 80 },
+             '4': { min: 81, max: 90 },
+             '5': { min: 91, max: 100 },
+             '6': { min: 101, max: 110 },
+             '7': { min: 111, max: 120 },
+             '8': { min: 121, max: 130 },
+             '9': { min: 131, max: 140 },
+             '10': { min: 141, max: 150 },
+             '11': { min: 151, max: 160 },
+             '12': { min: 161, max: 170 },
+             '13': { min: 171, max: 180 },
+             '14': { min: 181, max: 190 },
+             '15': { min: 191, max: 200 },
+             '16': { min: 201, max: 230 },
+             '17': { min: 231, max: Infinity },
+         };
+ 
+         for (const [score, range] of Object.entries(durationChart)) {
+             if (duration >= range.min && duration <= range.max) {
+                 return score;
+             }
+         }
+         return 0;
+     }
+ 
+     function getGenreScore(genre_id) {
+         const genreChart = {
+             '28': '1',        // Action
+             '12': '2',        // Adventure
+             '16': '3',        // Animation
+             '35': '4',        // Comedy
+             '80': '5',        // Crime
+             '99': '6',        // Documentary
+             '18': '7',        // Drama
+             '10751': '8',     // Family
+             '14': '9',        // Fantasy
+             '36': '10',       // History
+             '27': '11',       // Horror
+             '10402': '12',    // Music
+             '9648': '13',     // Mystery
+             '10749': '14',    // Romance
+             '878': '15',      // Science Fiction
+             '10770': '16',    // TV Movie
+             '53': '17',       // Thriller
+             '10752': '18',    // War
+             '37': '19',       // Western
+         };
+ 
+         return genreChart[genre_id];
+     }
+ 
+ 
+ 
+     document.addEventListener('DOMContentLoaded', function () {
+ 
+         $(document).ready(function () {
+             $('[data-toggle="tooltip"]').tooltip({
+                 placement: 'bottom'
+             });
+         });
+ 
+ 
+         const deleteButton = document.getElementById("deleteBtn");
+         deleteButton.addEventListener('click', (event) => {
+             const deleteRequest = axios.delete(`/movieDetails/${id}`);
+             const getRequest = axios.get(`/movieDetails/${id}`);
+ 
+             Promise.all([deleteRequest, getRequest])
+                 .then(([deleteResponse, getResponse]) => {
+                     if (deleteResponse.status === 200) {
+                         console.log("Movie deleted!");
+                     } else {
+                         alert("Movie Deleted");
+                     }
+                 })
+                 .catch((error) => {
+                     console.log(error);
+                     alert("Movie Deleted");
+                 });
+             //-- not working as intended
+         });
+ 
+ 
+         //-- Edit Movie Price
+         const editButton = document.getElementById("editBtn");
+         editButton.addEventListener('click', (event) => {
+             const priceInput = document.getElementById("inputPrice").value
+             console.log(priceInput)
+             const updatedMovie = {
+                 price: priceInput
+             };
+ 
+ 
+             axios.put(`/movieDetails/${id}`, updatedMovie)
+                 .then((response) => {
+                     if (response.status == 200) {
+                         console.log("Movie Price Edited")
+                     } else {
+                         console.log("Error editing movie Price")
+                     }
+                 })
+         })
+ 
+ 
+         const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
+         const baseUrl = "http://localhost:3000";
+         const params = new URLSearchParams(window.location.search);
+         //-- URL Parameters
+         const id = params.get('id')
+ 
+         axios.get(`/movieDetails/${id}`)
+             .then((response) => {
+                 const movies = Object.values(response.data);
+                 console.log(movies)
+                 const IMGPoster =
+                     `<img class="bd-placeholder-img" src="${IMG_URL + movies[0].poster_path}"/>`
+                 const movTitle = `<h1 class="text-light mt-4" style="max-width: 600px;">${movies[0].title}</h1>`
+                 const details =
+                     `
+                     <p class="text-light"> 
+                         <div class="ms-3 text-light">
+                             <br><b>Overview</b><br>${movies[0].overview}
+                         </div>
+                         <div class="container ">
+                             <div class="row text-light fs-5 me-5">
+                                 <div class="col-sm">
+                                     <br> <b>Runtime</b> <br>${movies[0].runtime} mins 
+                                 </div>
+                                 <div class="col-sm">
+                                     <br> <b>Price</b> <br>${movies[0].Price ? `$${movies[0].Price}` : "No Price"}
+                                 </div>
+                                 <div class="col-sm">
+                                     <br> <b>Release date</b> <br>${movies[0].release_date}
+                                 </div>
+                                 <br> 
+                             </div>
+                         </div>
+                     </p>`;
+ 
+                 $("#posterIMG").append(IMGPoster);
+                 $("#MovieTitle").append(movTitle);
+                 $("#Details").append(details);
+ 
+                 const priceScore = getPriceScore(movies[0].Price);
+                 const durationScore = getDurationScore(movies[0].runtime);
+                 const genreScore = getGenreScore(movies[0].genre_id);
+ 
+                 const currentIdentifiers = [priceScore, durationScore, genreScore]
+ 
+                 console.log(currentIdentifiers)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+                 axios.get(`/allMovieDetails/`)
+                     .then((response) => {
+                         const allMovies = Object.values(response.data);
+                         const currentMovie = movies.find(movie => id === movie.id);
+ 
+                         // const priceScore = getPriceScore(currentMovie.Price);
+                         // const durationScore = getDurationScore(currentMovie.runtime);
+                         // const genreScore = getGenreScore(currentMovie.genre_id);
+                         // const currentIdentifiers = [priceScore, durationScore, genreScore];
+ 
+                         // Filter similar movies that match at least 2 out of 3 identifiers
+                         const similarMovies = allMovies.filter((movie) => {
+                             const moviePriceScore = getPriceScore(movie.Price);
+                             const movieDurationScore = getDurationScore(movie.runtime);
+                             const movieGenreScore = getGenreScore(movie.genre_id);
+                             const matchingIdentifiers = [moviePriceScore, movieDurationScore, movieGenreScore];
+                             const matchingCount = currentIdentifiers.filter((identifier) => matchingIdentifiers.includes(identifier)).length;
+                             return matchingCount >= 2 && movie.id !== parseInt(id);
+                         });
+ 
+                         // const similarMovies = allMovies.filter((movie) => {
+                         //     const moviePriceScore = getPriceScore(movie.Price);
+                         //     const movieDurationScore = getDurationScore(movie.runtime);
+                         //     const movieGenreScore = getGenreScore(movie.genre_id);
+                         //     return (
+                         //         moviePriceScore === priceScore &&
+                         //         movieDurationScore === durationScore &&
+                         //         movieGenreScore === genreScore &&
+                         //         movie.id !== parseInt(id)
+                         //     )
+                         // })
+ 
+ 
+ 
+ 
+                         const carouselTrack = document.querySelector('.carousel-track');
+ 
+                         function createMovieCard(movie) {
+                             const card = document.createElement('div');
+                             console.log(movie)
+                             card.className = 'col';
+                             card.innerHTML = `
+                             <a href="/movieDetails?id=${movie.id}" class="card bg-black">
+                               <img src="${IMG_URL + movie.poster_path}" class="card-img-top" alt="Movie Poster">
+                               <div class="card-content">
+                                 <div class="card-title text-white"><h2><span>${movie.title}</span><h2></div>
+                               </div>
+                             </a>
+                             &nbsp
+                             <div class="col">
+                                     <h5 class="card-title text-secondary">$${movie.Price}</h5>
+                                     <h5 class="card-title text-secondary">${movie.runtime} mins</h5>
+                                     <h5 class="card-title text-secondary">Genre id:${movie.genre_id}</h5>
+                             </div>
+                             `;
+                             return card;
+ 
+                         }
+ 
+                         function populateCarousel() {
+                             const maxRecommendedMovies = 10;
+                             const recommendedMovies = similarMovies.slice(0, maxRecommendedMovies);
+                             for (const movie of recommendedMovies) {
+                                 const movieCard = createMovieCard(movie);
+                                 carouselTrack.appendChild(movieCard);
+                             }
+                         }
+ 
+                         const carouselContainer = document.getElementById('carouselContainer');
+                         const isScrollable = carouselContainer.scrollWidth > carouselContainer.clientWidth;
+ 
+ 
+ 
+                         populateCarousel();
+ 
+                         function slideCarousel(direction) {
+                             const cardWidth = carouselTrack.querySelector('.col').offsetWidth;
+                             const trackPosition = carouselTrack.style.transform ? parseInt(carouselTrack.style.transform.match(/-?\d+/)[0]) : 0;
+                             const newTrackPosition = direction === 'right' ? trackPosition + cardWidth : trackPosition - cardWidth;
+                             carouselTrack.style.transform = `translateX(${newTrackPosition}px)`;
+                         }
+ 
+ 
+ 
+                         // Log the titles of movies with similar scores
+                         console.log("Movies with similar scores:");
+ 
+                         for (const movie of similarMovies) {
+                             console.log(movie.title);
+ 
+                             const movieEl = `
+                         <div class="col">
+                             <a href="/movieDetails?id=${movies.id}" class="card bg-black ">
+                             <img src="${IMG_URL + movies.poster_path}" class="card-img-top" alt="Movie Poster">
+                                 <div class="card-content ">
+                                     <h2 class="card-title text-white">${movies.title}</h2>
+                                 </div>
+                             </a>
+                         </div>
+                         
+                         `
+ 
+ 
+                         }
+                     })
+                     .catch((error) => {
+                         console.log(error);
+                     });
+ 
+             })
+             .catch((error) => {
+                 console.log(error);
+             });
+     })
+ 
+ 
+ 
+ </script>
+ <script>
+ 
+ </script>
+ <script>
+     function movieDelAlert() {
+         alert("Movie Deleted!")
+     }
+ </script>
+ 
+ <script>
+     // window.addEventListener('DOMContentLoaded', function () {
+     // Post review
+ 
+     const submit = document.getElementById("post")
+     submit.addEventListener("click", (event) => {
+         event.preventDefault();
+         const urlParams = new URLSearchParams(window.location.search);
+         const movieID = urlParams.get('id');
+         const postComment = document.getElementById("review").value
+         const postRating = document.getElementById("rating").value
+         console.log(postComment, postRating)
+         const post = {
+             MovieID: movieID,
+             Comments: postComment,
+             Rating: postRating
+         }
+ 
+         const baseUrl = "http://localhost:3000"
+         axios.post(`${baseUrl}/reviews`, post)
+             .then((response) => {
+                 if (response.status == 200) {
+                     console.log("Review submitted!")
+                 } else {
+                     console.log("An error occurred")
+                 }
+             })
+     })
+ 
+     // Get review
+     const retrieve = document.getElementById("retrieve");
+     retrieve.addEventListener("click", (event) => {
+         event.preventDefault(); // Prevent default form submission behavior
+         const reviewList = document.getElementById("reviewList");
+         const average = document.getElementById("average")
+         const baseUrl = "http://localhost:3000";
+ 
+         const urlParams = new URLSearchParams(window.location.search);
+         const MovieID = urlParams.get('id');
+ 
+         axios.get(`${baseUrl}/reviews/data/${MovieID}`)
+             .then((response) => {
+                 const retrieved = Object.values(response);
+                 reviewList.innerHTML = "";
+                 average.innerHTML = ""
+ 
+                 const avg = document.createElement("li");
+                 avg.textContent = `Average: ${JSON.stringify(retrieved[0][1][0][0].average)}/5.0`
+                 average.appendChild(avg);
+ 
+                 for (i = 0; i < retrieved[0][0].length; i++) {
+                     const list = document.createElement("li");
+                     list.textContent = `ID: ${JSON.stringify(retrieved[0][0][i].ReviewID)}, Rating: ${JSON.stringify(retrieved[0][0][i].Rating)}, Comments: ${JSON.stringify(retrieved[0][0][i].Comments)}`;
+                     reviewList.appendChild(list);
+                 }
+             })
+             .catch((error) => {
+                 console.log("An error occurred:", error);
+             });
+     })
+ 
+     // Sorting reviews
+     // document.getElementById("sort-by").value = "Rating"
+     const sort = document.getElementById("sort-by");
+     sort.addEventListener("change", (event) => {
+         // window.alert("Changed")
+         event.preventDefault();
+         const urlParams = new URLSearchParams(window.location.search);
+         const MovieID = urlParams.get('id');
+         const baseUrl = "http://localhost:3000";
+         const selectedValue = sort.value
+         const reviewList = document.getElementById("reviewList");
+         if (selectedValue === "ID") {
+ 
+             axios.get(`${baseUrl}/reviews/sort/${MovieID}`)
+                 .then((response) => {
+                     const sorted = Object.values(response);
+                     reviewList.innerHTML = "";
+ 
+                     for (i = 0; i < sorted[0][0].length; i++) {
+                         const list = document.createElement("li");
+                         list.textContent = `ID: ${JSON.stringify(sorted[0][0][i].ReviewID)}, Rating: ${JSON.stringify(sorted[0][0][i].Rating)}, Comments: ${JSON.stringify(sorted[0][0][i].Comments)}`;
+                         reviewList.appendChild(list);
+                     }
+                 })
+                 .catch((error) => {
+                     console.log("An error occurred:", error);
+                 });
+         }
+         else if (selectedValue === "Rating") {
+             axios.get(`${baseUrl}/reviews/sort2/${MovieID}`)
+                 .then((response) => {
+                     const sorted = Object.values(response);
+                     reviewList.innerHTML = "";
+ 
+                     for (i = 0; i < sorted[0][0].length; i++) {
+                         const list = document.createElement("li");
+                         list.textContent = `ID: ${JSON.stringify(sorted[0][0][i].ReviewID)}, Rating: ${JSON.stringify(sorted[0][0][i].Rating)}, Comments: ${JSON.stringify(sorted[0][0][i].Comments)}`;
+                         reviewList.appendChild(list);
+                     }
+                 })
+                 .catch((error) => {
+                     console.log("An error occurred:", error);
+                 });
+         }
+     });
+ 
+ 
+ 
+ </script>
+ 
+ </html>
