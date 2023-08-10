@@ -280,7 +280,7 @@ app.get('/reviews/best', function (req, res) {
 })
 
 // re-added by Dylan for publisher functionality
-app.get('/reviews/data', (req, res) => {
+app.get('/reviews/data', (req, res, next) => {
     review.getAllReviews()
       .then((reviews) => {
           console.log(reviews);

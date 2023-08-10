@@ -1,7 +1,8 @@
 function populateMoviesBody(moviesBody, movies, reviews) {
     moviesBody.innerHTML = '';
     const template = document.getElementById('template');
-
+    const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
+    
     // get average score for each movie
     const reviewTemp = new Map();
     for (const {MovieID, Rating} of reviews) {
@@ -14,11 +15,11 @@ function populateMoviesBody(moviesBody, movies, reviews) {
         }
     }
     const averageScores = [...reviewTemp.values()].map(({MovieID, count, sum}) => ({MovieID, average: sum / count}));
-    console.log(averageScores);
+    // console.log(averageScores);
 
     movies.forEach((movie) => {
         const node = template.content.firstElementChild.cloneNode(true);
-        // node.querySelector('.movie-id').textContent = movie.id;
+        node.querySelector('.poster').innerHTML = `<img src=${IMG_URL}${movie.poster_path}></img>`;
         node.querySelector('.movie-id').value = movie.id;
         node.querySelector('.title').value = movie.title;
         node.querySelector('.poster-path').value = movie.poster_path;
@@ -30,11 +31,11 @@ function populateMoviesBody(moviesBody, movies, reviews) {
         const i = averageScores.findIndex(e => e.MovieID == movie.id);
         console.log(i, movie.id);
         if (i > -1) {
-            node.querySelector('.average-score').value = averageScores[i].average;
+            node.querySelector('.average-score').innerHTML = `${averageScores[i].average}/5`;
         } else {
-            node.querySelector('.average-score').value = 'N/A';
+            node.querySelector('.average-score').innerHTML = 'N/A';
         }
-        node.querySelector('.revenue').value = 0;
+        node.querySelector('.revenue').innerHTML = 0;
 
         const updateButton = node.querySelector('.update');
         updateButton.onclick = () => {
