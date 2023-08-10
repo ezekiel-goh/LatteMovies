@@ -264,7 +264,19 @@ Homepage.html
 
                     <div class="text-end mt-2" id="ComFont">
                         <!-- <a href="/favorites"><button class="btn text-warning  me-5 fs-5">Favorites</button></a> -->
-                        <button id="sortABC" class="sortABC me-2 btn btn-outline-light">Sort A-Z</button>
+                        <!-- <button id="sortABC" class="sortABC me-2 btn btn-outline-light">Sort A-Z</button> -->
+                        <div class="btn-group" id="sortABC">
+                            <button type="button" class="btn btn-dark me-5 dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Sort Movies
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><a id="sortAZ" class="dropdown-item" href="#">Alphabetical</a></li>
+                                <li><a id="sortByID" class="dropdown-item" href="#">Movie ID</a></li>
+                                <li><a id="sortByCategories" class="dropdown-item" href="#">Categories</a></li>
+
+                            </ul>
+                        </div>
                         <a href="/login/"><button type="button" class="btn btn-warning me-2">Login</button></a>
                     </div>
                 </div>

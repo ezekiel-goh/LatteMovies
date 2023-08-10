@@ -207,8 +207,9 @@ movieDetails.html
         transition: transform 0.3s ease-in-out;
         /* Set the width to fit the content of all movie cards */
         width: fit-content;
-        
+
     }
+
     .carousel-container::-webkit-scrollbar {
         display: none;
     }
@@ -305,21 +306,20 @@ movieDetails.html
                                                     <span
                                                         class="input-group-text text-light bg-dark bg-transparent border border-0 fs-5">$</span>
                                                     <input type="text" id="inputPrice"
-                                                        class="form-control bg-transparent text-light border border-0"
-                                                        disabled>
+                                                        class="form-control bg-transparent text-light border border-0">
                                                 </div>
-                                                <div class="text-secondary ms-4">disabled for demo</div>
+                                                <!-- <div class="text-secondary ms-4">disabled for demo</div> -->
                                             </div>
                                             <div class="col-sm my-2">
                                                 <a id="editBtn" class="btn btn-warning rounded-5"
-                                                    style="min-width: 150px; height:50px; opacity: 50%; pointer-events: none;">
+                                                    style="min-width: 150px; height:50px;  ">
                                                     <div class="mt-1 fs-5">Edit Price</div>
                                                 </a>
                                             </div>
                                             <div class="col-sm my-2">
                                                 <!-- disabled -->
                                                 <a href="/" id="deleteBtn" class="btn btn-danger rounded-5"
-                                                    style="position:relative; min-width: 150px; height:50px; opacity: 50%; pointer-events: none;">
+                                                    style="position:relative; min-width: 150px; height:50px;  ">
                                                     <div class="mt-1 fs-5">Delete</div>
                                                 </a>
                                             </div>
@@ -342,11 +342,47 @@ movieDetails.html
                         Your browser does not support the video tag.
                     </video>
                 </div>
-                <div">
-                    <div style="margin: 0 auto; width:800px; height:300px">
-                        <canvas id="viewsHistogram" style="background-color: #212529;"></canvas>
+                <section>
+                    <h1>Reviews</h1>
+                    <h4>Thompson Dave</h4>
+                    <form id="reviewForm">
+                        <input type="number" max="5" inputmode="numeric" id="rating" name="rating"
+                            placeholder="what would you rate this movie out of 5?" required>
+                        <input type="text" id="review" name="Review" placeholder="Give review..." required>
+                        <button type="submit" id="post" class="btn btn-primary">Submit</button>
+                    </form>
+                    <form id="alterForm">
+                        <input type="number" max="5" id="reviewID" name="reviewID"
+                            placeholder="which review would you want to delete?" required>
+                        <input type="number" max="5" id="alterRating" name="newRating"
+                            placeholder="what would you rate this movie out of 5?" required>
+                        <input type="text" id="alterReview" name="Review" placeholder="Give review..." required>
+                        <button type="submit" id="update" class="btn btn-primary">Update</button>
+                    </form>
+                    <form id="deleteForm">
+                        <input type="number" id="deleteID" name="deleteID"
+                            placeholder="which review would you want to delete?" required>
+                        <button type="submit" id="delete" class="btn btn-primary">Delete</button>
+                    </form>
+                    <form id="deleteAllForm">
+                        <button type="submit" id="deleteAll" class="btn btn-primary">Delete all reviews</button>
+                    </form>
+                    <label for="sort-by">Sort by:</label>
+                    <select name="sort-by" id="sort-by">
+                        <option value="ID">Sort by ID</option>
+                        <option value="Rating">Sort by Rating</option>
+                    </select>
+                    <button type="submit" id="retrieve" class="btn btn-primary">Retrieve</button>
+                    <div id="component">
+                        <ul id="average"></ul>
                     </div>
-            </div>
+                    <div id="list">
+                        <ul id="reviewList"></ul>
+                    </div>
+                </section>
+                <div style="margin: 0 auto; width:800px; height:300px;">
+                    <canvas id="viewsHistogram" style="background-color: rgb(51, 51, 51)"></canvas>
+                </div>
             </div>
 
             <div class="container" id="ComFont">
@@ -376,6 +412,12 @@ movieDetails.html
     </main>
 
     </script>
+    <script src="Reviews.js"></script>
+    <script src="../../models/review.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <!--timestamp/histogram parts-->
@@ -433,14 +475,6 @@ movieDetails.html
         console.log('Movie ID from URL:', movieID);
 
         function renderHistogram(histogramData) {
-            function seekVideoToTimestamp(timestamp) {
-                // Convert the timestamp to seconds or the appropriate format
-                const [minutes, seconds] = timestamp.split(':');
-                const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds);
-
-                // Assuming you have a videoPlayer object
-                moviePlayer.currentTime = totalSeconds;
-            }
 
             var canvas = document.getElementById('viewsHistogram');
 
@@ -575,18 +609,19 @@ movieDetails.html
         <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
             <p>
                 Above all else, guard your heart,<br>
-                for everything you do flows from it        
+                for everything you do flows from it
                 <br><br>
-        </p>
-            
+            </p>
+
         </div>
     </footer>
 </div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
+
     let icon = document.querySelector('ion-icon');
     icon.onclick = function () {
-        const userID = 1  // ID of the user who likes the movie
+        const userID = 1;   // ID of the user who likes the movie
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');  // ID of the movie to be liked
 
@@ -913,54 +948,6 @@ movieDetails.html
         alert("Movie Deleted!")
     }
 </script>
-
-<main>
-    <section>
-        <h1>Reviews</h1>
-        <h4>Thompson Dave</h4>
-        <form id="reviewForm">
-            <input type="number" max="5" inputmode="numeric" id="rating" name="rating"
-                placeholder="what would you rate this movie out of 5?" required>
-            <input type="text" id="review" name="Review" placeholder="Give review..." required>
-            <button type="submit" id="post" class="btn btn-primary">Submit</button>
-        </form>
-        <form id="alterForm">
-            <input type="number" max="5" id="reviewID" name="reviewID"
-                placeholder="which review would you want to delete?" required>
-            <input type="number" max="5" id="alterRating" name="newRating"
-                placeholder="what would you rate this movie out of 5?" required>
-            <input type="text" id="alterReview" name="Review" placeholder="Give review..." required>
-            <button type="submit" id="update" class="btn btn-primary">Update</button>
-        </form>
-        <form id="deleteForm">
-            <input type="number" id="deleteID" name="deleteID" placeholder="which review would you want to delete?"
-                required>
-            <button type="submit" id="delete" class="btn btn-primary">Delete</button>
-        </form>
-        <form id="deleteAllForm">
-            <button type="submit" id="deleteAll" class="btn btn-primary">Delete all reviews</button>
-        </form>
-        <label for="sort-by">Sort by:</label>
-        <select name="sort-by" id="sort-by">
-            <option value="ID">Sort by ID</option>
-            <option value="Rating">Sort by Rating</option>
-        </select>
-        <button type="submit" id="retrieve" class="btn btn-primary">Retrieve</button>
-        <div id="component">
-            <ul id="average"></ul>
-        </div>
-        <div id="list">
-            <ul id="reviewList"></ul>
-        </div>
-    </section>
-</main>
-</div>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="Reviews.js"></script>
-<script src="../../models/review.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
 
 <script>
     // window.addEventListener('DOMContentLoaded', function () {
