@@ -79,99 +79,91 @@ DIT/FT/1B/08 -->
     }
 </style>
 
-<body class="bg-dark">
-    <div class="cover-container d-f w-100 h-100 p-3 mx-auto flex-column">
-        <nav class="navbar navbar-expand-sm p-3 m-2 fixed-top" id="navBar" style="background-color: #000;"
+<body class="bg-black">
+    <div class="cover-container d-f p-3 mx-auto flex-column">
+
+        <nav class="navbar navbar-expand-sm p-3 mx-2 bg-dark" id="navBar" style="background-color: #000;"
             aria-label="Header">
             <div class="container-fluid">
-                <a href="/" class="d-flex align-items-center mt-1 mb-2 mb-lg-0 pe-3 text-white text-decoration-none">
-                    <img src="assets/brand/SPdvdRentals.png" class="appLogo bi me-2" width="auto" height="32"
-                        role="img" />
+                <a href="/" class="d-flex align-items-center mt-2 mb-2 mb-lg-0 pe-3 text-white text-decoration-none">
+                    <!-- <img src="../assets/brand/SPdvdRentals.png" class="appLogo bi me-2" width="auto" height="32"
+                        role="img" /> -->
                 </a>
                 <button class="navbar-toggler btn btn-dark" id="navBarButton" type="button" data-bs-toggle="collapse"
-                    data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mt-1 me-auto mb-2 mb-lg-0" id="ComFont">
-                        <li><a href="/" class="nav-link px-2 text-secondary fs-5">&nbspHomepage</a></li>
-                        <li><a href="/searchResults" class="nav-link px-3 text-secondary fs-5" id="movieBtn">Movie
-                                Titles</a>
+                    <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
+                        <li><a href="/" class="nav-link px-2 text-light fs-5">&nbspHomepage</a></li>
+                        <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import Movies</a>
+                        <li><a href="/userpage" class="nav-link px-3 text-secondary fs-5">Users</a> </li>
+                        <li><a href="/moviePublisher" class="nav-link px-3 text-secondary fs-5">Publishers</a>
                         </li>
-
+                        <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
                     </ul>
-
-
-                    <!-- <form class="col-12 col-lg-auto col-lg-5 mb-3 mb-lg-0 me-lg-3" role="search">
-                            <label for="searchBar">username address</label>
-                            <input type="search" class="form-control form-control-dark text-bg-dark" id="searchBar"
-                                placeholder="Search for Movie titles, Categories and More" aria-label="Search">
-                        </form> -->
-
-                    <div class="text-end">
-                        <a href="/login"><button type="button" class="btn btn-outline-light me-2">Login</button></a>
-                    </div>
                 </div>
             </div>
-
         </nav>
-        <main>
-            <section>
-                <div class="container mt-5 pt-5">
-                    <div class="row">
-                        <div class=" col-lg-5 col-sm-7 col-md-6 m-auto">
-                            <div class="card border-0 shadow bg-warning mt-5 mb-5 rounded-4" data-bs-theme="dark">
-                                <div class="card-body">
+    </div>
 
-                                    <div class="container text-center mb-3">
-                                        <h1 style="color: black;">Create an account</h1>
+    <main>
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class=" col-lg-5 col-sm-7 col-md-6 m-auto">
+                        <div class="card border-0 shadow bg-warning mt-2 mb-5 rounded-4" data-bs-theme="dark">
+                            <div class="card-body">
+
+                                <div class="container text-center mb-3">
+                                    <h1 style="color: black;">Create an account</h1>
+                                </div>
+                                <form action="" id="createUser">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control text-black rounded-5 mb-3" id="Username"
+                                            placeholder="Username">
+                                        <label for="floatingInput">Username</label>
                                     </div>
-                                    <form action="" id="createUser">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control text-black rounded-5 mb-3"
-                                                id="Username" placeholder="Username">
-                                            <label for="floatingInput">Username</label>
-                                        </div>
-                                        <div class="form-floating">
-                                            <input type="password" class="form-control text-black rounded-5 mt-3"
-                                                id="Password" placeholder="Password">
-                                            <label for="floatingPassword">Password</label>
-                                        </div>
-
-                                        <div class="container mt-3 mb-3">
-                                            <label for="Role">
-                                                <h4 style="color: black;">What is your role?</h4>
-                                            </label>
-                                            <select name="Role" id="Role" style="width: 400px;">
-                                                <option value="Customer">Customer (Buy movies, Post a review)</option>
-                                                <option value="Publisher">Publisher (Upload movie data, gain revenue)
-                                                </option>
-                                            </select>
-                                        </div>
-
-                                        <div class="container text-center">
-                                            <button type="submit" class="btn btn-dark rounded-5" style="width: 400px;">
-                                                Create User
-                                            </button>
-                                        </div>
-                                    </form>
-
-                                    <div class="container text-center mt-3">
-                                        <p>
-                                            Already have an account?
-                                            <a href="login.html" style="color: blue;">
-                                                Login
-                                            </a>
-                                        </p>
+                                    <div class="form-floating">
+                                        <input type="password" class="form-control text-black rounded-5 mt-3"
+                                            id="Password" placeholder="Password">
+                                        <label for="floatingPassword">Password</label>
                                     </div>
+
+                                    <div class="container mt-3 mb-3">
+                                        <label for="Role">
+                                            <h4 style="color: black;">What is your role?</h4>
+                                        </label>
+                                        <select name="Role" id="Role" style="width: 400px;">
+                                            <option value="Customer">Customer (Buy movies, Post a review)</option>
+                                            <option value="Publisher">Publisher (Upload movie data, gain revenue)
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="container text-center">
+                                        <button type="submit" class="btn btn-dark rounded-5" style="width: 400px;">
+                                            Create User
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <div class="container text-center mt-3">
+                                    <p>
+                                        Already have an account?
+                                        <a href="/login.html" style="color: blue;">
+                                            Login
+                                        </a>
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </main>
+            </div>
+        </section>
+    </main>
     </div>
 </body>
 
@@ -187,7 +179,6 @@ DIT/FT/1B/08 -->
     crossorigin="anonymous"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-    const baseUrl = "http://localhost:3000";
 
     $("#createUser").submit((event) => {
         // prevents the page from refreshing
@@ -200,7 +191,7 @@ DIT/FT/1B/08 -->
         };
 
         // create the user
-        axios.post(`${baseUrl}/user`, requestBody)
+        axios.post(`/user`, requestBody)
             .then((response) => {
                 // reset form value.
                 $('#addUser').val('');

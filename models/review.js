@@ -132,6 +132,12 @@
       })
   }
 
+  function getAllReviews() {
+    return query('SELECT * FROM Reviews').then((reviews) => {
+        return reviews;
+    });
+  };
+
 
   module.exports = {
     postReview,
@@ -142,5 +148,6 @@
     deleteAllReview,
     sortReviewByID,
     sortReviewByRating,
-    getAvgRating
+    getAvgRating,
+    getAllReviews
   };

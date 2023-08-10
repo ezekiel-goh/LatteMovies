@@ -346,26 +346,10 @@ movieDetails.html
                     <h1>Reviews</h1>
                     <h4>Thompson Dave</h4>
                     <form id="reviewForm">
-                        <input type="number" max="5" inputmode="numeric" id="rating" name="rating"
-                            placeholder="what would you rate this movie out of 5?" required>
+                        <input type="number" max="5" inputmode="numeric" id="rating" name="rating" placeholder="Rating"
+                            required>
                         <input type="text" id="review" name="Review" placeholder="Give review..." required>
                         <button type="submit" id="post" class="btn btn-primary">Submit</button>
-                    </form>
-                    <form id="alterForm">
-                        <input type="number" max="5" id="reviewID" name="reviewID"
-                            placeholder="which review would you want to delete?" required>
-                        <input type="number" max="5" id="alterRating" name="newRating"
-                            placeholder="what would you rate this movie out of 5?" required>
-                        <input type="text" id="alterReview" name="Review" placeholder="Give review..." required>
-                        <button type="submit" id="update" class="btn btn-primary">Update</button>
-                    </form>
-                    <form id="deleteForm">
-                        <input type="number" id="deleteID" name="deleteID"
-                            placeholder="which review would you want to delete?" required>
-                        <button type="submit" id="delete" class="btn btn-primary">Delete</button>
-                    </form>
-                    <form id="deleteAllForm">
-                        <button type="submit" id="deleteAll" class="btn btn-primary">Delete all reviews</button>
                     </form>
                     <label for="sort-by">Sort by:</label>
                     <select name="sort-by" id="sort-by">
@@ -390,11 +374,11 @@ movieDetails.html
                     <div id="recommendedMoviesSection" class="text-start text-light mt-5" style="position:relative; top: 60px;">
                         <h2>Recommended Movies</h2>
                         <!-- <button type="button" class="btn btn-dark" id="slideRightBtn">
-                            <ion-icon name="arrow-back-outline"></ion-icon>
-                        </button>
-                        <button type="button" class="btn btn-dark" id="slideLeftBtn">
-                            <ion-icon name="arrow-forward-outline"></ion-icon>
-                        </button> -->
+                             <ion-icon name="arrow-back-outline"></ion-icon>
+                         </button>
+                         <button type="button" class="btn btn-dark" id="slideLeftBtn">
+                             <ion-icon name="arrow-forward-outline"></ion-icon>
+                         </button> -->
 
                         <div class="carousel-container" id="carouselContainer">
                             <div class="carousel-track">
@@ -588,30 +572,30 @@ movieDetails.html
 <div class="container text-light">
     <footer class="py-5">
         <!-- <div class="row">
-            <div class="col-6 col-md-2 mb-3">
-                <h5>Section</h5>
-                <ul class="nav flex-column">
-                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Movies</a></li>
-                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">TMDB</a></li>
-                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Developers</a></li>
-                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Latte Database</a></li>
-                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">About</a></li>
-                </ul>
-            </div>
-
-
-            <div class="col-md-5 offset-md-1 mb-3">
-                <form>
-                    <h5>Contact Us!</h5>
-                    <p>Fresh movies from the silver screen.</p>
-                    <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-                        <label for="newsletter1" class="visually-hidden">Email address</label>
-                        <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
-                        <button class="btn btn-primary" type="button">Subscribe</button>
-                    </div>
-                </form>
-            </div>
-        </div> -->
+             <div class="col-6 col-md-2 mb-3">
+                 <h5>Section</h5>
+                 <ul class="nav flex-column">
+                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Movies</a></li>
+                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">TMDB</a></li>
+                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Developers</a></li>
+                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Latte Database</a></li>
+                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">About</a></li>
+                 </ul>
+             </div>
+ 
+ 
+             <div class="col-md-5 offset-md-1 mb-3">
+                 <form>
+                     <h5>Contact Us!</h5>
+                     <p>Fresh movies from the silver screen.</p>
+                     <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                         <label for="newsletter1" class="visually-hidden">Email address</label>
+                         <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
+                         <button class="btn btn-primary" type="button">Subscribe</button>
+                     </div>
+                 </form>
+             </div>
+         </div> -->
 
         <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
             <p>
@@ -790,25 +774,25 @@ movieDetails.html
                 const movTitle = `<h1 class="text-light mt-4" style="max-width: 600px;">${movies[0].title}</h1>`
                 const details =
                     `
-                    <p class="text-light"> 
-                        <div class="ms-3 text-light">
-                            <br><b>Overview</b><br>${movies[0].overview}
-                        </div>
-                        <div class="container ">
-                            <div class="row text-light fs-5 me-5">
-                                <div class="col-sm">
-                                    <br> <b>Runtime</b> <br>${movies[0].runtime} mins 
-                                </div>
-                                <div class="col-sm">
-                                    <br> <b>Price</b> <br>${movies[0].Price ? `$${movies[0].Price}` : "No Price"}
-                                </div>
-                                <div class="col-sm">
-                                    <br> <b>Release date</b> <br>${movies[0].release_date}
-                                </div>
-                                <br> 
-                            </div>
-                        </div>
-                    </p>`;
+                     <p class="text-light"> 
+                         <div class="ms-3 text-light">
+                             <br><b>Overview</b><br>${movies[0].overview}
+                         </div>
+                         <div class="container ">
+                             <div class="row text-light fs-5 me-5">
+                                 <div class="col-sm">
+                                     <br> <b>Runtime</b> <br>${movies[0].runtime} mins 
+                                 </div>
+                                 <div class="col-sm">
+                                     <br> <b>Price</b> <br>${movies[0].Price ? `$${movies[0].Price}` : "No Price"}
+                                 </div>
+                                 <div class="col-sm">
+                                     <br> <b>Release date</b> <br>${movies[0].release_date}
+                                 </div>
+                                 <br> 
+                             </div>
+                         </div>
+                     </p>`;
 
                 $("#posterIMG").append(IMGPoster);
                 $("#MovieTitle").append(movTitle);
@@ -871,19 +855,19 @@ movieDetails.html
                             console.log(movie)
                             card.className = 'col';
                             card.innerHTML = `
-                            <a href="/movieDetails?id=${movie.id}" class="card bg-black">
-                              <img src="${IMG_URL + movie.poster_path}" class="card-img-top" alt="Movie Poster">
-                              <div class="card-content">
-                                <div class="card-title text-white"><h2><span>${movie.title}</span><h2></div>
-                              </div>
-                            </a>
-                            &nbsp
-                            <div class="col">
-                                    <h5 class="card-title text-secondary">$${movie.Price}</h5>
-                                    <h5 class="card-title text-secondary">${movie.runtime} mins</h5>
-                                    <h5 class="card-title text-secondary">Genre id:${movie.genre_id}</h5>
-                            </div>
-                            `;
+                             <a href="/movieDetails?id=${movie.id}" class="card bg-black">
+                               <img src="${IMG_URL + movie.poster_path}" class="card-img-top" alt="Movie Poster">
+                               <div class="card-content">
+                                 <div class="card-title text-white"><h2><span>${movie.title}</span><h2></div>
+                               </div>
+                             </a>
+                             &nbsp
+                             <div class="col">
+                                     <h5 class="card-title text-secondary">$${movie.Price}</h5>
+                                     <h5 class="card-title text-secondary">${movie.runtime} mins</h5>
+                                     <h5 class="card-title text-secondary">Genre id:${movie.genre_id}</h5>
+                             </div>
+                             `;
                             return card;
 
                         }
@@ -920,16 +904,16 @@ movieDetails.html
                             console.log(movie.title);
 
                             const movieEl = `
-                        <div class="col">
-                            <a href="/movieDetails?id=${movies.id}" class="card bg-black ">
-                            <img src="${IMG_URL + movies.poster_path}" class="card-img-top" alt="Movie Poster">
-                                <div class="card-content ">
-                                    <h2 class="card-title text-white">${movies.title}</h2>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        `
+                         <div class="col">
+                             <a href="/movieDetails?id=${movies.id}" class="card bg-black ">
+                             <img src="${IMG_URL + movies.poster_path}" class="card-img-top" alt="Movie Poster">
+                                 <div class="card-content ">
+                                     <h2 class="card-title text-white">${movies.title}</h2>
+                                 </div>
+                             </a>
+                         </div>
+                         
+                         `
 
 
                         }
@@ -985,64 +969,6 @@ movieDetails.html
             })
     })
 
-    //fish
-
-    //update review
-    const submit3 = document.getElementById("update")
-    submit3.addEventListener("click", (event) => {
-        event.preventDefault();
-        const reviewID = document.getElementById("reviewID").value
-        const newRating = document.getElementById("alterRating").value
-        const newReview = document.getElementById("alterReview").value
-        console.log(reviewID, newReview)
-        const update = {
-            ReviewID: reviewID,
-            Rating: newRating,
-            Comments: newReview
-        }
-
-        const baseUrl = "http://localhost:3000"
-        axios.put(`${baseUrl}/reviews`, update)
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log("Review submitted!")
-                } else {
-                    console.log("An error occurred")
-                }
-            })
-    })
-
-    //delete review
-    const deleteBtn = document.getElementById("delete")
-    deleteBtn.addEventListener("click", (event) => {
-        const id = document.getElementById("deleteID").value
-        const baseUrl = "http://localhost:3000";
-        axios.delete(`${baseUrl}/reviews/${id}`)
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log("Review deleted!");
-                } else {
-                    console.log("An error occurred");
-                }
-            });
-    })
-
-    //delete all reviews
-    const deleteAllBtn = document.getElementById("deleteAll")
-    deleteAllBtn.addEventListener("click", (event) => {
-        event.preventDefault();
-        const baseUrl = "http://localhost:3000";
-        const urlParams = new URLSearchParams(window.location.search);
-        const MovieID = urlParams.get('id');
-        axios.delete(`${baseUrl}/reviews/${MovieID}`)
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log("Review deleted!");
-                } else {
-                    console.log("An error occurred");
-                }
-            });
-    })
 
     // Get review
     const retrieve = document.getElementById("retrieve");

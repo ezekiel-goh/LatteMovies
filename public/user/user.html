@@ -195,6 +195,26 @@
             <h1>User Information</h1>
             <p id="getUserData"></p>
         </div>
+        <div class="mb-4">
+            <h4 class="text-light">Edit reviews</h4>
+            <form id="alterForm">
+                <input type="number" id="reviewID" name="reviewID"
+                    placeholder="which review would you want to delete?" required>
+                <input type="number" max="5" id="alterRating" name="newRating"
+                    placeholder="what would you rate this movie out of 5?" required>
+                <input type="text" id="alterReview" name="Review" placeholder="Give review..." required>
+                <button type="submit" id="update" class="btn btn-primary">Update</button>
+            </form>
+            <form id="deleteForm">
+                <input type="number" id="deleteID" name="deleteID" placeholder="which review would you want to delete?"
+                    required>
+                <button type="submit" id="delete" class="btn btn-primary">Delete</button>
+            </form>
+            <form id="deleteAllForm">
+                <button type="submit" id="deleteAll" class="btn btn-primary">Delete all reviews</button>
+            </form>
+        </div>
+
 
         <!-- Display data header -->
         <div class="mx-3">
@@ -382,6 +402,63 @@
             updateDisplayedContent(dropdownSelection, dropdownData);
         });
 
+        //update review
+        const submit3 = document.getElementById("update")
+        submit3.addEventListener("click", (event) => {
+            event.preventDefault();
+            const reviewID = document.getElementById("reviewID").value
+            const newRating = document.getElementById("alterRating").value
+            const newReview = document.getElementById("alterReview").value
+            console.log(reviewID, newReview)
+            const update = {
+                ReviewID: reviewID,
+                Rating: newRating,
+                Comments: newReview
+            }
+
+            axios.put(`/reviews`, update)
+                .then((response) => {
+                    if (response.status == 200) {
+                        console.log("Review submitted!")
+                    } else {
+                        console.log("An error occurred")
+                    }
+                })
+        })
+
+        //delete review
+        const deleteBtn = document.getElementById("delete")
+        deleteBtn.addEventListener("click", (event) => {
+            const id = document.getElementById("deleteID").value
+            axios.delete(`/reviews/${id}`)
+                .then((response) => {
+                    if (response.status == 200) {
+                        console.log("Review deleted!");
+                    } else {
+                        console.log("An error occurred");
+                    }
+                });
+        })
+
+        // delete all reviews
+        const deleteAllBtn = document.getElementById("deleteAll")
+        deleteAllBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            const urlParams = new URLSearchParams(window.location.search);
+            const MovieID = urlParams.get('id');
+            axios.delete(`/reviews/${MovieID}`)
+                .then((response) => {
+                    if (response.status == 200) {
+                        console.log("Review deleted!");
+                    } else {
+                        console.log("An error occurred");
+                    }
+                });
+        })
+
+
+
+
         /*
         // retrieve user data
         axios.get(`${baseUrl}/user/${loggedInUserID}`)
@@ -487,6 +564,7 @@
         });
 */
     </script>
+
 
     <!-- Loading spinner external library -->
     <!-- Source: https://www.cssscript.com/ios-style-loading-spinner-with-pure-css-ispinner/ -->

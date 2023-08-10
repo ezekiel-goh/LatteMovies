@@ -279,6 +279,18 @@ app.get('/reviews/best', function (req, res) {
     })
 })
 
+// re-added by Dylan for publisher functionality
+app.get('/reviews/data', (req, res) => {
+    review.getAllReviews()
+      .then((reviews) => {
+          console.log(reviews);
+          return res.json(reviews);
+      })
+      .catch((error) => {
+        next(error);
+      });
+});
+
 
 //-- Delete Movie by ID
 app.delete('/movieDetails/:id', function (req, res) {
@@ -418,6 +430,7 @@ app.post('/auth', (req, res) => {
         res.redirect('/login');
       } else {
         req.session.isLoggedIn = true;
+        req.session.userId = user.UserID;
         req.session.username = user.Username;
         req.session.role = user.Role;
         req.session.UserID = user.UserID
