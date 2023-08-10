@@ -14,20 +14,20 @@ app.use(express.static('public'));
 
 app.use(session({
   secret: 'secret',
- 	resave: true,
- 	saveUninitialized: true
+  resave: true,
+  saveUninitialized: true
 }));
 
 // import models
 
-const histogram = require("../models/histogram");
 // const moviePublisher = require("../models/moviePublisher");
 const Movies = require("../models/movie");
 // const user = require("../models/user");
-// const histogram = require("../models/histogram");
+const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-  deleteUserCustomer, deleteUserPublisher, login, buyMovie } = require('../models/user.js');
+  deleteUserCustomer, deleteUserPublisher, login,
+  buyMovie, getPurchase, getReviewByUser, getFavouriteByUser } = require('../models/user.js');
 const review = require("../models/review");
 
 
@@ -65,24 +65,42 @@ app.get('/movies', function (req, res) {
 });
 //inserting views data
 app.post('/insertData', function (req, res) {
-  const { viewsData } = req.body;
-  histogram.insertData(req, res); // Pass the req and res objects to the insertData function
+  const { userID, movieID, timestamp } = req.body;
+  histogram.insertData(userID, movieID, timestamp)
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch(error => {
+      console.error('Failed to insert data:', error);
+      res.sendStatus(500);
+    });
 });
-//views getting data for histogram
-app.get('/generateHistogramData', function(req, res) {
-  histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
-});
-//   function (err, result) {
-//   if (!err) {
-//     console.log("no errors");
-//     res.type("json");
-//     res.status(201).send({ id: +result });
-//   } else {
-//     res.status(500).send({ error_msg: "Internal server error" });
-//   }
-// }
 
-// -- Review Details
+//views getting data for histogram
+app.get('/movieHistogram/:id', function (req, res) {
+  const movieID = req.params.id;
+  histogram.generateHistogramData(movieID)
+    .then((histogramData) =>{
+      res.json(histogramData);
+    })
+    .catch(function (error) {
+      console.error('Error fetching histogram data:', error);
+      res.status(500).json({ error: 'Error fetching histogram data' });
+    });
+});
+// app.get('/movieDetails/:id', function (req, res) {
+//   const movieID = req.params.movieID;
+
+//   histogram.generateHistogramData(movieID)
+//     .then((histogramData) =>{
+//       res.json(histogramData);
+//     })
+//     .catch(function (error) {
+//       console.error('Error fetching histogram data:', error);
+//       res.status(500).json({ error: 'Error fetching histogram data' });
+//     });
+// });
+
 
 //-- Get Movie Details (for Recommendations)
 app.get('/allMovieDetails/', function (req, res) {
@@ -146,7 +164,7 @@ app.post('/likedMovies', function (req, res) {
 
   favorite.postLiked({ id, userID })
     .then(() => {
-      res.sendStatus(201); 
+      res.sendStatus(201);
     })
     .catch(error => {
       console.error('Error posting liked movie:', error);
@@ -158,10 +176,11 @@ app.post('/likedMovies', function (req, res) {
 //-- Submit Review
 app.post('/reviews', function (req, res) {
   const Comments = req.body.Comments
+  const MovieID = req.body.MovieID
   const Rating = req.body.Rating
   console.log(req.body)
 
-  review.postReview(Comments, Rating)
+  review.postReview(MovieID, Comments, Rating)
     .then(() => {
       res.sendStatus(201); // Return a success status code
     })
@@ -178,7 +197,8 @@ app.put('/reviews', function (req, res) {
   const Comments = req.body.Comments
 
   review.editReview(Rating, Comments, ReviewID)
-    .then(() => {
+    .then((response) => {
+      console.log(response[0])
       res.sendStatus(201); // Return a success status code
     })
     .catch(error => {
@@ -187,6 +207,7 @@ app.put('/reviews', function (req, res) {
     });
 })
 
+//Delete review by ID
 app.delete('/reviews/:id', function (req, res) {
   const ReviewID = req.params.id
   console.log(req.body.ReviewID)
@@ -200,12 +221,30 @@ app.delete('/reviews/:id', function (req, res) {
     });
 })
 
-// -- Get Review
-app.get('/reviews/data', function (req, res) {
+//Delete all reviews
+app.delete('/reviews', function (req, res) {
+  console.log(req.body.MovieID)
+  const MovieID = req.body.MovieID
+  review.deleteAllReview(MovieID)
+    .then(() => {
+      res.sendStatus(201); // Return a success status code
+    })
+    .catch(error => {
+      console.error('Failed to delete review(s)', error);
+      res.sendStatus(500);
+    });
+})
 
-  review.retrieveReview()
-    .then((review) => {
-      res.json(review);
+// -- Get Review
+app.get('/reviews/data/:MovieID', function (req, res) {
+  console.log(req.params.MovieID)
+  MovieID = req.params.MovieID
+  Promise.all([(review.retrieveReview(MovieID)), (review.getAvgRating(MovieID))])
+    .then((response) => {
+      // console.log(JSON.stringify(response))
+      res.json(response);
+      // console.log(response)
+      return response
     })
     .catch(error => {
       console.error('Failed to retrieve review(s)', error);
@@ -213,8 +252,47 @@ app.get('/reviews/data', function (req, res) {
     });
 })
 
+app.get('/reviews/sort/:MovieID', function (req, res) {
 
-//-- Delete Movie by  ID
+  MovieID = req.params.MovieID
+  review.sortReviewByID(MovieID)
+    .then((response) => {
+      res.json(response);
+      console.log(response[0])
+    })
+    .catch(error => {
+      res.sendStatus(500);
+    })
+})
+
+app.get('/reviews/sort2/:MovieID', function (req, res) {
+
+  MovieID = req.params.MovieID
+  review.sortReviewByRating(MovieID)
+    .then((response) => {
+      res.json(response);
+      console.log(response[0])
+    })
+    .catch(error => {
+      res.sendStatus(500);
+    })
+})
+
+app.get('/reviews/best', function (req, res) {
+
+  review.getReview()
+    .then((review) => {
+      res.json(review);
+      console.log(review)
+    })
+    .catch(error => {
+      console.error('Failed to get review', error)
+      // res.sendStatus(500);
+    })
+})
+
+
+//-- Delete Movie by ID
 app.delete('/movieDetails/:id', function (req, res) {
   const id = req.params.id
 
@@ -246,6 +324,27 @@ app.put('/movieDetails/:id', function (req, res) {
 /**
  * User C.R.U.D.
  */
+app.get('/reviews/data/:userid', async (req, res) => {
+  const userID = req.params.userid;
+  const userInfo = await getReviewByUser(userID);
+  res.status(200).json(userInfo[0]);
+  console.log(userInfo[0]);
+});
+
+app.get('/purchase/:userid', async (req, res) => {
+  const userID = req.params.userid;
+  const userInfo = await getPurchase(userID);
+  res.status(200).json(userInfo[0]);
+  console.log(userInfo[0]);
+});
+
+app.get('/favourites/:userid', async (req, res) => {
+  const userID = req.params.userid;
+  const userInfo = await getFavouriteByUser(userID);
+  res.status(200).json(userInfo[0]);
+  console.log(userInfo[0]);
+});
+
 app.get('/user/:userid', async (req, res) => {
   const userID = req.params.userid;
   const userInfo = await getUserInfo(userID);
@@ -321,8 +420,8 @@ app.post('/user/buymovie', async (req, res) => {
 
 // general login function
 app.post('/auth', (req, res) => {
-	let username = req.body.username;
-	let password = req.body.password;
+  let username = req.body.username;
+  let password = req.body.password;
 
   login(username, password)
     .then((user) => {
@@ -338,7 +437,8 @@ app.post('/auth', (req, res) => {
 });
 
 app.get('/api/moviePublisher', (req, res, next) => {
-  moviePublisher.getAllMovies()
+  const publisher_id = req.session.username;
+  moviePublisher.getAllMovies(publisher_id)
     .then(function (movies) {
       return res.json({ data: movies });
     })
@@ -370,7 +470,8 @@ app.post('/api/moviePublisher', (req, res, next) => {
   const overview = req.body.overview;
   const releaseDate = req.body.releaseDate;
   const runtime = req.body.runtime;
-  moviePublisher.addMovie(movieId, title, posterPath, overview, releaseDate, runtime)
+  const publisherId = req.session.username;
+  moviePublisher.addMovie(movieId, title, posterPath, overview, releaseDate, runtime, publisherId)
     .then(() => {
       return res.sendStatus(201);
     })
