@@ -324,7 +324,7 @@ app.put('/movieDetails/:id', function (req, res) {
 /**
  * User C.R.U.D.
  */
-app.get('/reviews/data/:userid', async (req, res) => {
+app.get('/reviewdata/:userid', async (req, res) => {
   const userID = req.params.userid;
   const userInfo = await getReviewByUser(userID);
   res.status(200).json(userInfo[0]);
