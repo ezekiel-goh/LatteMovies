@@ -102,16 +102,74 @@ movieDetails.html
         transition: all 0.5s;
     }
 
+    span {
+        background: #000000;
+        color: #fff;
+        padding: 0px 10px 0px 10px;
+        border-radius: 10px;
+        margin: 5px;
+        -webkit-box-decoration-break: clone;
+        -moz-background-inline-policy: clone;
+        box-decoration-break: clone;
+    }
+
+    .carousel-container {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .carousel-track {
+        display: flex;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .col {
+        flex: 0 0 auto;
+        margin: 0 5px;
+        /* Adjust the spacing between cards */
+    }
+
+    .card {
+        position: relative;
+        overflow: hidden;
+        max-width: 250px;
+        height: auto;
+    }
+
+    .card-img-top {
+        transition: filter 0.3s ease-in-out;
+    }
+
+    .card:hover .card-img-top {
+        filter: blur(15px);
+    }
+
+    .card-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(255, 255, 255, 0);
+        /* backdrop-filter: blur(15px); */
+        padding: 10px;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover .card-content {
+        transform: translateY(0);
+    }
+
     #tooltip {
         position: relative;
         display: inline-block;
-        border-bottom: 1px dotted black;
+        border-bottom: 1px dotted rgb(255, 255, 255);
     }
 
     .tooltip .tooltiptext {
         visibility: hidden;
         width: 120px;
-        background-color: black;
+        background-color: rgb(255, 255, 255);
         color: #fff;
         text-align: center;
         border-radius: 6px;
@@ -128,6 +186,34 @@ movieDetails.html
     .tooltip:hover .tooltiptext {
         visibility: visible;
     }
+
+    .carousel-container {
+        overflow: hidden;
+        position: relative;
+        /* Set the width of the carousel container to fit the screen */
+        width: 100%;
+        /* Set the overflow behavior to auto to enable horizontal scrolling when needed */
+        overflow-x: auto;
+        /* Remove horizontal scrollbar */
+        scrollbar-width: none;
+        /* Hide scrollbar for Firefox */
+        -ms-overflow-style: none;
+    }
+
+    .carousel-track {
+        /* Remove the display property to allow the track to flex its items */
+        display: flex;
+        /* Update the transition property to allow smooth scrolling */
+        transition: transform 0.3s ease-in-out;
+        /* Set the width to fit the content of all movie cards */
+        width: fit-content;
+
+    }
+
+    .carousel-container::-webkit-scrollbar {
+        display: none;
+    }
+
 
     @-webkit-keyframes like {
         0% {
@@ -165,7 +251,7 @@ movieDetails.html
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
-                        <li><a href="/" class="nav-link px-2 text-light fs-5">&nbspHomepage</a></li>
+                        <li><a href="/" class="nav-link px-2 text-secondary fs-5">&nbspHomepage</a></li>
                         <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import Movies</a>
                         </li>
                         <li><a href="/userpage" class="nav-link px-3 text-secondary fs-5">Users</a>
@@ -196,7 +282,7 @@ movieDetails.html
                                 <div class="col-8" style="max-width: 800px;">
                                     <div class="container">
                                         <div class="row">
-                                            <div class="col-9">
+                                            <div class="col-9" style="height: 84px;">
                                                 <div id="MovieTitle">
                                                 </div>
                                             </div>
@@ -210,7 +296,7 @@ movieDetails.html
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="Details">
+                                    <div id="Details" style="height: 255px;">
                                     </div>
                                     <div class="container">
                                         <div class="row mt-5" style="position: relative;">
@@ -222,17 +308,19 @@ movieDetails.html
                                                     <input type="text" id="inputPrice"
                                                         class="form-control bg-transparent text-light border border-0">
                                                 </div>
+                                                <!-- <div class="text-secondary ms-4">disabled for demo</div> -->
                                             </div>
                                             <div class="col-sm my-2">
                                                 <a id="editBtn" class="btn btn-warning rounded-5"
-                                                    style="min-width: 150px; height:50px;">
+                                                    style="min-width: 150px; height:50px;  ">
                                                     <div class="mt-1 fs-5">Edit Price</div>
                                                 </a>
                                             </div>
                                             <div class="col-sm my-2">
+                                                <!-- disabled -->
                                                 <a href="/" id="deleteBtn" class="btn btn-danger rounded-5"
-                                                    style="position:relative; min-width: 150px; height:50px;">
-                                                    <div class="mt-1 fs-5">Delete Movie</div>
+                                                    style="position:relative; min-width: 150px; height:50px;  ">
+                                                    <div class="mt-1 fs-5">Delete</div>
                                                 </a>
                                             </div>
                                         </div>
@@ -254,16 +342,82 @@ movieDetails.html
                         Your browser does not support the video tag.
                     </video>
                 </div>
-                <div">
-                    <div style="margin: 0 auto; width:800px; height:300px">
-                        <canvas id="viewsHistogram" style="background-color: #212529;"></canvas>
+                <section>
+                    <h1>Reviews</h1>
+                    <h4>Thompson Dave</h4>
+                    <form id="reviewForm">
+                        <input type="number" max="5" inputmode="numeric" id="rating" name="rating"
+                            placeholder="what would you rate this movie out of 5?" required>
+                        <input type="text" id="review" name="Review" placeholder="Give review..." required>
+                        <button type="submit" id="post" class="btn btn-primary">Submit</button>
+                    </form>
+                    <form id="alterForm">
+                        <input type="number" max="5" id="reviewID" name="reviewID"
+                            placeholder="which review would you want to delete?" required>
+                        <input type="number" max="5" id="alterRating" name="newRating"
+                            placeholder="what would you rate this movie out of 5?" required>
+                        <input type="text" id="alterReview" name="Review" placeholder="Give review..." required>
+                        <button type="submit" id="update" class="btn btn-primary">Update</button>
+                    </form>
+                    <form id="deleteForm">
+                        <input type="number" id="deleteID" name="deleteID"
+                            placeholder="which review would you want to delete?" required>
+                        <button type="submit" id="delete" class="btn btn-primary">Delete</button>
+                    </form>
+                    <form id="deleteAllForm">
+                        <button type="submit" id="deleteAll" class="btn btn-primary">Delete all reviews</button>
+                    </form>
+                    <label for="sort-by">Sort by:</label>
+                    <select name="sort-by" id="sort-by">
+                        <option value="ID">Sort by ID</option>
+                        <option value="Rating">Sort by Rating</option>
+                    </select>
+                    <button type="submit" id="retrieve" class="btn btn-primary">Retrieve</button>
+                    <div id="component">
+                        <ul id="average"></ul>
                     </div>
+                    <div id="list">
+                        <ul id="reviewList"></ul>
+                    </div>
+                </section>
+                <div style="margin: 0 auto; width:800px; height:300px;">
+                    <canvas id="viewsHistogram" style="background-color: rgb(51, 51, 51)"></canvas>
+                </div>
             </div>
+
+            <div class="container" id="ComFont">
+                <div class="mt-5">
+                    <div class="text-start text-light mt-5" style="position:relative; top: 60px;">
+                        <h2>Recommended Movies</h2>
+                        <!-- <button type="button" class="btn btn-dark" id="slideRightBtn">
+                            <ion-icon name="arrow-back-outline"></ion-icon>
+                        </button>
+                        <button type="button" class="btn btn-dark" id="slideLeftBtn">
+                            <ion-icon name="arrow-forward-outline"></ion-icon>
+                        </button> -->
+
+                        <div class="carousel-container" id="carouselContainer">
+                            <div class="carousel-track">
+
+                            </div>
+                            &nbsp
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
+
         </section>
     </main>
 
     </script>
+    <script src="Reviews.js"></script>
+    <script src="../../models/review.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <!--timestamp/histogram parts-->
@@ -321,14 +475,6 @@ movieDetails.html
         console.log('Movie ID from URL:', movieID);
 
         function renderHistogram(histogramData) {
-            function seekVideoToTimestamp(timestamp) {
-                // Convert the timestamp to seconds or the appropriate format
-                const [minutes, seconds] = timestamp.split(':');
-                const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds);
-
-                // Assuming you have a videoPlayer object
-                moviePlayer.currentTime = totalSeconds;
-            }
 
             var canvas = document.getElementById('viewsHistogram');
 
@@ -429,11 +575,53 @@ movieDetails.html
     </script>
     <!--timestamp/histogram parts ends here-->
 </body>
+&nbsp
+
+
+<div class="container text-light">
+    <footer class="py-5">
+        <!-- <div class="row">
+            <div class="col-6 col-md-2 mb-3">
+                <h5>Section</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Movies</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">TMDB</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Developers</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Latte Database</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">About</a></li>
+                </ul>
+            </div>
+
+
+            <div class="col-md-5 offset-md-1 mb-3">
+                <form>
+                    <h5>Contact Us!</h5>
+                    <p>Fresh movies from the silver screen.</p>
+                    <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                        <label for="newsletter1" class="visually-hidden">Email address</label>
+                        <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </form>
+            </div>
+        </div> -->
+
+        <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+            <p>
+                Above all else, guard your heart,<br>
+                for everything you do flows from it
+                <br><br>
+            </p>
+
+        </div>
+    </footer>
+</div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
+
     let icon = document.querySelector('ion-icon');
     icon.onclick = function () {
-        const userID = 1  // ID of the user who likes the movie
+        const userID = 1;   // ID of the user who likes the movie
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');  // ID of the movie to be liked
 
@@ -454,6 +642,80 @@ movieDetails.html
         }
     };
 
+    //-- score attributes
+    function getPriceScore(price) {
+        const priceChart = {
+            '1': { min: 0, max: 2.99 },
+            '2': { min: 3, max: 5.99 },
+            '3': { min: 6, max: 8.99 },
+            '4': { min: 9, max: 11.99 },
+            '5': { min: 12, max: 14.99 },
+            '6': { min: 15, max: 17.99 },
+            '7': { min: 18, max: 25 },
+        };
+        for (const [score, range] of Object.entries(priceChart)) {
+            if (price >= range.min && price <= range.max) {
+                return score;
+            }
+        }
+    }
+
+    function getDurationScore(duration) {
+        const durationChart = {
+            '1': { min: 0, max: 60 },
+            '2': { min: 61, max: 70 },
+            '3': { min: 71, max: 80 },
+            '4': { min: 81, max: 90 },
+            '5': { min: 91, max: 100 },
+            '6': { min: 101, max: 110 },
+            '7': { min: 111, max: 120 },
+            '8': { min: 121, max: 130 },
+            '9': { min: 131, max: 140 },
+            '10': { min: 141, max: 150 },
+            '11': { min: 151, max: 160 },
+            '12': { min: 161, max: 170 },
+            '13': { min: 171, max: 180 },
+            '14': { min: 181, max: 190 },
+            '15': { min: 191, max: 200 },
+            '16': { min: 201, max: 230 },
+            '17': { min: 231, max: Infinity },
+        };
+
+        for (const [score, range] of Object.entries(durationChart)) {
+            if (duration >= range.min && duration <= range.max) {
+                return score;
+            }
+        }
+        return 0;
+    }
+
+    function getGenreScore(genre_id) {
+        const genreChart = {
+            '28': '1',        // Action
+            '12': '2',        // Adventure
+            '16': '3',        // Animation
+            '35': '4',        // Comedy
+            '80': '5',        // Crime
+            '99': '6',        // Documentary
+            '18': '7',        // Drama
+            '10751': '8',     // Family
+            '14': '9',        // Fantasy
+            '36': '10',       // History
+            '27': '11',       // Horror
+            '10402': '12',    // Music
+            '9648': '13',     // Mystery
+            '10749': '14',    // Romance
+            '878': '15',      // Science Fiction
+            '10770': '16',    // TV Movie
+            '53': '17',       // Thriller
+            '10752': '18',    // War
+            '37': '19',       // Western
+        };
+
+        return genreChart[genre_id];
+    }
+
+
 
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -463,7 +725,7 @@ movieDetails.html
             });
         });
 
-        //-- Delete Movie 
+
         const deleteButton = document.getElementById("deleteBtn");
         deleteButton.addEventListener('click', (event) => {
             const deleteRequest = axios.delete(`/movieDetails/${id}`);
@@ -483,7 +745,6 @@ movieDetails.html
                 });
             //-- not working as intended
         });
-
 
 
         //-- Edit Movie Price
@@ -523,7 +784,9 @@ movieDetails.html
                 const details =
                     `
                     <p class="text-light"> 
-                        <br><b>Overview</b><br>${movies[0].overview}
+                        <div class="ms-3 text-light">
+                            <br><b>Overview</b><br>${movies[0].overview}
+                        </div>
                         <div class="container ">
                             <div class="row text-light fs-5 me-5">
                                 <div class="col-sm">
@@ -544,13 +807,140 @@ movieDetails.html
                 $("#MovieTitle").append(movTitle);
                 $("#Details").append(details);
 
-            })
+                const priceScore = getPriceScore(movies[0].Price);
+                const durationScore = getDurationScore(movies[0].runtime);
+                const genreScore = getGenreScore(movies[0].genre_id);
 
+                const currentIdentifiers = [priceScore, durationScore, genreScore]
+
+                console.log(currentIdentifiers)
+
+
+
+
+
+
+
+
+                axios.get(`/allMovieDetails/`)
+                    .then((response) => {
+                        const allMovies = Object.values(response.data);
+                        const currentMovie = movies.find(movie => id === movie.id);
+
+                        // const priceScore = getPriceScore(currentMovie.Price);
+                        // const durationScore = getDurationScore(currentMovie.runtime);
+                        // const genreScore = getGenreScore(currentMovie.genre_id);
+                        // const currentIdentifiers = [priceScore, durationScore, genreScore];
+
+                        // Filter similar movies that match at least 2 out of 3 identifiers
+                        const similarMovies = allMovies.filter((movie) => {
+                            const moviePriceScore = getPriceScore(movie.Price);
+                            const movieDurationScore = getDurationScore(movie.runtime);
+                            const movieGenreScore = getGenreScore(movie.genre_id);
+                            const matchingIdentifiers = [moviePriceScore, movieDurationScore, movieGenreScore];
+                            const matchingCount = currentIdentifiers.filter((identifier) => matchingIdentifiers.includes(identifier)).length;
+                            return matchingCount >= 2 && movie.id !== parseInt(id);
+                        });
+
+                        // const similarMovies = allMovies.filter((movie) => {
+                        //     const moviePriceScore = getPriceScore(movie.Price);
+                        //     const movieDurationScore = getDurationScore(movie.runtime);
+                        //     const movieGenreScore = getGenreScore(movie.genre_id);
+                        //     return (
+                        //         moviePriceScore === priceScore &&
+                        //         movieDurationScore === durationScore &&
+                        //         movieGenreScore === genreScore &&
+                        //         movie.id !== parseInt(id)
+                        //     )
+                        // })
+
+
+
+
+                        const carouselTrack = document.querySelector('.carousel-track');
+
+                        function createMovieCard(movie) {
+                            const card = document.createElement('div');
+                            console.log(movie)
+                            card.className = 'col';
+                            card.innerHTML = `
+                            <a href="/movieDetails?id=${movie.id}" class="card bg-black">
+                              <img src="${IMG_URL + movie.poster_path}" class="card-img-top" alt="Movie Poster">
+                              <div class="card-content">
+                                <div class="card-title text-white"><h2><span>${movie.title}</span><h2></div>
+                              </div>
+                            </a>
+                            &nbsp
+                            <div class="col">
+                                    <h5 class="card-title text-secondary">$${movie.Price}</h5>
+                                    <h5 class="card-title text-secondary">${movie.runtime} mins</h5>
+                                    <h5 class="card-title text-secondary">Genre id:${movie.genre_id}</h5>
+                            </div>
+                            `;
+                            return card;
+
+                        }
+
+                        function populateCarousel() {
+                            const maxRecommendedMovies = 10;
+                            const recommendedMovies = similarMovies.slice(0, maxRecommendedMovies);
+                            for (const movie of recommendedMovies) {
+                                const movieCard = createMovieCard(movie);
+                                carouselTrack.appendChild(movieCard);
+                            }
+                        }
+
+                        const carouselContainer = document.getElementById('carouselContainer');
+                        const isScrollable = carouselContainer.scrollWidth > carouselContainer.clientWidth;
+
+
+
+                        populateCarousel();
+
+                        function slideCarousel(direction) {
+                            const cardWidth = carouselTrack.querySelector('.col').offsetWidth;
+                            const trackPosition = carouselTrack.style.transform ? parseInt(carouselTrack.style.transform.match(/-?\d+/)[0]) : 0;
+                            const newTrackPosition = direction === 'right' ? trackPosition + cardWidth : trackPosition - cardWidth;
+                            carouselTrack.style.transform = `translateX(${newTrackPosition}px)`;
+                        }
+
+
+
+                        // Log the titles of movies with similar scores
+                        console.log("Movies with similar scores:");
+
+                        for (const movie of similarMovies) {
+                            console.log(movie.title);
+
+                            const movieEl = `
+                        <div class="col">
+                            <a href="/movieDetails?id=${movies.id}" class="card bg-black ">
+                            <img src="${IMG_URL + movies.poster_path}" class="card-img-top" alt="Movie Poster">
+                                <div class="card-content ">
+                                    <h2 class="card-title text-white">${movies.title}</h2>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        `
+
+
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+            })
             .catch((error) => {
                 console.log(error);
             });
-
     })
+
+
+
+</script>
+<script>
 
 </script>
 <script>
@@ -558,54 +948,6 @@ movieDetails.html
         alert("Movie Deleted!")
     }
 </script>
-
-<main>
-    <section>
-        <h1>Reviews</h1>
-        <h4>Thompson Dave</h4>
-        <form id="reviewForm">
-            <input type="number" max="5" inputmode="numeric" id="rating" name="rating"
-                placeholder="what would you rate this movie out of 5?" required>
-            <input type="text" id="review" name="Review" placeholder="Give review..." required>
-            <button type="submit" id="post" class="btn btn-primary">Submit</button>
-        </form>
-        <form id="alterForm">
-            <input type="number" max="5" id="reviewID" name="reviewID"
-                placeholder="which review would you want to delete?" required>
-            <input type="number" max="5" id="alterRating" name="newRating"
-                placeholder="what would you rate this movie out of 5?" required>
-            <input type="text" id="alterReview" name="Review" placeholder="Give review..." required>
-            <button type="submit" id="update" class="btn btn-primary">Update</button>
-        </form>
-        <form id="deleteForm">
-            <input type="number" id="deleteID" name="deleteID" placeholder="which review would you want to delete?"
-                required>
-            <button type="submit" id="delete" class="btn btn-primary">Delete</button>
-        </form>
-        <form id="deleteAllForm">
-            <button type="submit" id="deleteAll" class="btn btn-primary">Delete all reviews</button>
-        </form>
-        <label for="sort-by">Sort by:</label>
-        <select name="sort-by" id="sort-by">
-            <option value="ID">Sort by ID</option>
-            <option value="Rating">Sort by Rating</option>
-        </select>
-        <button type="submit" id="retrieve" class="btn btn-primary">Retrieve</button>
-        <div id="component">
-            <ul id="average"></ul>
-        </div>
-        <div id="list">
-            <ul id="reviewList"></ul>
-        </div>
-    </section>
-</main>
-</div>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="Reviews.js"></script>
-<script src="../../models/review.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
 
 <script>
     // window.addEventListener('DOMContentLoaded', function () {

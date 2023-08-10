@@ -20,11 +20,14 @@ Homepage.html
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap"
         rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"> -->
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet"> -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 <style>
@@ -87,6 +90,8 @@ Homepage.html
     .card {
         position: relative;
         overflow: hidden;
+
+
     }
 
     .card-img-top {
@@ -95,6 +100,7 @@ Homepage.html
 
     .card:hover .card-img-top {
         filter: blur(15px);
+        background-color: rgba(103, 103, 103, 0.36);
     }
 
     .card-content {
@@ -102,7 +108,6 @@ Homepage.html
         bottom: 0;
         left: 0;
         right: 0;
-        background-color: rgba(255, 255, 255, 0);
         /* backdrop-filter: blur(15px); */
         padding: 10px;
         transform: translateY(100%);
@@ -111,6 +116,105 @@ Homepage.html
 
     .card:hover .card-content {
         transform: translateY(0);
+    }
+
+    .category-header {
+        font-size: 24px;
+        /* Adjust font size for category header */
+        font-weight: bold;
+        color: #fff;
+        /* Set text color to white */
+        background-color: #000;
+        /* Set background color for category header */
+        padding: 10px;
+        /* Add padding for spacing */
+        margin: 20px 0;
+        /* Add margin for spacing between category headers */
+        border-radius: 10px;
+        /* Add border-radius for rounded corners */
+    }
+
+    #searchBar.form-control {
+        color: white;
+        /* Text color */
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Background color */
+        border: 1px solid rgba(255, 255, 255, 0);
+        /* Border color */
+    }
+
+    .dropdown-searchMenu.show {
+        display: none;
+        position: absolute;
+        z-index: -1000;
+        top: 50px;
+        padding-top: 15px;
+        background-color: rgba(70, 70, 70, 0.632);
+        /* Set the background color with transparency (e.g., rgba) */
+        backdrop-filter: blur(10px);
+        border: none;
+        max-height: 300px;
+        overflow-y: auto;
+        min-width: 120px;
+        scrollbar-width: none;
+        /* Hide scrollbar for Firefox */
+        -ms-overflow-style: none;
+        transition: opacity 0.3s, visibility 0.3s;
+        border-radius: 20px;
+    }
+
+    .dropdown-searchMenu.show::-webkit-scrollbar {
+        display: none;
+    }
+
+    .dropdown-item {
+        color: white;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        transition: opacity 0.3s, visibility 0.3s;
+
+    }
+
+    .dropdown-item:hover {
+        background-color: rgba(255, 255, 255, 0.612);
+        backdrop-filter: blur(10px);
+        border-radius: 17px;
+        width: auto;
+        margin-left: 10px;
+        margin-right: 10px;
+        transition: 0.3s;
+    }
+
+
+    .dropdown-item img {
+        width: 30px;
+        /* Adjust the size of the movie poster */
+        height: 45px;
+        object-fit: cover;
+        margin-right: 10px;
+    }
+
+    span {
+        background: #000000;
+        color: #fff;
+        padding: 0px 10px 0px 10px;
+        border-radius: 10px;
+        margin: 5px;
+        -webkit-box-decoration-break: clone;
+        -moz-background-inline-policy: clone;
+        box-decoration-break: clone;
+    }
+
+    #main h2 {
+        line-height: 1.3;
+        margin-right: 5px;
+    }
+
+    #main h1 {
+        color: rgba(255, 255, 255, 0.71);
+        font-size: 44px;
+        /* margin-left: 20px; */
     }
 </style>
 
@@ -141,6 +245,13 @@ Homepage.html
                     </ul>
 
 
+                    <form class="d-flex" role="search" style="position:relative; top:1.5px;">
+                        <input class="form-control me-2 rounded-4" type="search" id="searchBar"
+                            placeholder="Search movies..." aria-label="Search">
+                        <!-- <button class="btn btn-outline-success" type="button" id="searchButton">Search</button> -->
+                    </form>
+
+
                     <!-- <form class="col-12 col-lg-auto col-lg-5 mb-3 mb-lg-0 me-lg-3" role="search">
                                 <label for="searchBar">Email address</label>
                                 <input type="search" class="form-control form-control-dark text-bg-dark" id="searchBar"
@@ -153,7 +264,19 @@ Homepage.html
 
                     <div class="text-end mt-2" id="ComFont">
                         <!-- <a href="/favorites"><button class="btn text-warning  me-5 fs-5">Favorites</button></a> -->
-                        <button id="sortABC" class="sortABC me-2 btn btn-outline-light">Sort A-Z</button>
+                        <!-- <button id="sortABC" class="sortABC me-2 btn btn-outline-light">Sort A-Z</button> -->
+                        <div class="btn-group" id="sortABC">
+                            <button type="button" class="btn btn-dark me-5 dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Sort Movies
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><a id="sortAZ" class="dropdown-item" href="#">Alphabetical</a></li>
+                                <li><a id="sortByID" class="dropdown-item" href="#">Movie ID</a></li>
+                                <li><a id="sortByCategories" class="dropdown-item" href="#">Categories</a></li>
+
+                            </ul>
+                        </div>
                         <a href="/login/"><button type="button" class="btn btn-warning me-2">Login</button></a>
                     </div>
                 </div>
@@ -163,115 +286,326 @@ Homepage.html
 
     <main>
         <section>
-            <div class="container">
-                <div id="main" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col my-5">
+            <div class="container" style="min-height: 750px;">
+                <div id="main" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col my-5"
+                    class="text-light">
                 </div>
             </div>
+            <!-- <div class="container">
+                <div id="main" class="row my-5"></div>
+            </div> -->
         </section>
     </main>
 
 </body>
+<div class="container text-light">
+    <footer class="py-5">
+        <div class="row">
+            <div class="col-6 col-md-2 mb-3">
+                <h5>Section</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Movies</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">TMDB</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Developers</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Latte Database</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">About</a></li>
+                </ul>
+            </div>
+
+
+            <div class="col-md-5 offset-md-1 mb-3">
+                <form>
+                    <h5>Contact Us!</h5>
+                    <p>Fresh movies from the silver screen.</p>
+                    <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                        <label for="newsletter1" class="visually-hidden">Email address</label>
+                        <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+            <p>
+                Therefore, my beloved, as you have always obeyed,
+                <br>so now, not only as in my presence but much more in my
+                <br> absence, work out your own salvation with fear and trembling,
+                <br>for it is God who works in you, both to will and to work for his good pleasure.
+                <br><br>
+            </p>
+
+        </div>
+    </footer>
+</div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 
 <script>
     let sorted = false
 
+    let categories = [
+        {
+            "id": 28,
+            "name": "Action"
+        },
+        {
+            "id": 12,
+            "name": "Adventure"
+        },
+        {
+            "id": 16,
+            "name": "Animation"
+        },
+        {
+            "id": 35,
+            "name": "Comedy"
+        },
+        {
+            "id": 80,
+            "name": "Crime"
+        },
+        {
+            "id": 99,
+            "name": "Documentary"
+        },
+        {
+            "id": 18,
+            "name": "Drama"
+        },
+        {
+            "id": 10751,
+            "name": "Family"
+        },
+        {
+            "id": 14,
+            "name": "Fantasy"
+        },
+        {
+            "id": 36,
+            "name": "History"
+        },
+        {
+            "id": 27,
+            "name": "Horror"
+        },
+        {
+            "id": 10402,
+            "name": "Music"
+        },
+        {
+            "id": 9648,
+            "name": "Mystery"
+        },
+        {
+            "id": 10749,
+            "name": "Romance"
+        },
+        {
+            "id": 878,
+            "name": "Science Fiction"
+        },
+        {
+            "id": 10770,
+            "name": "TV Movie"
+        },
+        {
+            "id": 53,
+            "name": "Thriller"
+        },
+        {
+            "id": 10752,
+            "name": "War"
+        },
+        {
+            "id": 37,
+            "name": "Western"
+        }
+    ]
+
+
     document.addEventListener('DOMContentLoaded', function () {
         const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
         const baseUrl = "http://localhost:3000";
 
+        const searchBar = document.getElementById("searchBar");
+        const dropdownSearch = document.createElement("div");
+        dropdownSearch.className = "dropdown-searchMenu show";
+        dropdownSearch.id = "searchDropdown";
+
+        const dropdownMenuEsc = document.querySelector('.dropdown-searchMenu.show');
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && dropdownMenuEsc.style.display === 'block') {
+                dropdownMenuEsc.style.display = 'none';
+            }
+        });
+        searchBar.addEventListener("input", () => {
+            const searchTerm = searchBar.value.toLowerCase();
+
+            if (searchTerm.trim() === "") {
+                dropdownSearch.innerHTML = "";
+                dropdownSearch.style.display = "none"; //-- dropdown hidden
+                return;
+            }
+
+            const matchingMovies = movies.filter(movie => movie.title.toLowerCase().includes(searchTerm));
+            dropdownSearch.innerHTML = "";
+            dropdownSearch.style.display = "block"; //-- show dropdown
+
+            matchingMovies.forEach(movie => {
+                const dropdownItem = document.createElement("a");
+                dropdownItem.className = "dropdown-item";
+                dropdownItem.href = `/movieDetails?id=${movie.id}`;
+                const posterImg = document.createElement("img");
+                posterImg.src = IMG_URL + movie.poster_path;
+                posterImg.alt = "Movie Poster";
+
+                const movieTitle = document.createElement("span");
+                movieTitle.textContent = movie.title;
+
+                dropdownItem.appendChild(posterImg);
+                dropdownItem.appendChild(movieTitle);
+
+                dropdownSearch.appendChild(dropdownItem);
+            });
+        });
+
+        searchBar.parentNode.appendChild(dropdownSearch);
+
         let movies = [];
-        const updatedMovieElements = (movies) => {
+        const updatedMovieElements = (movies, sortOption) => {
             const mainElement = document.getElementById("main");
             mainElement.innerHTML = "";
 
-            for (var i = 0; i < movies.length; i++) {
-                const movieEl = `
+            if (sortOption === "categories") {
+                let currentCategory = "";
 
-                        <div class="col">
-                            <a href="/movieDetails?id=${movies[i].id}" class="card bg-black ">
-                            <img src="${IMG_URL + movies[i].poster_path}" class="card-img-top" alt="Movie Poster">
-                                <div class="card-content ">
-                                    <h2 class="card-title text-white">${movies[i].title}</h2>
-                                </div>
-                            </a>
-                        </div>`
-                mainElement.insertAdjacentHTML("beforeend", movieEl);
+                movies.forEach((movie) => {
+                    const category = categories.find((category) => category.id === movie.genre_id);
+
+                    if (category.name !== currentCategory) {
+                        currentCategory = category.name;
+
+                        // Add category header
+
+                        const categoryHeader = document.createElement("h1");
+                        categoryHeader.innerHTML = `${currentCategory} &rarr;`;
+                        mainElement.appendChild(categoryHeader);
+
+                    }
+
+                    // Add movie card under the category
+                    const movieEl = `
+            <div class="col">
+                <a href="/movieDetails?id=${movie.id}" class="card bg-black ">
+                <img src="${IMG_URL + movie.poster_path}" class="card-img-top" alt="Movie Poster">
+                    <div class="card-content ">
+                        <div class="card-title text-white"><h2><span>${movie.title}</span><h2></div>
+                    </div>
+                </a>
+            </div>`;
+                    mainElement.insertAdjacentHTML("beforeend", movieEl);
+                });
+            } else {
+                movies.forEach((movie) => {
+                    const movieEl = `
+                <div class="col">
+                    <a href="/movieDetails?id=${movie.id}" class="card bg-black ">
+                    <img src="${IMG_URL + movie.poster_path}" class="card-img-top" alt="Movie Poster">
+                        <div class="card-content ">
+                         <div class="card-title text-white"><h2><span>${movie.title}</span><h2></div>
+                        </div>
+                    </a>
+                </div>`;
+                    mainElement.insertAdjacentHTML("beforeend", movieEl);
+
+
+                });
             }
         };
 
-        // <div class="col-12 col-sm-4 my-3">
-        //                         <div class="card" style="width: 18rem" data-id="${movies[i].id}">
-        //                             <img class="bd-placeholder-img" src="${IMG_URL + movies[i].poster_path}"/>
-        //                             <text x="50%" y="50%" fill="#eceeef" dy=".3em">&nbsp</text>        
-        //                             <div class="d-flex justify-content-between align-items-center"> 
-        //                                 <h5 class="text-dark">${movies[i].title}</h5>
-        //                                 <h4 class="favorite-icon">&hearts;</h4>
-        //                                 <a href="/movieDetails?id=${movies[i].id}" class="btn btn-dark rounded-5">View</a>
-        //                             </div>
-        //                         </div>
-        //                     </div>`;
-        const sortMovies = (movies) => {
-            if (sorted) {
+
+
+
+        const sortMovies = (movies, sortOption) => {
+            if (sortOption === "az") {
                 // Sort movies back to the original order
-                movies.sort((a, b) => a.id - b.id);
-            } else if (!sorted) {
-                // Sort movies alphabetically
                 movies.sort((a, b) => a.title.localeCompare(b.title));
+                sorted = true;
+            } else if (sortOption === "id") {
+                // Sort movies by ID
+                movies.sort((a, b) => a.id - b.id);
+                sorted = true;
+            } else if (sortOption === "categories") {
+                // Sort movies by categories
+                movies.sort((a, b) => {
+                    const categoryA = categories.find((category) => category.id === a.genre_id);
+                    const categoryB = categories.find((category) => category.id === b.genre_id);
+                    return categoryA.name.localeCompare(categoryB.name);
+                });
+                sorted = true;
+            } else {
+                // Revert back to the original order of movies
+                movies.sort((a, b) => a.id - b.id);
+                sorted = false;
             }
-            sorted = !sorted; // Toggle the sorting state
 
             updatedMovieElements(movies);
         };
 
-        const button = document.getElementById("sortABC");
-        button.addEventListener('click', (event) => {
-            sortMovies(movies);
-            console.log(sorted)
-            button.textContent = sorted ? "Sort By ID" : "Sort A-Z";
+
+
+        const dropdownButton = document.getElementById("sortABC").querySelector("button");
+        const dropdownMenu = document.getElementById("sortABC").querySelector(".dropdown-menu");
+        const aToZOption = dropdownMenu.querySelector("a#sortAZ");
+        const byIdOption = dropdownMenu.querySelector("a#sortByID");
+        const byCategoriesOption = dropdownMenu.querySelector("a#sortByCategories");
+
+
+
+        aToZOption.addEventListener("click", () => {
+            sortMovies(movies, "az");
+            updatedMovieElements(movies, "az");
+            // dropdownButton.textContent = "Sort By ID";
+        });
+
+        byIdOption.addEventListener("click", () => {
+            sortMovies(movies, "id");
+            updatedMovieElements(movies, "id");
+            // dropdownButton.textContent = "Sort A-Z";
+        });
+
+        byCategoriesOption.addEventListener("click", () => {
+            sortMovies(movies, "categories");
+            updatedMovieElements(movies, "categories");
+        });
+
+        const dropdown = document.getElementById("sortABC");
+        dropdown.addEventListener("show.bs.dropdown", (event) => {
         });
 
         axios.get(`/movies`)
             .then((response) => {
-                movies = Object.values(response.data);
+                const fetchedMovies = Object.values(response.data);
+                movies = fetchedMovies
                 console.log(movies);
 
-
+                sortMovies(movies, "id");
                 updatedMovieElements(movies);
 
-                const favoriteIcons = document.querySelectorAll(".favorite-icon");
 
-                favoriteIcons.forEach((icon) => {
-                    icon.addEventListener("click", toggleFavorite);
-                });
 
-                function toggleFavorite(event) {
-                    const icon = event.target;
-                    const movie = icon.closest(".card");
 
-                    const movieId = parseInt(movie.dataset.id);
-                    const movieObj = movies.find((m) => m.id === movieId);
-
-                    movieObj.isFavorite = !movieObj.isFavorite;
-
-                    if (movieObj.isFavorite) {
-                        icon.classList.add("favorite");
-                    } else {
-                        icon.classList.remove("favorite");
-                    }
-                }
             })
             .catch((error) => {
                 console.log(error);
             });
+
+
     });
 </script>
 
-<!-- <script>
-    export function getMovieCardById(id) {
-        return document.querySelector(`.card[data-id="${movies[i].id}"]`)
-    }
-</script> -->
+
 
 </html>
