@@ -80,7 +80,7 @@ app.post('/insertData', function (req, res) {
 app.get('/movieHistogram/:id', function (req, res) {
   const movieID = req.params.id;
   histogram.generateHistogramData(movieID)
-    .then((histogramData) =>{
+    .then((histogramData) => {
       res.json(histogramData);
     })
     .catch(function (error) {
@@ -324,7 +324,7 @@ app.put('/movieDetails/:id', function (req, res) {
 /**
  * User C.R.U.D.
  */
-app.get('/reviews/data/:userid', async (req, res) => {
+app.get('/reviewdata/:userid', async (req, res) => {
   const userID = req.params.userid;
   const userInfo = await getReviewByUser(userID);
   res.status(200).json(userInfo[0]);
@@ -422,8 +422,9 @@ app.post('/user/buymovie', async (req, res) => {
 app.post('/auth', (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
+  let UserID = req.body.UserID;
 
-  login(username, password)
+  login(username, password, UserID)
     .then((user) => {
       if (!user) {
         res.redirect('/login');
@@ -432,9 +433,17 @@ app.post('/auth', (req, res) => {
         req.session.userId = user.UserID;
         req.session.username = user.Username;
         req.session.role = user.Role;
+        req.session.UserID = user.UserID
         res.redirect('/');
       }
     });
+});
+
+app.get('/auth/userDetails', (req, res, next) => {
+  console.log(req.session);
+  const role = req.session.role;
+  const UserID = req.session.UserID;
+  res.json({role, UserID})
 });
 
 app.get('/api/moviePublisher', (req, res, next) => {

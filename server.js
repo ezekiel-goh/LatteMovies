@@ -3,7 +3,7 @@ const app = require("./controller/app.js");
 const express = require("express");
 const cors = require('cors');
 const path = require('path');
-app.use(express.static("public", { 'Content-Type': 'text/javascript'}));
+app.use(express.static("public", { 'Content-Type': 'text/javascript' }));
 
 app.use(cors());
 
@@ -44,7 +44,7 @@ app.get("/reviews", (req, res) => {
 });
 
 app.get("/reviews/best/html", (req, res) => {
-  res.sendFile("public/reviews/BestReviews.html", { root: __dirname})
+  res.sendFile("public/reviews/BestReviews.html", { root: __dirname })
 })
 
 app.get("/movieDetails", (req, res) => {

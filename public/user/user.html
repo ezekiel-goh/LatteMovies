@@ -82,11 +82,13 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
-                        <li><a href="/" class="nav-link px-2 text-light fs-5">&nbspHomepage</a></li>
-                        <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import Movies</a>
-                        <li><a href="/userpage" class="nav-link px-3 text-secondary fs-5">Users</a>
+                        <li><a href="/" class="nav-link px-2 text-secondary fs-5">&nbspHomepage</a></li>
+                        <li><a href="/importMovies" id="importMoviesButton"
+                                class="nav-link px-3 text-light fs-5">Import Movies</a>
+                        <li><a href="/userpage" id="usersButton" class="nav-link px-3 text-light fs-5">Users</a>
                         </li>
-                        <li><a href="/moviePublisher" class="nav-link px-3 text-secondary fs-5">Publishers</a>
+                        <li><a href="/moviePublisher" id="publishersButton"
+                                class="nav-link px-3 text-secondary fs-5">Publishers</a>
                         </li>
                         <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
                     </ul>
@@ -278,11 +280,41 @@
         // hardcoded login user
         const loggedInUserID = 1;
 
+        const userDetails = axios.get(`/auth/userDetails`)
+        .then((response) => {
+            const userRole = response.data.role;
+            const UserID = response.data.UserID;
+
+            const importMoviesButton = document.getElementById("importMoviesButton")
+            const usersButton = document.getElementById("usersButton")
+            const publishersButton = document.getElementById("publishersButton")
+
+            if (!userRole) {
+                //-- not logged in
+                importMoviesButton.style.display = 'none';
+                usersButton.style.display = 'none';
+                publishersButton.style.display = 'none';
+            } else if (userRole === "Customer") {
+                importMoviesButton.style.display = 'none';
+                usersButton.style.display = 'block';
+                publishersButton.style.display = 'none';
+            } else if (userRole === "Publisher") {
+                importMoviesButton.style.display = 'block';
+                usersButton.style.display = 'none';
+                publishersButton.style.display = 'block';
+            }
+            console.log(UserID);
+
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+        
         // Function to fetch data from the backend using Axios
         function fetchDataFromAPI(apiURL) {
             return axios.get(apiURL)
                 .then((response) => {
-                    if (apiURL === `/reviews/data/${loggedInUserID}`) {
+                    if (apiURL === `/reviewdata/${loggedInUserID}`) {
                         const data = response.data
                         data.forEach(review => {//M.title, M.release_date, R.Rating, R.Comments
                             const reviewHTML = `
@@ -351,7 +383,7 @@
         // Display when page loads
         document.addEventListener('DOMContentLoaded', async function () {
             // Declare variables to fetch data from multiple APIs using Axios
-            const reviewAPI = `/reviews/data/${loggedInUserID}`;
+            const reviewAPI = `/reviewdata/${loggedInUserID}`;
             const purchaseAPI = `/purchase/${loggedInUserID}`;
             const favouriteAPI = `/favourites/${loggedInUserID}`;
 
@@ -362,7 +394,7 @@
             ];
 
             // first, get the user details
-            axios.get(`/user/${req.session.userId}`)
+            axios.get(`/user/${loggedInUserID}`)
                 .then((response) => {
                     const data = response.data[0];
                     const dataHtml = `
@@ -416,8 +448,7 @@
                 Comments: newReview
             }
 
-            const baseUrl = "http://localhost:3000"
-            axios.put(`${baseUrl}/reviews`, update)
+            axios.put(`/reviews`, update)
                 .then((response) => {
                     if (response.status == 200) {
                         console.log("Review submitted!")
@@ -431,8 +462,7 @@
         const deleteBtn = document.getElementById("delete")
         deleteBtn.addEventListener("click", (event) => {
             const id = document.getElementById("deleteID").value
-            const baseUrl = "http://localhost:3000";
-            axios.delete(`${baseUrl}/reviews/${id}`)
+            axios.delete(`/reviews/${id}`)
                 .then((response) => {
                     if (response.status == 200) {
                         console.log("Review deleted!");
@@ -446,10 +476,9 @@
         const deleteAllBtn = document.getElementById("deleteAll")
         deleteAllBtn.addEventListener("click", (event) => {
             event.preventDefault();
-            const baseUrl = "http://localhost:3000";
             const urlParams = new URLSearchParams(window.location.search);
             const MovieID = urlParams.get('id');
-            axios.delete(`${baseUrl}/reviews/${MovieID}`)
+            axios.delete(`/reviews/${MovieID}`)
                 .then((response) => {
                     if (response.status == 200) {
                         console.log("Review deleted!");

@@ -252,11 +252,12 @@ movieDetails.html
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
                         <li><a href="/" class="nav-link px-2 text-secondary fs-5">&nbspHomepage</a></li>
-                        <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import Movies</a>
+                        <li><a href="/importMovies" id="importMoviesButton"
+                                class="nav-link px-3 text-secondary fs-5">Import Movies</a>
+                        <li><a href="/userpage" id="usersButton" class="nav-link px-3 text-secondary fs-5">Users</a>
                         </li>
-                        <li><a href="/userpage" class="nav-link px-3 text-secondary fs-5">Users</a>
-                        </li>
-                        <li><a href="/moviePublisher" class="nav-link px-3 text-secondary fs-5">Publishers</a>
+                        <li><a href="/moviePublisher" id="publishersButton"
+                                class="nav-link px-3 text-secondary fs-5">Publishers</a>
                         </li>
                         <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
                     </ul>
@@ -298,7 +299,7 @@ movieDetails.html
                                     </div>
                                     <div id="Details" style="height: 255px;">
                                     </div>
-                                    <div class="container">
+                                    <div class="container" id="PublisherSettings">
                                         <div class="row mt-5" style="position: relative;">
                                             <div class="col-sm my-2">
                                                 <div class="input-group bg-dark rounded-5 border border-1"
@@ -342,7 +343,7 @@ movieDetails.html
                         Your browser does not support the video tag.
                     </video>
                 </div>
-                <section>
+                <section id="ReviewSection">
                     <h1>Reviews</h1>
                     <h4>Thompson Dave</h4>
                     <form id="reviewForm">
@@ -364,14 +365,15 @@ movieDetails.html
                         <ul id="reviewList"></ul>
                     </div>
                 </section>
-                <div style="margin: 0 auto; width:800px; height:300px;">
+                <div id="HistogramSection" style="margin: 0 auto; width:800px; height:300px;">
                     <canvas id="viewsHistogram" style="background-color: rgb(51, 51, 51)"></canvas>
                 </div>
             </div>
 
             <div class="container" id="ComFont">
                 <div class="mt-5">
-                    <div class="text-start text-light mt-5" style="position:relative; top: 60px;">
+                    <div id="recommendedMoviesSection" class="text-start text-light mt-5"
+                        style="position:relative; top: 60px;">
                         <h2>Recommended Movies</h2>
                         <!-- <button type="button" class="btn btn-dark" id="slideRightBtn">
                              <ion-icon name="arrow-back-outline"></ion-icon>
@@ -408,6 +410,60 @@ movieDetails.html
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module">
+
+        const userDetails = axios.get(`/auth/userDetails`)
+            .then((response) => {
+                const userRole = response.data.role;
+                const UserID = response.data.UserID;
+
+                const importMoviesButton = document.getElementById("importMoviesButton")
+                const usersButton = document.getElementById("usersButton")
+                const publishersButton = document.getElementById("publishersButton")
+
+                const PublisherSettings = document.getElementById("PublisherSettings")
+                const ReviewSection = document.getElementById("ReviewSection")
+                const HistogramSection = document.getElementById("HistogramSection")
+                const recommendedMoviesSection = document.getElementById("recommendedMoviesSection")
+
+                if (!userRole) {
+                    //-- not logged in
+                    importMoviesButton.style.display = 'none';
+                    usersButton.style.display = 'none';
+                    publishersButton.style.display = 'none';
+
+                    PublisherSettings.style.display = 'none';
+                    ReviewSection.style.display = 'none';
+                    HistogramSection.style.display = 'none';
+                    recommendedMoviesSection.style.display = 'none';
+                } else if (userRole === "Customer") {
+                    importMoviesButton.style.display = 'none';
+                    usersButton.style.display = 'block';
+                    publishersButton.style.display = 'none';
+
+                    PublisherSettings.style.display = 'none';
+                    ReviewSection.style.display = 'block';
+                    HistogramSection.style.display = 'block';
+                    recommendedMoviesSection.style.display = 'block';
+                } else if (userRole === "Publisher") {
+                    importMoviesButton.style.display = 'block';
+                    usersButton.style.display = 'none';
+                    publishersButton.style.display = 'block';
+
+                    PublisherSettings.style.display = 'block';
+                    ReviewSection.style.display = 'none';
+                    HistogramSection.style.display = 'none';
+                    recommendedMoviesSection.style.display = 'none';
+                }
+                console.log(UserID);
+
+
+
+
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
         function getRandomInt(min, max) {
             const userID = Math.floor(Math.random() * (max - min + 1)) + min;
             console.log(userID);
@@ -459,7 +515,12 @@ movieDetails.html
         console.log('Movie ID from URL:', movieID);
 
         function renderHistogram(histogramData) {
-
+            const moviePlayer = document.getElementById('moviePlayer');
+            function seekVideoToTimestamp(timestamp) {
+                const [minutes, seconds] = timestamp.split(':');
+                const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds);
+                moviePlayer.currentTime = totalSeconds;
+            }
             var canvas = document.getElementById('viewsHistogram');
 
             if (chart) {
