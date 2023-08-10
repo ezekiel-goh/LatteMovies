@@ -362,7 +362,7 @@
             ];
 
             // first, get the user details
-            axios.get(`/user/${req.session.userId}`)
+            axios.get(`/user/${loggedInUserID}`)
                 .then((response) => {
                     const data = response.data[0];
                     const dataHtml = `
@@ -416,8 +416,7 @@
                 Comments: newReview
             }
 
-            const baseUrl = "http://localhost:3000"
-            axios.put(`${baseUrl}/reviews`, update)
+            axios.put(`/reviews`, update)
                 .then((response) => {
                     if (response.status == 200) {
                         console.log("Review submitted!")
@@ -431,8 +430,7 @@
         const deleteBtn = document.getElementById("delete")
         deleteBtn.addEventListener("click", (event) => {
             const id = document.getElementById("deleteID").value
-            const baseUrl = "http://localhost:3000";
-            axios.delete(`${baseUrl}/reviews/${id}`)
+            axios.delete(`/reviews/${id}`)
                 .then((response) => {
                     if (response.status == 200) {
                         console.log("Review deleted!");
@@ -446,10 +444,9 @@
         const deleteAllBtn = document.getElementById("deleteAll")
         deleteAllBtn.addEventListener("click", (event) => {
             event.preventDefault();
-            const baseUrl = "http://localhost:3000";
             const urlParams = new URLSearchParams(window.location.search);
             const MovieID = urlParams.get('id');
-            axios.delete(`${baseUrl}/reviews/${MovieID}`)
+            axios.delete(`/reviews/${MovieID}`)
                 .then((response) => {
                     if (response.status == 200) {
                         console.log("Review deleted!");
