@@ -2,7 +2,7 @@ require("dotenv").config();
 const app = require("./controller/app.js");
 const express = require("express");
 const path = require('path');
-app.use(express.static("public"));
+app.use(express.static("public", { 'Content-Type': 'text/javascript'}));
 
 
 //-- Homepage (Retrieving from API)

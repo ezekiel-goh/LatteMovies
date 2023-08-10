@@ -4,37 +4,27 @@ const axios = require('axios');
 function insertData(userID, movieID, timestamp) {
   console.log(userID, movieID, timestamp)
   const sql = "INSERT INTO Views(UserID, MovieID, Timestamp) VALUES (?, ?, ?)";
-  query(sql, [userID, movieID, timestamp])
+  return query(sql, [userID, movieID, timestamp])
     .then(() => {
       console.log('Data inserted successfully');
-      console.log(query)
     })
     .catch(error => {
       console.log('Error inserting data:', error);
     });
 }
 
-function generateHistogramData(req, res) {
-  const movieID = req.query.id;
-
-  const queryStr = 'SELECT Timestamp, COUNT(DISTINCT UserID) AS views FROM Views WHERE MovieID = ? GROUP BY Timestamp ORDER BY Timestamp';
-  const values = [movieID];
-
-  query(queryStr, values)
-    .then(([results]) => {
-      console.log('Data retrieved successfully!');
-      const histogramData = results.map(row => ({
-        timestamp: row.Timestamp,
-        views: row.views
-      }));
-      res.json(histogramData);
-      console.log(histogramData);
+function generateHistogramData(movieID) {
+  const sql = 'SELECT Timestamp, COUNT(DISTINCT UserID) as views FROM Views WHERE MovieID = ? Group By Timestamp';
+  return query(sql, [movieID])
+    .then(function (result) {
+      const rows = result[0];
+      console.log(result[0])
+      return rows;
     })
-    .catch(error => {
-      console.error('Error retrieving data:', error);
-      res.sendStatus(500);
+    .catch(function (error) {
+      throw error;
     });
-}
+};
 
 module.exports = { insertData, generateHistogramData };
 
