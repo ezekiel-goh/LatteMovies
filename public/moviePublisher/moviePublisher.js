@@ -28,10 +28,11 @@ function populateMoviesBody(moviesBody, movies, reviews) {
 
         // initial dummy values
         const i = averageScores.findIndex(e => e.MovieID == movie.id);
+        console.log(i, movie.id);
         if (i > -1) {
             node.querySelector('.average-score').value = averageScores[i].average;
         } else {
-            node.querySelector('.average-score').value = 0;
+            node.querySelector('.average-score').value = 'N/A';
         }
         node.querySelector('.revenue').value = 0;
 
@@ -105,7 +106,7 @@ async function refreshMoviesBody(moviesBody) {
         fetch('/reviews/data').then((res) => res.json())
     ]);
 
-    populateMoviesBody(moviesBody, movies.data[0], reviews);
+    populateMoviesBody(moviesBody, movies.data[0], reviews[0]);
 }
 
 window.addEventListener('DOMContentLoaded', () => {

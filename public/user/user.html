@@ -342,7 +342,7 @@
             ];
 
             // first, get the user details
-            axios.get(`/user/${loggedInUserID}`)
+            axios.get(`/user/${req.session.userId}`)
                 .then((response) => {
                     const data = response.data[0];
                     const dataHtml = `
