@@ -412,7 +412,8 @@ app.post('/auth', (req, res) => {
 });
 
 app.get('/api/moviePublisher', (req, res, next) => {
-  moviePublisher.getAllMovies()
+  const publisher_id = req.session.username;
+  moviePublisher.getAllMovies(publisher_id)
     .then(function (movies) {
       return res.json({ data: movies });
     })
@@ -444,7 +445,8 @@ app.post('/api/moviePublisher', (req, res, next) => {
   const overview = req.body.overview;
   const releaseDate = req.body.releaseDate;
   const runtime = req.body.runtime;
-  moviePublisher.addMovie(movieId, title, posterPath, overview, releaseDate, runtime)
+  const publisherId = req.session.username;
+  moviePublisher.addMovie(movieId, title, posterPath, overview, releaseDate, runtime, publisherId)
     .then(() => {
       return res.sendStatus(201);
     })
