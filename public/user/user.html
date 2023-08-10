@@ -82,11 +82,13 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
-                        <li><a href="/" class="nav-link px-2 text-light fs-5">&nbspHomepage</a></li>
-                        <li><a href="/importMovies" class="nav-link px-3 text-secondary fs-5">Import Movies</a>
-                        <li><a href="/userpage" class="nav-link px-3 text-secondary fs-5">Users</a>
+                        <li><a href="/" class="nav-link px-2 text-secondary fs-5">&nbspHomepage</a></li>
+                        <li><a href="/importMovies" id="importMoviesButton"
+                                class="nav-link px-3 text-light fs-5">Import Movies</a>
+                        <li><a href="/userpage" id="usersButton" class="nav-link px-3 text-light fs-5">Users</a>
                         </li>
-                        <li><a href="/moviePublisher" class="nav-link px-3 text-secondary fs-5">Publishers</a>
+                        <li><a href="/moviePublisher" id="publishersButton"
+                                class="nav-link px-3 text-secondary fs-5">Publishers</a>
                         </li>
                         <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
                     </ul>
@@ -278,6 +280,36 @@
         // hardcoded login user
         const loggedInUserID = 1;
 
+        const userDetails = axios.get(`/auth/userDetails`)
+        .then((response) => {
+            const userRole = response.data.role;
+            const UserID = response.data.UserID;
+
+            const importMoviesButton = document.getElementById("importMoviesButton")
+            const usersButton = document.getElementById("usersButton")
+            const publishersButton = document.getElementById("publishersButton")
+
+            if (!userRole) {
+                //-- not logged in
+                importMoviesButton.style.display = 'none';
+                usersButton.style.display = 'none';
+                publishersButton.style.display = 'none';
+            } else if (userRole === "Customer") {
+                importMoviesButton.style.display = 'none';
+                usersButton.style.display = 'block';
+                publishersButton.style.display = 'none';
+            } else if (userRole === "Publisher") {
+                importMoviesButton.style.display = 'block';
+                usersButton.style.display = 'none';
+                publishersButton.style.display = 'block';
+            }
+            console.log(UserID);
+
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+        
         // Function to fetch data from the backend using Axios
         function fetchDataFromAPI(apiURL) {
             return axios.get(apiURL)

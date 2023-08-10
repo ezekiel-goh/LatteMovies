@@ -154,8 +154,10 @@ Movies.html
     }
 
     .custom-alert {
-        background-color: rgba(171, 171, 171, 0.36); /* Set the background color with transparency (e.g., rgba) */
-        backdrop-filter: blur(10px); /* Add the blur effect */
+        background-color: rgba(171, 171, 171, 0.36);
+        /* Set the background color with transparency (e.g., rgba) */
+        backdrop-filter: blur(10px);
+        /* Add the blur effect */
         color: #fff;
         border: none;
         text-align: center;
@@ -187,11 +189,12 @@ Movies.html
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mt-2 me-auto mb-2 mb-lg-0" id="ComFont">
                         <li><a href="/" class="nav-link px-2 text-secondary fs-5">&nbspHomepage</a></li>
-                        <li><a href="/importMovies" class="nav-link px-3 text-light fs-5">Import Movies</a>
+                        <li><a href="/importMovies" id="importMoviesButton"
+                                class="nav-link px-3 text-light fs-5">Import Movies</a>
+                        <li><a href="/userpage" id="usersButton" class="nav-link px-3 text-secondary fs-5">Users</a>
                         </li>
-                        <li><a href="/userpage" class="nav-link px-3 text-secondary fs-5">Users</a>
-                        </li>
-                        <li><a href="/moviePublisher" class="nav-link px-3 text-secondary fs-5">Publishers</a>
+                        <li><a href="/moviePublisher" id="publishersButton"
+                                class="nav-link px-3 text-secondary fs-5">Publishers</a>
                         </li>
                     </ul>
 
@@ -213,7 +216,8 @@ Movies.html
                     </div>
 
                 </div>
-                <div id="main" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col my-5" style="min-height: 2250px;">
+                <div id="main" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col my-5"
+                    style="min-height: 2250px;">
                 </div>
 
 
@@ -258,16 +262,47 @@ Movies.html
         <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
             <p>He has told you, O man, what is good; <br>
                 and what does the Lord require of you
-            but <br>to do justice, and to love kindness,
-            <br>and to walk humbly with your God?
-            <br><br>
-        </p>
-            
+                but <br>to do justice, and to love kindness,
+                <br>and to walk humbly with your God?
+                <br><br>
+            </p>
+
         </div>
     </footer>
 </div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-    // import fetch from "node-fetch";
+
+    const userDetails = axios.get(`/auth/userDetails`)
+        .then((response) => {
+            const userRole = response.data.role;
+            const UserID = response.data.UserID;
+
+            const importMoviesButton = document.getElementById("importMoviesButton")
+            const usersButton = document.getElementById("usersButton")
+            const publishersButton = document.getElementById("publishersButton")
+
+            if (!userRole) {
+                //-- not logged in
+                importMoviesButton.style.display = 'none';
+                usersButton.style.display = 'none';
+                publishersButton.style.display = 'none';
+            } else if (userRole === "Customer") {
+                importMoviesButton.style.display = 'none';
+                usersButton.style.display = 'block';
+                publishersButton.style.display = 'none';
+            } else if (userRole === "Publisher") {
+                importMoviesButton.style.display = 'block';
+                usersButton.style.display = 'none';
+                publishersButton.style.display = 'block';
+            }
+            console.log(UserID);
+
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
 
 
     //--  Checkboxes to select movies
