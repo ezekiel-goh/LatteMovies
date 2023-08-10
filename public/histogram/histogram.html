@@ -42,14 +42,14 @@
           pairs.push(pair);
         }
       }
-      console.log(pairs); 
+      console.log(pairs);
       return pairs;
     }
 
     // Function to render the histogram chart
     function renderHistogram(histogramData) {
       var canvas = document.getElementById('viewsHistogram'); // assigning the canvas to render the histogram at
-      var labels = histogramData.map(function (data) { 
+      var labels = histogramData.map(function (data) {
         return data.timestamp;
       });
       var views = histogramData.map(function (data) {
@@ -89,8 +89,8 @@
             }
           },
           indexAxis: 'x', // bars to leave no gaps
-          barPercentage: 1.0, 
-          categoryPercentage: 1.0 
+          barPercentage: 1.0,
+          categoryPercentage: 1.0
         }
       });
     }
