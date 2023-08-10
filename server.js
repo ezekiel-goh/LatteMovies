@@ -15,6 +15,11 @@ app.get("/", (req, res) => {
 
 //-- Import from API page
 app.get("/importMovies", (req, res) => {
+  if (req.session.role == 'Publisher') {
+    res.sendFile("/public/movies/movies.html", { root: __dirname });
+  } else {
+    res.redirect('/');
+  }
   res.sendFile("/public/movies/movies.html", { root: __dirname });
 });
 
