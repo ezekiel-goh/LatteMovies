@@ -98,7 +98,7 @@ module.exports.deleteUserPublisher = async function deleteUserPublisher(UserID) 
 // general login function
 module.exports.login = function login(username, password) {
     return query(
-        'SELECT UserID, Username, Role FROM User WHERE Username = ? and Password = ?',
+        'SELECT Username, Role, UserID FROM User WHERE Username = ? and Password = ?',
         [username, password],
     ).then((user) => { return user[0][0]; });
 }
