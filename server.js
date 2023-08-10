@@ -13,10 +13,6 @@ app.get("/", (req, res) => {
   res.sendFile("/public/movies/homepage.html", { root: __dirname });
 });
 
-app.get("/auth", (req, res) => {
-  res.sendFile("/public/movies/homepage.html", { root: __dirname });
-});
-
 //-- Import from API page
 app.get("/importMovies", (req, res) => {
   if (req.session.role == 'Publisher') {
