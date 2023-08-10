@@ -14,8 +14,8 @@ app.use(express.static('public'));
 
 app.use(session({
   secret: 'secret',
- 	resave: true,
- 	saveUninitialized: true
+  resave: true,
+  saveUninitialized: true
 }));
 
 // import models
@@ -26,7 +26,7 @@ const Movies = require("../models/movie");
 const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-  deleteUserCustomer, deleteUserPublisher, login, 
+  deleteUserCustomer, deleteUserPublisher, login,
   buyMovie, getPurchase, getReviewByUser, getFavouriteByUser } = require('../models/user.js');
 const review = require("../models/review");
 
@@ -101,7 +101,6 @@ app.get('/movieHistogram/:id', function (req, res) {
 //     });
 // });
 
-// -- Review Details
 
 //-- Get Movie by ID
 app.get('/movieDetails/:id', function (req, res) {
@@ -152,7 +151,7 @@ app.post('/likedMovies', function (req, res) {
 
   favorite.postLiked({ id, userID })
     .then(() => {
-      res.sendStatus(201); 
+      res.sendStatus(201);
     })
     .catch(error => {
       console.error('Error posting liked movie:', error);
@@ -164,10 +163,11 @@ app.post('/likedMovies', function (req, res) {
 //-- Submit Review
 app.post('/reviews', function (req, res) {
   const Comments = req.body.Comments
+  const MovieID = req.body.MovieID
   const Rating = req.body.Rating
   console.log(req.body)
 
-  review.postReview(Comments, Rating)
+  review.postReview(MovieID, Comments, Rating)
     .then(() => {
       res.sendStatus(201); // Return a success status code
     })
@@ -184,7 +184,8 @@ app.put('/reviews', function (req, res) {
   const Comments = req.body.Comments
 
   review.editReview(Rating, Comments, ReviewID)
-    .then(() => {
+    .then((response) => {
+      console.log(response[0])
       res.sendStatus(201); // Return a success status code
     })
     .catch(error => {
@@ -193,6 +194,7 @@ app.put('/reviews', function (req, res) {
     });
 })
 
+//Delete review by ID
 app.delete('/reviews/:id', function (req, res) {
   const ReviewID = req.params.id
   console.log(req.body.ReviewID)
@@ -206,12 +208,30 @@ app.delete('/reviews/:id', function (req, res) {
     });
 })
 
-// -- Get Review
-app.get('/reviews/data', function (req, res) {
+//Delete all reviews
+app.delete('/reviews', function (req, res) {
+  console.log(req.body.MovieID)
+  const MovieID = req.body.MovieID
+  review.deleteAllReview(MovieID)
+    .then(() => {
+      res.sendStatus(201); // Return a success status code
+    })
+    .catch(error => {
+      console.error('Failed to delete review(s)', error);
+      res.sendStatus(500);
+    });
+})
 
-  review.retrieveReview()
-    .then((review) => {
-      res.json(review);
+// -- Get Review
+app.get('/reviews/data/:MovieID', function (req, res) {
+  console.log(req.params.MovieID)
+  MovieID = req.params.MovieID
+  Promise.all([(review.retrieveReview(MovieID)), (review.getAvgRating(MovieID))])
+    .then((response) => {
+      // console.log(JSON.stringify(response))
+      res.json(response);
+      // console.log(response)
+      return response
     })
     .catch(error => {
       console.error('Failed to retrieve review(s)', error);
@@ -219,8 +239,47 @@ app.get('/reviews/data', function (req, res) {
     });
 })
 
+app.get('/reviews/sort/:MovieID', function (req, res) {
 
-//-- Delete Movie by  ID
+  MovieID = req.params.MovieID
+  review.sortReviewByID(MovieID)
+    .then((response) => {
+      res.json(response);
+      console.log(response[0])
+    })
+    .catch(error => {
+      res.sendStatus(500);
+    })
+})
+
+app.get('/reviews/sort2/:MovieID', function (req, res) {
+
+  MovieID = req.params.MovieID
+  review.sortReviewByRating(MovieID)
+    .then((response) => {
+      res.json(response);
+      console.log(response[0])
+    })
+    .catch(error => {
+      res.sendStatus(500);
+    })
+})
+
+app.get('/reviews/best', function (req, res) {
+
+  review.getReview()
+    .then((review) => {
+      res.json(review);
+      console.log(review)
+    })
+    .catch(error => {
+      console.error('Failed to get review', error)
+      // res.sendStatus(500);
+    })
+})
+
+
+//-- Delete Movie by ID
 app.delete('/movieDetails/:id', function (req, res) {
   const id = req.params.id
 
@@ -348,8 +407,8 @@ app.post('/user/buymovie', async (req, res) => {
 
 // general login function
 app.post('/auth', (req, res) => {
-	let username = req.body.username;
-	let password = req.body.password;
+  let username = req.body.username;
+  let password = req.body.password;
 
   login(username, password)
     .then((user) => {
