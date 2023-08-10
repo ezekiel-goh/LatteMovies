@@ -20,11 +20,10 @@ app.use(session({
 
 // import models
 
-const histogram = require("../models/histogram");
 // const moviePublisher = require("../models/moviePublisher");
 const Movies = require("../models/movie");
 // const user = require("../models/user");
-const { insertData, generateHistogramData } = require("../models/histogram");
+const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
   deleteUserCustomer, deleteUserPublisher, login,
@@ -78,19 +77,31 @@ app.post('/insertData', function (req, res) {
 });
 
 //views getting data for histogram
-app.get('/generateHistogramData', function (req, res) {
-  histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
+app.get('/movieHistogram/:id', function (req, res) {
+  const movieID = req.params.id;
+  histogram.generateHistogramData(movieID)
+    .then((histogramData) =>{
+      res.json(histogramData);
+    })
+    .catch(function (error) {
+      console.error('Error fetching histogram data:', error);
+      res.status(500).json({ error: 'Error fetching histogram data' });
+    });
 });
-//   function (err, result) {
-//   if (!err) {
-//     console.log("no errors");
-//     res.type("json");
-//     res.status(201).send({ id: +result });
-//   } else {
-//     res.status(500).send({ error_msg: "Internal server error" });
-//   }
-// }
 
+
+//-- Get Movie Details (for Recommendations)
+app.get('/allMovieDetails/', function (req, res) {
+
+  Movies.getMovieDetails()
+    .then((movieDetails) => {
+      res.json(movieDetails);
+    })
+    .catch(error => {
+      console.error('Failed to retrieve movie(s)', error);
+      res.sendStatus(500);
+    });
+});
 
 //-- Get Movie by ID
 app.get('/movieDetails/:id', function (req, res) {
@@ -414,7 +425,8 @@ app.post('/auth', (req, res) => {
 });
 
 app.get('/api/moviePublisher', (req, res, next) => {
-  moviePublisher.getAllMovies()
+  const publisher_id = req.session.username;
+  moviePublisher.getAllMovies(publisher_id)
     .then(function (movies) {
       return res.json({ data: movies });
     })
@@ -446,7 +458,8 @@ app.post('/api/moviePublisher', (req, res, next) => {
   const overview = req.body.overview;
   const releaseDate = req.body.releaseDate;
   const runtime = req.body.runtime;
-  moviePublisher.addMovie(movieId, title, posterPath, overview, releaseDate, runtime)
+  const publisherId = req.session.username;
+  moviePublisher.addMovie(movieId, title, posterPath, overview, releaseDate, runtime, publisherId)
     .then(() => {
       return res.sendStatus(201);
     })

@@ -1,8 +1,11 @@
 require("dotenv").config();
 const app = require("./controller/app.js");
 const express = require("express");
+const cors = require('cors');
 const path = require('path');
-app.use(express.static("public"));
+app.use(express.static("public", { 'Content-Type': 'text/javascript'}));
+
+app.use(cors());
 
 
 //-- Homepage (Retrieving from API)
