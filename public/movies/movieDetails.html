@@ -251,7 +251,7 @@ movieDetails.html
                     </video>
                 </div>
                 <div style="align-items: center;">
-                    <canvas id="viewsHistogram"></canvas>
+                    <canvas id="viewsHistogram" style="background-color: white"></canvas>
                 </div>
             </div>
         </section>
@@ -260,22 +260,20 @@ movieDetails.html
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <!--timestamp/histogram parts-->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="../../models/histogram.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module">
         const moviePlayer = document.getElementById('moviePlayer');
         let chart = null;
+        var movieID = null;
 
         function getMovieIDFromURL() {
             var urlParams = new URLSearchParams(window.location.search);
-            var movieID = urlParams.get('id');
-            console.log('Movie ID from URL:', movieID);
-            return movieID;
+            return urlParams.get('id');
         }
         // For testing purposes
         var currentUserID = 1;
         // const movieID = 1;
-        var movieID = getMovieIDFromURL(); // getting movieid from url
+        movieID = getMovieIDFromURL(); // getting movieid from url
         let lastTimestamp = -1;
 
         function handleTimeChange() {
@@ -312,15 +310,12 @@ movieDetails.html
 
             var canvas = document.getElementById('viewsHistogram');
 
-            // Destroy the existing chart instance if it exists
             if (chart) {
                 chart.destroy();
             }
-
             var labels = histogramData.map(function (data) {
-                return data.timestamp;
+                return data.Timestamp;
             });
-
             var views = histogramData.map(function (data) {
                 return data.views;
             });
@@ -333,7 +328,7 @@ movieDetails.html
                     datasets: [{
                         label: 'Views',
                         data: views,
-                        backgroundColor: 'rgba(255, 255, 0, 0.7)', // Yellow color with 70% opacity
+                        backgroundColor: 'rgba(255, 255, 0, 1)', // Yellow color with 70% opacity
                         borderColor: 'rgba(255, 255, 0, 1)', // Yellow color
                         borderWidth: 1
                     }]
@@ -342,23 +337,31 @@ movieDetails.html
                     scales: {
                         y: {
                             beginAtZero: true,
+                            maintainAspectRatio: false,
+                            width: 800,
+                            height: 400,
                             precision: 0,
                             stepSize: 1
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
                         }
                     }
                 }
             });
+            console.log(chart.options)
         }
-
         document.addEventListener('DOMContentLoaded', function () {
-            console.log('Fetching histogram data...');
-            axios.get('http://localhost:3000/generateHistogramData')
+            console.log('Fetching histogram data for movieID ' + movieID);
+            axios.get(`/movieHistogram/${movieID}`)
                 .then(function (response) {
+                    const histogramData = response.data
                     console.log('Histogram data taken successfully!');
-                    console.log(response.data);
-                    const histogramData = response.data;
-                    renderHistogram(histogramData);
+                    console.log(histogramData);
                     console.log('Histogram data loaded successfully!');
+                    renderHistogram(histogramData);
                 })
                 .catch(function (error) {
                     console.error('Error:', error);

@@ -20,11 +20,10 @@ app.use(session({
 
 // import models
 
-const histogram = require("../models/histogram");
 // const moviePublisher = require("../models/moviePublisher");
 const Movies = require("../models/movie");
 // const user = require("../models/user");
-const { insertData, generateHistogramData } = require("../models/histogram");
+const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
   deleteUserCustomer, deleteUserPublisher, login, 
@@ -78,18 +77,29 @@ app.post('/insertData', function (req, res) {
 });
 
 //views getting data for histogram
-app.get('/generateHistogramData', function(req, res) {
-  histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
+app.get('/movieHistogram/:id', function (req, res) {
+  const movieID = req.params.id;
+  histogram.generateHistogramData(movieID)
+    .then((histogramData) =>{
+      res.json(histogramData);
+    })
+    .catch(function (error) {
+      console.error('Error fetching histogram data:', error);
+      res.status(500).json({ error: 'Error fetching histogram data' });
+    });
 });
-//   function (err, result) {
-//   if (!err) {
-//     console.log("no errors");
-//     res.type("json");
-//     res.status(201).send({ id: +result });
-//   } else {
-//     res.status(500).send({ error_msg: "Internal server error" });
-//   }
-// }
+// app.get('/movieDetails/:id', function (req, res) {
+//   const movieID = req.params.movieID;
+
+//   histogram.generateHistogramData(movieID)
+//     .then((histogramData) =>{
+//       res.json(histogramData);
+//     })
+//     .catch(function (error) {
+//       console.error('Error fetching histogram data:', error);
+//       res.status(500).json({ error: 'Error fetching histogram data' });
+//     });
+// });
 
 // -- Review Details
 
