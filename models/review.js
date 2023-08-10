@@ -27,9 +27,9 @@
   //   var reviewValue = document.getElementById("Review").value;
   // })
 
-  function postReview(Comments, Rating) {
-    const sql = `INSERT INTO Reviews (MovieID, UserID, Comments, Rating) VALUES (6, 9, ?, ?)`;
-    return query(sql, [Comments, Rating]).catch(function (error) {
+  function postReview(MovieID, Comments, Rating) {
+    const sql = `INSERT INTO Reviews (MovieID, UserID, Comments, Rating) VALUES (?, 9, ?, ?)`;
+    return query(sql, [MovieID, Comments, Rating]).catch(function (error) {
       if (error.errno === MYSQL_ERROR_CODE.DUPLICATE_ENTRY) {
         throw new DUPLICATE_ENTRY_ERROR(
           `review already exists in the database`
@@ -66,9 +66,9 @@
     });
   }
 
-  function deleteAllReview() {
-    const sql = 'DELETE FROM Reviews'
-    return query(sql).catch(function (error) {
+  function deleteAllReview(MovieID) {
+    const sql = 'DELETE FROM Reviews WHERE MovieID = ?'
+    return query(sql, [MovieID]).catch(function (error) {
       if (error.errno === MYSQL_ERROR_CODE.DUPLICATE_ENTRY) {
         throw new DUPLICATE_ENTRY_ERROR(
           `review already exists in the database`
@@ -79,11 +79,11 @@
     });
   }
 
-  function retrieveReview() {
-    const sql = `SELECT ReviewID, MovieID, UserID, Rating, Comments FROM Reviews`
-    return query(sql)
+  function retrieveReview(MovieID) {
+    const sql = `SELECT ReviewID, MovieID, UserID, Rating, Comments FROM Reviews WHERE MovieID = ?`
+    return query(sql, [MovieID])
       .then((response) => {
-        // console.log(response[0]);
+        // console.log(response);
         const rows = response[0];
         return rows
       })
@@ -105,27 +105,27 @@
     // })
   }
 
-  function sortReviewByID() {
-    const sql = `SELECT ReviewID, MovieID, UserID, Rating, Comments FROM Reviews ORDER BY ReviewID desc`
-    return query(sql)
+  function sortReviewByID(MovieID) {
+    const sql = `SELECT ReviewID, MovieID, UserID, Rating, Comments FROM Reviews WHERE MovieID = ? ORDER BY ReviewID desc`
+    return query(sql, [MovieID])
       .then((response) => {
         // console.log(response[0])
         return response
       })
   }
 
-  function sortReviewByRating() {
-    const sql = `SELECT ReviewID, MovieID, UserID, Rating, Comments FROM Reviews ORDER BY Rating desc`
-    return query(sql)
+  function sortReviewByRating(MovieID) {
+    const sql = `SELECT ReviewID, MovieID, UserID, Rating, Comments FROM Reviews WHERE MovieID = ? ORDER BY Rating desc`
+    return query(sql, [MovieID])
       .then((response) => {
         // console.log(response[0])
         return response
       })
   }
 
-  function getAvgRating() {
-    const sql = `SELECT ROUND(AVG(Rating),1) AS average FROM Reviews;`
-    return query(sql)
+  function getAvgRating(MovieID) {
+    const sql = `SELECT ROUND(AVG(Rating),1) AS average FROM Reviews WHERE MovieID = ?;`
+    return query(sql, [MovieID])
       .then((response) => {
         // console.log(response[0])
         return response

@@ -14,8 +14,8 @@ app.use(express.static('public'));
 
 app.use(session({
   secret: 'secret',
- 	resave: true,
- 	saveUninitialized: true
+  resave: true,
+  saveUninitialized: true
 }));
 
 // import models
@@ -27,7 +27,7 @@ const Movies = require("../models/movie");
 const { insertData, generateHistogramData } = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-  deleteUserCustomer, deleteUserPublisher, login, 
+  deleteUserCustomer, deleteUserPublisher, login,
   buyMovie, getPurchase, getReviewByUser, getFavouriteByUser } = require('../models/user.js');
 const review = require("../models/review");
 
@@ -141,7 +141,7 @@ app.post('/likedMovies', function (req, res) {
 
   favorite.postLiked({ id, userID })
     .then(() => {
-      res.sendStatus(201); 
+      res.sendStatus(201);
     })
     .catch(error => {
       console.error('Error posting liked movie:', error);
@@ -153,10 +153,11 @@ app.post('/likedMovies', function (req, res) {
 //-- Submit Review
 app.post('/reviews', function (req, res) {
   const Comments = req.body.Comments
+  const MovieID = req.body.MovieID
   const Rating = req.body.Rating
   console.log(req.body)
 
-  review.postReview(Comments, Rating)
+  review.postReview(MovieID, Comments, Rating)
     .then(() => {
       res.sendStatus(201); // Return a success status code
     })
@@ -173,7 +174,8 @@ app.put('/reviews', function (req, res) {
   const Comments = req.body.Comments
 
   review.editReview(Rating, Comments, ReviewID)
-    .then(() => {
+    .then((response) => {
+      console.log(response[0])
       res.sendStatus(201); // Return a success status code
     })
     .catch(error => {
@@ -198,7 +200,9 @@ app.delete('/reviews/:id', function (req, res) {
 
 //Delete all reviews
 app.delete('/reviews', function (req, res) {
-  review.deleteAllReview()
+  console.log(req.body.MovieID)
+  const MovieID = req.body.MovieID
+  review.deleteAllReview(MovieID)
     .then(() => {
       res.sendStatus(201); // Return a success status code
     })
@@ -209,13 +213,14 @@ app.delete('/reviews', function (req, res) {
 })
 
 // -- Get Review
-app.get('/reviews/data', function (req, res) {
-
-  Promise.all([review.retrieveReview(), review.getAvgRating()])
+app.get('/reviews/data/:MovieID', function (req, res) {
+  console.log(req.params.MovieID)
+  MovieID = req.params.MovieID
+  Promise.all([(review.retrieveReview(MovieID)), (review.getAvgRating(MovieID))])
     .then((response) => {
       // console.log(JSON.stringify(response))
       res.json(response);
-      console.log(response[1][0])
+      // console.log(response)
       return response
     })
     .catch(error => {
@@ -224,28 +229,30 @@ app.get('/reviews/data', function (req, res) {
     });
 })
 
-app.get('/reviews/sort', function (req, res) {
-//Promise.all([deleteUserCustomer(UserID), deleteUserPublisher(UserID)]).then(() => {
-  review.sortReviewByID()
-  .then((response) => {
-    res.json(response);
-    console.log(response[0])
-  })
-  .catch(error => {
-    res.sendStatus(500);
-  })
+app.get('/reviews/sort/:MovieID', function (req, res) {
+
+  MovieID = req.params.MovieID
+  review.sortReviewByID(MovieID)
+    .then((response) => {
+      res.json(response);
+      console.log(response[0])
+    })
+    .catch(error => {
+      res.sendStatus(500);
+    })
 })
 
-app.get('/reviews/sort2', function (req, res) {
+app.get('/reviews/sort2/:MovieID', function (req, res) {
 
-  review.sortReviewByRating()
-  .then((response) => {
-    res.json(response);
-    console.log(response[0])
-  })
-  .catch(error => {
-    res.sendStatus(500);
-  })
+  MovieID = req.params.MovieID
+  review.sortReviewByRating(MovieID)
+    .then((response) => {
+      res.json(response);
+      console.log(response[0])
+    })
+    .catch(error => {
+      res.sendStatus(500);
+    })
 })
 
 app.get('/reviews/best', function (req, res) {
