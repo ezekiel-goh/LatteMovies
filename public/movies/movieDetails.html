@@ -254,9 +254,11 @@ movieDetails.html
                         Your browser does not support the video tag.
                     </video>
                 </div>
-                <div style="align-items: center;">
-                    <canvas id="viewsHistogram" style="background-color: white"></canvas>
-                </div>
+                <div">
+                    <div style="margin: 0 auto; width:800px; height:300px">
+                        <canvas id="viewsHistogram" style="background-color: #212529;"></canvas>
+                    </div>
+            </div>
             </div>
         </section>
     </main>
@@ -268,6 +270,11 @@ movieDetails.html
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module">
+        function getRandomInt(min, max) {
+            const userID = Math.floor(Math.random() * (max - min + 1)) + min;
+            console.log(userID);
+            return userID;
+        }
         const moviePlayer = document.getElementById('moviePlayer');
         let chart = null;
         var movieID = null;
@@ -277,7 +284,8 @@ movieDetails.html
             return urlParams.get('id');
         }
         // For testing purposes
-        var currentUserID = 1;
+        var currentUserID = getRandomInt(1, 100000);
+        console.log(currentUserID);
         // const movieID = 1;
         movieID = getMovieIDFromURL(); // getting movieid from url
         let lastTimestamp = -1;
@@ -313,6 +321,14 @@ movieDetails.html
         console.log('Movie ID from URL:', movieID);
 
         function renderHistogram(histogramData) {
+            function seekVideoToTimestamp(timestamp) {
+                // Convert the timestamp to seconds or the appropriate format
+                const [minutes, seconds] = timestamp.split(':');
+                const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds);
+
+                // Assuming you have a videoPlayer object
+                moviePlayer.currentTime = totalSeconds;
+            }
 
             var canvas = document.getElementById('viewsHistogram');
 
@@ -334,18 +350,38 @@ movieDetails.html
                     datasets: [{
                         label: 'Views',
                         data: views,
-                        backgroundColor: 'rgba(255, 255, 0, 1)', // Yellow color with 70% opacity
-                        borderColor: 'rgba(255, 255, 0, 1)', // Yellow color
+                        backgroundColor: '#ffc107', // Yellow color with 70% opacity
+                        borderColor: '#ffc107', // Yellow color
                         borderWidth: 1
                     }]
                 },
                 options: {
+                    title: {
+                        display: true,
+                        text: 'Replayed parts',
+                        color: 'white'
+                    },
+                    layout: {
+                        padding: {
+                            top: 20,
+                            bottom: 20,
+                            left: 50, // Add some padding to the left
+                            right: 50, // Add some padding to the right
+                        }
+                    },
                     scales: {
+                        x: {
+                            ticks: {
+                                color: 'white',
+                            }
+                        },
                         y: {
                             beginAtZero: true,
-                            maintainAspectRatio: false,
-                            width: 800,
-                            height: 400,
+                            ticks: {
+                                color: 'white',
+                                precision: 0,
+                                stepSize: 1
+                            },
                             precision: 0,
                             stepSize: 1
                         }
@@ -353,6 +389,23 @@ movieDetails.html
                     plugins: {
                         legend: {
                             display: true,
+                            position: 'right', // Move legend to the right
+                            labels: {
+                                color: 'white' // Color of legend labels
+                            }
+                        }
+                    },
+                    indexAxis: 'x', // bars to leave no gaps
+                    barPercentage: 1.0,
+                    categoryPercentage: 1.0,
+                    maintainAspectRatio: false,
+                    onClick: (event, activeElements) => {
+                        if (activeElements.length > 0) {
+                            // Get the timestamp from the clicked bar
+                            const clickedTimestamp = labels[activeElements[0].index];
+
+                            // Assuming you have a function to seek the video player
+                            seekVideoToTimestamp(clickedTimestamp);
                         }
                     }
                 }
@@ -378,10 +431,9 @@ movieDetails.html
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-
     let icon = document.querySelector('ion-icon');
     icon.onclick = function () {
-        const userID = 1;   // ID of the user who likes the movie
+        const userID = 1  // ID of the user who likes the movie
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');  // ID of the movie to be liked
 

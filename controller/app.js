@@ -88,18 +88,6 @@ app.get('/movieHistogram/:id', function (req, res) {
       res.status(500).json({ error: 'Error fetching histogram data' });
     });
 });
-// app.get('/movieDetails/:id', function (req, res) {
-//   const movieID = req.params.movieID;
-
-//   histogram.generateHistogramData(movieID)
-//     .then((histogramData) =>{
-//       res.json(histogramData);
-//     })
-//     .catch(function (error) {
-//       console.error('Error fetching histogram data:', error);
-//       res.status(500).json({ error: 'Error fetching histogram data' });
-//     });
-// });
 
 
 //-- Get Movie by ID
