@@ -12,7 +12,6 @@
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-
     <style>
         div#UserContent {
             color: aliceblue;
@@ -37,6 +36,31 @@
             background-color: rgb(255, 255, 255);
             border-color: rgba(255, 255, 255, 0);
             border-radius: 100px;
+        }
+
+        .spinFunction#loading {
+            position: relative;
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin: 15px;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        .spinFunction {
+            padding: 31.5px;
+        }
+
+        .spinFunction::after {
+            position: absolute;
+            width: 100px;
+            height: 30px;
+            left: 0;
+            bottom: -30px;
+            line-height: 30px;
+            text-align: center;
+            content: 'loading';
         }
     </style>
 </head>
@@ -171,12 +195,31 @@
             <p id="getUserData"></p>
         </div>
 
+        <!-- Display data header -->
+        <div class="mx-3">
+            <h4>Display User Data</h4>
+        </div>
+
         <!-- Dropdown menu -->
-        <select id="contentSelector">
+        <select id="contentSelector" class="mx-3">
             <option value="reviews">Reviews</option>
             <option value="purchases">Purchases</option>
             <option value="favourites">Favourites</option>
         </select>
+
+        <!-- Loading function -->
+        <div class="spinFunction" id="loading">
+            <div class="ispinner ispinner-large">
+                <div class="ispinner-blade"></div>
+                <div class="ispinner-blade"></div>
+                <div class="ispinner-blade"></div>
+                <div class="ispinner-blade"></div>
+                <div class="ispinner-blade"></div>
+                <div class="ispinner-blade"></div>
+                <div class="ispinner-blade"></div>
+                <div class="ispinner-blade"></div>
+            </div>
+        </div>
 
         <div class="container mx-3 my-4">
 
@@ -202,13 +245,7 @@
                 <p id="favouritedata"></p>
             </div>
         </div>
-
-        <div id="favourites" class="content-section">
-            <!-- Data  3goes here -->
-            <h5>Your Favourites</h5>
-            <p id="favouritedata"></p>
-        </div>
-        </div>
+    </div>
 
     </div>
 
@@ -237,7 +274,7 @@
                         `;
                             $('#reviewdata').append(reviewHTML);
                         });
-                        $('#reviewcount').append(`<h6>Total Count: ${data.length}`);
+                        $('#reviewcount').append(`<h6>Total Count: ${data.length}</h6>`);
                     }
                     else if (apiURL === `/purchase/${loggedInUserID}`) {
                         const data = response.data
@@ -253,7 +290,7 @@
                         `;
                             $('#purchasedata').append(purchaseHTML);
                         });
-                        $('#purchasecount').append(`<h6>Total Count: ${data.length}`);
+                        $('#purchasecount').append(`<h6>Total Count: ${data.length}</h6>`);
                     }
                     else if (apiURL === `/favourites/${loggedInUserID}`) {
                         const data = response.data
@@ -268,7 +305,7 @@
                         `;
                             $('#favouritedata').append(favouriteHTML);
                         });
-                        $('#favouritecount').append(`<h6>Total Count: ${data.length}`);
+                        $('#favouritecount').append(`<h6>Total Count: ${data.length}</h6>`);
                     }
 
                 })
@@ -292,7 +329,18 @@
 
         // Display when page loads
         document.addEventListener('DOMContentLoaded', async function () {
+            // Declare variables to fetch data from multiple APIs using Axios
+            const reviewAPI = `/reviews/data/${loggedInUserID}`;
+            const purchaseAPI = `/purchase/${loggedInUserID}`;
+            const favouriteAPI = `/favourites/${loggedInUserID}`;
 
+            const requests = [
+                fetchDataFromAPI(reviewAPI),
+                fetchDataFromAPI(purchaseAPI),
+                fetchDataFromAPI(favouriteAPI)
+            ];
+
+            // first, get the user details
             axios.get(`/user/${loggedInUserID}`)
                 .then((response) => {
                     const data = response.data[0];
@@ -305,7 +353,7 @@
         `;
 
                     $('#getUserData').append(dataHtml);
-                }).then(() => {
+                }).then(() => {// then, perform concurrent request to retrieve dropdown menu data
                     const [reviews, purchases, favourites] = Promise.all(requests);
                     const data = {
                         reviews: reviews,
@@ -313,21 +361,20 @@
                         favourites: favourites
                     };
                     dropdownData = data;
-                }).catch((error) => {
-                    console.error('Error fetching data:', error);
                 })
-            // Fetch data from multiple APIs using Axios
-            const reviewAPI = `/reviews/data/${loggedInUserID}`;
-            const purchaseAPI = `/purchase/${loggedInUserID}`;
-            const favouriteAPI = `/favourites/${loggedInUserID}`;
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                });
 
-            const requests = [
-                fetchDataFromAPI(reviewAPI),
-                fetchDataFromAPI(purchaseAPI),
-                fetchDataFromAPI(favouriteAPI)
-            ];
+            // display initial content
+            setTimeout(function () {
+                $('#reviews').show();
+                $('#loading').hide();
+            }, 1000); // 2-second delay
+
         });
 
+        // update displayed content when selecting another dropdown menu option
         $('#contentSelector').on('change', async function () {
             const selectedValue = $(this).val();
             dropdownSelection = selectedValue;
@@ -439,6 +486,127 @@
         });
 */
     </script>
+
+    <!-- Loading spinner external library -->
+    <!-- Source: https://www.cssscript.com/ios-style-loading-spinner-with-pure-css-ispinner/ -->
+    <style>
+        .ispinner {
+            position: relative;
+            width: 20px;
+            height: 20px;
+        }
+
+        .ispinner .ispinner-blade {
+            position: absolute;
+            top: 6.5px;
+            left: 8.5px;
+            width: 2.5px;
+            height: 6.5px;
+            background-color: #8e8e93;
+            border-radius: 1.25px;
+            animation: iSpinnerBlade 1s linear infinite;
+            will-change: opacity;
+        }
+
+        .ispinner .ispinner-blade:nth-child(1) {
+            transform: rotate(45deg) translateY(-6.5px);
+            animation-delay: -1.625s;
+        }
+
+        .ispinner .ispinner-blade:nth-child(2) {
+            transform: rotate(90deg) translateY(-6.5px);
+            animation-delay: -1.5s;
+        }
+
+        .ispinner .ispinner-blade:nth-child(3) {
+            transform: rotate(135deg) translateY(-6.5px);
+            animation-delay: -1.375s;
+        }
+
+        .ispinner .ispinner-blade:nth-child(4) {
+            transform: rotate(180deg) translateY(-6.5px);
+            animation-delay: -1.25s;
+        }
+
+        .ispinner .ispinner-blade:nth-child(5) {
+            transform: rotate(225deg) translateY(-6.5px);
+            animation-delay: -1.125s;
+        }
+
+        .ispinner .ispinner-blade:nth-child(6) {
+            transform: rotate(270deg) translateY(-6.5px);
+            animation-delay: -1s;
+        }
+
+        .ispinner .ispinner-blade:nth-child(7) {
+            transform: rotate(315deg) translateY(-6.5px);
+            animation-delay: -0.875s;
+        }
+
+        .ispinner .ispinner-blade:nth-child(8) {
+            transform: rotate(360deg) translateY(-6.5px);
+            animation-delay: -0.75s;
+        }
+
+        .ispinner.ispinner-large {
+            width: 35px;
+            height: 35px;
+        }
+
+        .ispinner.ispinner-large .ispinner-blade {
+            top: 11.5px;
+            left: 15px;
+            width: 5px;
+            height: 12px;
+            border-radius: 2.5px;
+        }
+
+        .ispinner.ispinner-large .ispinner-blade:nth-child(1) {
+            transform: rotate(45deg) translateY(-11.5px);
+        }
+
+        .ispinner.ispinner-large .ispinner-blade:nth-child(2) {
+            transform: rotate(90deg) translateY(-11.5px);
+        }
+
+        .ispinner.ispinner-large .ispinner-blade:nth-child(3) {
+            transform: rotate(135deg) translateY(-11.5px);
+        }
+
+        .ispinner.ispinner-large .ispinner-blade:nth-child(4) {
+            transform: rotate(180deg) translateY(-11.5px);
+        }
+
+        .ispinner.ispinner-large .ispinner-blade:nth-child(5) {
+            transform: rotate(225deg) translateY(-11.5px);
+        }
+
+        .ispinner.ispinner-large .ispinner-blade:nth-child(6) {
+            transform: rotate(270deg) translateY(-11.5px);
+        }
+
+        .ispinner.ispinner-large .ispinner-blade:nth-child(7) {
+            transform: rotate(315deg) translateY(-11.5px);
+        }
+
+        .ispinner.ispinner-large .ispinner-blade:nth-child(8) {
+            transform: rotate(360deg) translateY(-11.5px);
+        }
+
+        @keyframes iSpinnerBlade {
+            0% {
+                opacity: 0.85;
+            }
+
+            50% {
+                opacity: 0.25;
+            }
+
+            100% {
+                opacity: 0.25;
+            }
+        }
+    </style>
 
     <main>
         <section>

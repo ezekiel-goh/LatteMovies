@@ -14,20 +14,19 @@ app.use(express.static('public'));
 
 app.use(session({
   secret: 'secret',
- 	resave: true,
- 	saveUninitialized: true
+  resave: true,
+  saveUninitialized: true
 }));
 
 // import models
 
-const histogram = require("../models/histogram");
 // const moviePublisher = require("../models/moviePublisher");
 const Movies = require("../models/movie");
 // const user = require("../models/user");
-const { insertData, generateHistogramData } = require("../models/histogram");
+const histogram = require("../models/histogram");
 const moviePublisher = require("../models/moviePublisher");
 const { getUserInfo, addUser, updateUserInfo, addCustomer, addPublisher,
-  deleteUserCustomer, deleteUserPublisher, login, 
+  deleteUserCustomer, deleteUserPublisher, login,
   buyMovie, getPurchase, getReviewByUser, getFavouriteByUser } = require('../models/user.js');
 const review = require("../models/review");
 
@@ -78,18 +77,29 @@ app.post('/insertData', function (req, res) {
 });
 
 //views getting data for histogram
-app.get('/generateHistogramData', function (req, res) {
-  histogram.generateHistogramData(req, res); // Call the generateHistogramData function from histogram.js
+app.get('/movieHistogram/:id', function (req, res) {
+  const movieID = req.params.id;
+  histogram.generateHistogramData(movieID)
+    .then((histogramData) =>{
+      res.json(histogramData);
+    })
+    .catch(function (error) {
+      console.error('Error fetching histogram data:', error);
+      res.status(500).json({ error: 'Error fetching histogram data' });
+    });
 });
-//   function (err, result) {
-//   if (!err) {
-//     console.log("no errors");
-//     res.type("json");
-//     res.status(201).send({ id: +result });
-//   } else {
-//     res.status(500).send({ error_msg: "Internal server error" });
-//   }
-// }
+// app.get('/movieDetails/:id', function (req, res) {
+//   const movieID = req.params.movieID;
+
+//   histogram.generateHistogramData(movieID)
+//     .then((histogramData) =>{
+//       res.json(histogramData);
+//     })
+//     .catch(function (error) {
+//       console.error('Error fetching histogram data:', error);
+//       res.status(500).json({ error: 'Error fetching histogram data' });
+//     });
+// });
 
 
 //-- Get Movie by ID
@@ -141,7 +151,7 @@ app.post('/likedMovies', function (req, res) {
 
   favorite.postLiked({ id, userID })
     .then(() => {
-      res.sendStatus(201); 
+      res.sendStatus(201);
     })
     .catch(error => {
       console.error('Error posting liked movie:', error);
@@ -153,10 +163,11 @@ app.post('/likedMovies', function (req, res) {
 //-- Submit Review
 app.post('/reviews', function (req, res) {
   const Comments = req.body.Comments
+  const MovieID = req.body.MovieID
   const Rating = req.body.Rating
   console.log(req.body)
 
-  review.postReview(Comments, Rating)
+  review.postReview(MovieID, Comments, Rating)
     .then(() => {
       res.sendStatus(201); // Return a success status code
     })
@@ -173,7 +184,8 @@ app.put('/reviews', function (req, res) {
   const Comments = req.body.Comments
 
   review.editReview(Rating, Comments, ReviewID)
-    .then(() => {
+    .then((response) => {
+      console.log(response[0])
       res.sendStatus(201); // Return a success status code
     })
     .catch(error => {
@@ -198,7 +210,9 @@ app.delete('/reviews/:id', function (req, res) {
 
 //Delete all reviews
 app.delete('/reviews', function (req, res) {
-  review.deleteAllReview()
+  console.log(req.body.MovieID)
+  const MovieID = req.body.MovieID
+  review.deleteAllReview(MovieID)
     .then(() => {
       res.sendStatus(201); // Return a success status code
     })
@@ -209,13 +223,14 @@ app.delete('/reviews', function (req, res) {
 })
 
 // -- Get Review
-app.get('/reviews/data', function (req, res) {
-
-  Promise.all([review.retrieveReview(), review.getAvgRating()])
+app.get('/reviews/data/:MovieID', function (req, res) {
+  console.log(req.params.MovieID)
+  MovieID = req.params.MovieID
+  Promise.all([(review.retrieveReview(MovieID)), (review.getAvgRating(MovieID))])
     .then((response) => {
       // console.log(JSON.stringify(response))
       res.json(response);
-      console.log(response[1][0])
+      // console.log(response)
       return response
     })
     .catch(error => {
@@ -224,28 +239,30 @@ app.get('/reviews/data', function (req, res) {
     });
 })
 
-app.get('/reviews/sort', function (req, res) {
-//Promise.all([deleteUserCustomer(UserID), deleteUserPublisher(UserID)]).then(() => {
-  review.sortReviewByID()
-  .then((response) => {
-    res.json(response);
-    console.log(response[0])
-  })
-  .catch(error => {
-    res.sendStatus(500);
-  })
+app.get('/reviews/sort/:MovieID', function (req, res) {
+
+  MovieID = req.params.MovieID
+  review.sortReviewByID(MovieID)
+    .then((response) => {
+      res.json(response);
+      console.log(response[0])
+    })
+    .catch(error => {
+      res.sendStatus(500);
+    })
 })
 
-app.get('/reviews/sort2', function (req, res) {
+app.get('/reviews/sort2/:MovieID', function (req, res) {
 
-  review.sortReviewByRating()
-  .then((response) => {
-    res.json(response);
-    console.log(response[0])
-  })
-  .catch(error => {
-    res.sendStatus(500);
-  })
+  MovieID = req.params.MovieID
+  review.sortReviewByRating(MovieID)
+    .then((response) => {
+      res.json(response);
+      console.log(response[0])
+    })
+    .catch(error => {
+      res.sendStatus(500);
+    })
 })
 
 app.get('/reviews/best', function (req, res) {
