@@ -134,22 +134,65 @@ Homepage.html
         /* Add border-radius for rounded corners */
     }
 
-    .dropdown-menu.show {
-        display: block;
+    #searchBar.form-control {
+        color: white;
+        /* Text color */
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Background color */
+        border: 1px solid rgba(255, 255, 255, 0);
+        /* Border color */
+    }
+
+    .dropdown-searchMenu.show {
+        display: none;
         position: absolute;
-        z-index: 1000;
-        width: 100%;
-        background-color: #000;
+        z-index: -1000;
+        top: 50px;
+        padding-top: 15px;
+        background-color: rgba(70, 70, 70, 0.632);
+        /* Set the background color with transparency (e.g., rgba) */
+        backdrop-filter: blur(10px);
         border: none;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        max-height: 300px;
+        overflow-y: auto;
+        min-width: 120px;
+        scrollbar-width: none;
+        /* Hide scrollbar for Firefox */
+        -ms-overflow-style: none;
+        transition: opacity 0.3s, visibility 0.3s;
+        border-radius: 20px;
+    }
+
+    .dropdown-searchMenu.show::-webkit-scrollbar {
+        display: none;
     }
 
     .dropdown-item {
         color: white;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        transition: opacity 0.3s, visibility 0.3s;
+
     }
 
     .dropdown-item:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.612);
+        backdrop-filter: blur(10px);
+        border-radius: 17px;
+        width: auto;
+        margin-left: 10px;
+        margin-right: 10px;
+        transition: 0.3s;
+    }
+
+
+    .dropdown-item img {
+        width: 30px;
+        /* Adjust the size of the movie poster */
+        height: 45px;
+        object-fit: cover;
+        margin-right: 10px;
     }
 
     span {
@@ -200,10 +243,11 @@ Homepage.html
                         <a id="AdminPrivilleges" class="nav-link px-3 text-warning fs-5"></a>
                     </ul>
 
-                    <form class="d-flex" role="search" style="position:relative; right:150px;">
-                        <input class="form-control me-2" type="search" id="searchBar" placeholder="Search movies..."
-                            aria-label="Search">
-                        <button class="btn btn-outline-success" type="button" id="searchButton">Search</button>
+
+                    <form class="d-flex" role="search" style="position:relative; top:1.5px;">
+                        <input class="form-control me-2 rounded-4" type="search" id="searchBar"
+                            placeholder="Search movies..." aria-label="Search">
+                        <!-- <button class="btn btn-outline-success" type="button" id="searchButton">Search</button> -->
                     </form>
 
 
@@ -290,7 +334,6 @@ Homepage.html
                 <br> absence, work out your own salvation with fear and trembling,
                 <br>for it is God who works in you, both to will and to work for his good pleasure.
                 <br><br>
-                <b>Philippians 2:12-13</b>
             </p>
 
         </div>
@@ -388,25 +431,42 @@ Homepage.html
 
         const searchBar = document.getElementById("searchBar");
         const dropdownSearch = document.createElement("div");
-        dropdownSearch.className = "dropdown-menu show";
+        dropdownSearch.className = "dropdown-searchMenu show";
         dropdownSearch.id = "searchDropdown";
 
+        const dropdownMenuEsc = document.querySelector('.dropdown-searchMenu.show');
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && dropdownMenuEsc.style.display === 'block') {
+                dropdownMenuEsc.style.display = 'none';
+            }
+        });
         searchBar.addEventListener("input", () => {
             const searchTerm = searchBar.value.toLowerCase();
 
             if (searchTerm.trim() === "") {
                 dropdownSearch.innerHTML = "";
+                dropdownSearch.style.display = "none"; //-- dropdown hidden
                 return;
             }
 
             const matchingMovies = movies.filter(movie => movie.title.toLowerCase().includes(searchTerm));
             dropdownSearch.innerHTML = "";
+            dropdownSearch.style.display = "block"; //-- show dropdown
 
             matchingMovies.forEach(movie => {
                 const dropdownItem = document.createElement("a");
                 dropdownItem.className = "dropdown-item";
                 dropdownItem.href = `/movieDetails?id=${movie.id}`;
-                dropdownItem.textContent = movie.title;
+                const posterImg = document.createElement("img");
+                posterImg.src = IMG_URL + movie.poster_path;
+                posterImg.alt = "Movie Poster";
+
+                const movieTitle = document.createElement("span");
+                movieTitle.textContent = movie.title;
+
+                dropdownItem.appendChild(posterImg);
+                dropdownItem.appendChild(movieTitle);
 
                 dropdownSearch.appendChild(dropdownItem);
             });
@@ -524,7 +584,6 @@ Homepage.html
 
         const dropdown = document.getElementById("sortABC");
         dropdown.addEventListener("show.bs.dropdown", (event) => {
-
         });
 
         axios.get(`/movies`)
