@@ -1,4 +1,4 @@
-function populateMoviesBody(moviesBody, movies, reviews) {
+function populateMoviesBody(moviesBody, movies, reviews, purchases) {
     moviesBody.innerHTML = '';
     const template = document.getElementById('template');
     const IMG_URL = 'https://image.tmdb.org/t/p/w500/';
@@ -15,7 +15,6 @@ function populateMoviesBody(moviesBody, movies, reviews) {
         }
     }
     const averageScores = [...reviewTemp.values()].map(({MovieID, count, sum}) => ({MovieID, average: sum / count}));
-    // console.log(averageScores);
 
     movies.forEach((movie) => {
         const node = template.content.firstElementChild.cloneNode(true);
@@ -27,16 +26,20 @@ function populateMoviesBody(moviesBody, movies, reviews) {
         node.querySelector('.release-date').value = movie.release_date.slice(0, 10); // temp workaround
         node.querySelector('.runtime').value = movie.runtime;
 
-        // initial dummy values
         const i = averageScores.findIndex(e => e.MovieID == movie.id);
-        console.log(i, movie.id);
         if (i > -1) {
             node.querySelector('.average-score').innerHTML = `${averageScores[i].average}/5`;
         } else {
             node.querySelector('.average-score').innerHTML = 'N/A';
         }
-        node.querySelector('.revenue').innerHTML = 0;
 
+        const j = purchases.findIndex(e => e.MovieID == movie.id)
+        if (j > -1) {
+            node.querySelector('.revenue').innerHTML = `$${purchases[j].count * movie.Price}`;
+        } else {
+            node.querySelector('.revenue').innerHTML = '$0';
+        }
+        
         const updateButton = node.querySelector('.update');
         updateButton.onclick = () => {
             const originalValue = updateButton.textContent;
@@ -102,12 +105,13 @@ function populateMoviesBody(moviesBody, movies, reviews) {
 }
 
 async function refreshMoviesBody(moviesBody) {
-    const [movies, reviews] = await Promise.all([
+    const [movies, reviews, purchases] = await Promise.all([
         fetch('/api/moviePublisher').then((res) => res.json()),
-        fetch('/reviews/data').then((res) => res.json())
+        fetch('/reviews/data').then((res) => res.json()),
+        fetch('/api/purchase').then((res) => res.json())
     ]);
 
-    populateMoviesBody(moviesBody, movies.data[0], reviews[0]);
+    populateMoviesBody(moviesBody, movies.data[0], reviews[0], purchases[0]);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
