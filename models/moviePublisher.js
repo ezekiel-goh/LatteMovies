@@ -20,10 +20,12 @@ module.exports.addMovie = function addMovie(id, title, poster_path, overview, re
         [id, title, poster_path, overview, release_date, runtime, publisher_id]
     )
         .then(() => {
+            console.log('completed');
             return;
         })
         .catch((error) => {
-            if (error.errno === SqlLiteErrorCodes.SQLITE_CONSTRAINT) throw new DUPLICATE_ENTRY_ERROR(`Movie ${id}`);
+            console.log(error);
+            if (error.errno === MYSQL_ERROR_CODE.DUPLICATE_ENTRY) throw new DUPLICATE_ENTRY_ERROR(`Movie ${id}`);
         });
 };
 
@@ -44,5 +46,12 @@ module.exports.deleteMovie = function deleteMovie(id) {
         return;
     });
 };
+
+// temporary for revenue functionality
+module.exports.getPurchases = function getPurchases() {
+    return query('SELECT MovieID, COUNT(*) AS count FROM Purchase GROUP BY MovieID').then((purchases) => {
+        return purchases;
+    });
+}
 
 // retrieve private movie data

@@ -59,7 +59,7 @@
         </nav>
     </div>
 
-    <h1>Movie CRUD Operations for Publishers</h1>
+    <h1 id="title">Movie CRUD Operations for Publishers</h1>
     <form id="movie-form">
         <fieldset>
             <div class="container">
@@ -137,11 +137,13 @@
 </html>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-
     const userDetails = axios.get(`/auth/userDetails`)
         .then((response) => {
             const userRole = response.data.role;
             const UserID = response.data.UserID;
+            const username = response.data.username;
+
+            document.getElementById("title").innerHTML = `Movie CRUD Operations for ${username}`;
 
             const importMoviesButton = document.getElementById("importMoviesButton")
             const usersButton = document.getElementById("usersButton")
@@ -162,7 +164,6 @@
                 publishersButton.style.display = 'block';
             }
             console.log(UserID);
-
         })
         .catch((error) => {
             console.log(error);

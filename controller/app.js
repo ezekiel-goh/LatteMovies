@@ -283,7 +283,6 @@ app.get('/reviews/best', function (req, res) {
 app.get('/reviews/data', (req, res, next) => {
     review.getAllReviews()
       .then((reviews) => {
-          console.log(reviews);
           return res.json(reviews);
       })
       .catch((error) => {
@@ -443,7 +442,8 @@ app.get('/auth/userDetails', (req, res, next) => {
   console.log(req.session);
   const role = req.session.role;
   const UserID = req.session.UserID;
-  res.json({role, UserID})
+  const username = req.session.username;
+  res.json({role, UserID, username})
 });
 
 app.get('/api/moviePublisher', (req, res, next) => {
@@ -453,6 +453,17 @@ app.get('/api/moviePublisher', (req, res, next) => {
       return res.json({ data: movies });
     })
     .catch(function (error) {
+      next(error);
+    });
+});
+
+// temporary for revenue functionality
+app.get('/api/purchase', (req, res, next) => {
+  moviePublisher.getPurchases()
+    .then((purchases) => {
+      return res.json(purchases);
+    })
+    .catch((error) => {
       next(error);
     });
 });
