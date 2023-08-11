@@ -438,6 +438,21 @@ app.post('/auth', (req, res) => {
     });
 });
 
+app.post('/auth/logout', (req, res) => {
+  if (req.session) {
+    req.session.destroy(err => {
+      if (err) {
+        res.redirect('/');
+      } else {
+        console.log('works');
+        res.redirect('/');
+      }
+    });
+  } else {
+    res.end()
+  }
+});
+
 app.get('/auth/userDetails', (req, res, next) => {
   console.log(req.session);
   const role = req.session.role;
