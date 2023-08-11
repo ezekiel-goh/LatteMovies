@@ -324,6 +324,20 @@ movieDetails.html
                                                     <div class="mt-1 fs-5">Delete</div>
                                                 </a>
                                             </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="container" id="UserSettings">
+                                        <div class="row mt-5" style="position: relative;">
+                                            <div class="col-sm my-2">
+                                                <!-- disabled -->
+                                                <a href="/" id="buyBtn" class="btn btn-secondary rounded-5"
+                                                    style="position:relative; min-width: 150px; height:50px;  "
+                                                    onclick='alert("Movie bought!")'>
+                                                    <div class="mt-1 fs-5">Buy Movie</div>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -420,6 +434,7 @@ movieDetails.html
                 const usersButton = document.getElementById("usersButton")
                 const publishersButton = document.getElementById("publishersButton")
 
+                const UserSettings = document.getElementById('UserSettings')
                 const PublisherSettings = document.getElementById("PublisherSettings")
                 const ReviewSection = document.getElementById("ReviewSection")
                 const HistogramSection = document.getElementById("HistogramSection")
@@ -431,6 +446,7 @@ movieDetails.html
                     usersButton.style.display = 'none';
                     publishersButton.style.display = 'none';
 
+                    UserSettings.style.display = 'none';
                     PublisherSettings.style.display = 'none';
                     ReviewSection.style.display = 'none';
                     HistogramSection.style.display = 'none';
@@ -440,6 +456,7 @@ movieDetails.html
                     usersButton.style.display = 'block';
                     publishersButton.style.display = 'none';
 
+                    UserSettings.style.display = 'block';
                     PublisherSettings.style.display = 'none';
                     ReviewSection.style.display = 'block';
                     HistogramSection.style.display = 'block';
@@ -449,6 +466,7 @@ movieDetails.html
                     usersButton.style.display = 'none';
                     publishersButton.style.display = 'block';
 
+                    UserSettings.style.display = 'none';
                     PublisherSettings.style.display = 'block';
                     ReviewSection.style.display = 'none';
                     HistogramSection.style.display = 'none';
@@ -499,7 +517,7 @@ movieDetails.html
                     timestamp: formattedTime
                 };
 
-                axios.post('http://localhost:3000/insertData', data)
+                axios.post('/insertData', data)
                     .then(response => {
                         console.log('Data inserted successfully:', response.data);
                     })
@@ -1013,7 +1031,7 @@ movieDetails.html
         }
 
         const baseUrl = "http://localhost:3000"
-        axios.post(`${baseUrl}/reviews`, post)
+        axios.post(`/reviews`, post)
             .then((response) => {
                 if (response.status == 200) {
                     console.log("Review submitted!")
@@ -1035,7 +1053,7 @@ movieDetails.html
         const urlParams = new URLSearchParams(window.location.search);
         const MovieID = urlParams.get('id');
 
-        axios.get(`${baseUrl}/reviews/data/${MovieID}`)
+        axios.get(`/reviews/data/${MovieID}`)
             .then((response) => {
                 const retrieved = Object.values(response);
                 reviewList.innerHTML = "";
@@ -1069,7 +1087,7 @@ movieDetails.html
         const reviewList = document.getElementById("reviewList");
         if (selectedValue === "ID") {
 
-            axios.get(`${baseUrl}/reviews/sort/${MovieID}`)
+            axios.get(`/reviews/sort/${MovieID}`)
                 .then((response) => {
                     const sorted = Object.values(response);
                     reviewList.innerHTML = "";
@@ -1085,7 +1103,7 @@ movieDetails.html
                 });
         }
         else if (selectedValue === "Rating") {
-            axios.get(`${baseUrl}/reviews/sort2/${MovieID}`)
+            axios.get(`/reviews/sort2/${MovieID}`)
                 .then((response) => {
                     const sorted = Object.values(response);
                     reviewList.innerHTML = "";
